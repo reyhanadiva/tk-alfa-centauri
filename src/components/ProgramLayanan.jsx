@@ -136,7 +136,7 @@ const ProgramLayanan = () => {
             <div className="hidden sm:block w-px h-5 bg-slate-200"></div>
             <div>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1.5">Full Day:</span>
-              <span className="text-sm font-bold text-slate-800">08.00 - 16.00</span>
+              <span className="text-sm font-bold text-slate-800">06.30 - 16.00</span>
             </div>
           </div>
         </motion.div>

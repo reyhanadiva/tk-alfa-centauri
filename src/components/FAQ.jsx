@@ -4,40 +4,84 @@ import { ChevronDown, ArrowRight } from 'lucide-react';
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(0);
+  const [showAll, setShowAll] = useState(false);
 
   const faqs = [
+    // --- 4 PERTANYAAN UTAMA TERATAS ---
     {
-      question: "Bagaimana cara mendaftar di TK Alfa Centauri?",
+      question: "Bagaimana kurikulum dan metode pembelajaran yang diterapkan?",
       answer: (
         <>
-          Pendaftaran siswa baru dapat dilakukan secara online maupun datang langsung ke sekolah. Informasi lengkap mengenai alur, jadwal, dan rincian biaya dapat Anda lihat di halaman <a href="#" className="text-blue-600 font-bold hover:underline">Informasi PPDB</a>.
+          Kami menerapkan kurikulum nasional yang dipadukan dengan kekhasan pendidikan Alfa Centauri melalui pendekatan <strong><em>deep learning dan ragam main</em></strong>. Pembelajaran dirancang bermakna agar ananda dapat bereksplorasi, berpikir kritis, serta berkembang secara optimal.
         </>
       )
     },
     {
-      question: "Berapa batas usia minimal untuk pendaftaran?",
-      answer: "Untuk unit Daycare, kami menerima ananda mulai dari usia 3 bulan hingga 2 tahun. Playgroup untuk usia 2-4 tahun, sedangkan TK (A dan B) diperuntukkan bagi usia 4-6 tahun."
+      question: "Apakah tersedia program trial class?",
+      answer: "Ada, program trial class tersedia secara khusus pada kegiatan Open House Daycare & Preschool Alfa Centauri yang biasanya diselenggarakan pada bulan November."
     },
     {
-      question: "Apakah sekolah menyediakan fasilitas katering?",
-      answer: "Ya, kami menyediakan layanan katering higienis dengan menu sehat dan bergizi seimbang yang dirancang khusus untuk mendukung tumbuh kembang ananda selama berada di sekolah."
+      question: "Apakah disediakan layanan catering makanan?",
+      answer: "Ya, sekolah menyediakan layanan catering, namun biayanya tidak termasuk dalam SPP karena sifatnya pilihan bagi Orang tua/wali murid yang ingin ananda mendapatkan snack/makan siang dari sekolah."
     },
     {
-      question: "Bagaimana sistem keamanan di lingkungan sekolah?",
-      answer: "Keamanan adalah prioritas utama kami. Sekolah dilengkapi dengan pengawasan CCTV 24 jam di seluruh area kelas dan bermain, serta penjagaan oleh petugas keamanan (satpam) di gerbang utama."
+      question: "Apakah terdapat kegiatan ekstrakurikuler?",
+      answer: (
+        <>
+          Ya, tersedia kegiatan ekstrakurikuler yang disesuaikan dengan jenjang pendidikan ananda, yaitu:
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li><strong>Playgroup (PG):</strong> Gerak dan Lagu</li>
+            <li><strong>Taman Kanak-Kanak (TK):</strong> Angklung</li>
+          </ul>
+        </>
+      )
+    },
+
+    // --- 4 PERTANYAAN TAMBAHAN (Muncul saat tombol "Lihat Semua" diklik) ---
+    {
+      question: "Apakah kegiatan pembelajaran menggunakan Bahasa Inggris?",
+      answer: "Bahasa pengantar utama adalah Bahasa Indonesia untuk memperkuat fondasi bahasa ibu ananda sebagai dasar komunikasi dan perkembangan."
     },
     {
-      question: "Apakah biaya pendidikan bisa diangsur?",
-      answer: "Ya, kami sangat memahami kebutuhan orang tua. Biaya DSP (Dana Sumbangan Pendidikan) dapat diangsur sesuai dengan skema kesepakatan yang dibicarakan saat proses wawancara pendaftaran."
+      question: "Apa saja fasilitas yang tersedia di sekolah?",
+      answer: (
+        <>
+          Kami menyediakan berbagai fasilitas untuk mendukung kenyamanan, keamanan, serta proses belajar dan bermain ananda, di antaranya:
+          <ul className="list-disc pl-5 mt-2 space-y-1.5">
+            <li><strong>Area Belajar:</strong> Ruang kelas ber-AC dengan media dan perlengkapan pembelajaran yang memadai, seperti alat tulis, cat air, dan bahan kegiatan lainnya.</li>
+            <li><strong>Area Bermain:</strong> Area bermain indoor dan outdoor untuk mendukung aktivitas fisik, eksplorasi, dan interaksi sosial ananda.</li>
+            <li><strong>Literasi:</strong> Sony Sugema Library sebagai sarana untuk menumbuhkan minat baca dan kecintaan ananda terhadap buku.</li>
+            <li><strong>Keamanan:</strong> Pemantauan CCTV dan dukungan petugas keamanan selama 24 jam.</li>
+            <li><strong>Fasilitas Ibadah:</strong> Mushola untuk mendukung kegiatan ibadah.</li>
+          </ul>
+        </>
+      )
+    },
+    {
+      question: "Apakah tersedia layanan antar-jemput?",
+      answer: "Saat ini, Daycare & Preschool Alfa Centauri belum menyediakan layanan antar-jemput untuk ananda. Orang tua/wali murid dapat mengantar dan menjemput ananda secara mandiri."
+    },
+    {
+      question: "Ada program belajar apa saja?",
+      answer: (
+        <>
+          <ul className="space-y-1.5">
+            <li><strong>Program Reguler:</strong> 08.00–12.30 WIB (khusus hari Jumat pulang pukul 11.00 WIB).</li>
+            <li><strong>Program Fullday:</strong> 06.30–16.00 WIB.</li>
+          </ul>
+        </>
+      )
     }
   ];
+
+  // Tampilkan 4 item pertama jika belum diklik "Muat Semua", atau tampilkan semua jika showAll true
+  const displayedFaqs = showAll ? faqs : faqs.slice(0, 4);
 
   const toggleAccordion = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    // Menggunakan background putih agar menyatu bersih dengan bagian bawah BeritaArtikel
     <section className="relative w-full bg-white py-24 px-4 md:px-8 overflow-hidden">
       
       {/* Ornamen Blobs Pastel Background */}
@@ -58,7 +102,9 @@ const FAQ = () => {
           </p>
           
           <a 
-            href="#" 
+            href="https://wa.me/6282223246649?text=Halo%20Admin,%20saya%20ingin%20bertanya%20mengenai%20informasi%20TK%20Alfa%20Centauri." 
+            target="_blank" 
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-[#0D6EFD] font-bold text-[17px] group w-fit hover:text-blue-800 transition-colors"
           >
             Hubungi kami
@@ -68,12 +114,12 @@ const FAQ = () => {
 
         {/* Kolom Kanan: Accordion List */}
         <div className="w-full lg:w-[60%] flex flex-col gap-4">
-          {faqs.map((faq, index) => {
+          {displayedFaqs.map((faq, index) => {
             const isOpen = openIndex === index;
 
             return (
               <div key={index} className="relative">
-                {/* Efek pendaran warna (glow) pastel yang jelas saat aktif */}
+                {/* Efek pendaran warna (glow) pastel saat aktif */}
                 {isOpen && (
                   <div className="absolute -inset-2 bg-gradient-to-r from-blue-300/60 to-amber-200/60 rounded-[2.2rem] blur-xl opacity-90 -z-10"></div>
                 )}
@@ -114,9 +160,9 @@ const FAQ = () => {
                       >
                         <div className="px-6 md:px-7 pb-7 pt-0">
                           <div className="w-full h-[1px] bg-slate-100 mb-5"></div>
-                          <p className="text-[16px] text-slate-500 font-medium leading-[1.7]">
+                          <div className="text-[16px] text-slate-500 font-medium leading-[1.7]">
                             {faq.answer}
-                          </p>
+                          </div>
                         </div>
                       </motion.div>
                     )}
@@ -125,6 +171,19 @@ const FAQ = () => {
               </div>
             );
           })}
+
+          {/* Tombol Expand / Show All */}
+          {faqs.length > 4 && (
+            <div className="text-center mt-4">
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-full text-sm transition-colors inline-flex items-center gap-2"
+              >
+                <span>{showAll ? "Tampilkan Lebih Sedikit" : `Lihat Semua Pertanyaan (${faqs.length})`}</span>
+                <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showAll ? 'rotate-180' : ''}`} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>
