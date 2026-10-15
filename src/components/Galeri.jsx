@@ -17,27 +17,27 @@ const DEFAULT_ITEMS = [
   {
     title: "Kreativitas Seni",
     desc: "Ananda bebas berekspresi mewarnai dunia mereka",
-    img: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1200&q=80"
+    img: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1200&q=70"
   },
   {
     title: "Eksplorasi Alam",
     desc: "Belajar langsung dari lingkungan hijau sekitar",
-    img: "https://images.unsplash.com/photo-1472289065668-ce650ac443d2?auto=format&fit=crop&w=1200&q=80"
+    img: "https://images.unsplash.com/photo-1472289065668-ce650ac443d2?auto=format&fit=crop&w=1200&q=70"
   },
   {
     title: "Bermain Bersama",
     desc: "Membangun empati, kepedulian, dan interaksi sosial",
-    img: "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=1200&q=80"
+    img: "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=1200&q=70"
   },
   {
     title: "Kunjungan Edukatif",
     desc: "Pengalaman seru belajar di luar ruang kelas",
-    img: "https://images.unsplash.com/photo-1514050566906-8fb50b9b3cc1?auto=format&fit=crop&w=1200&q=80"
+    img: "https://images.unsplash.com/photo-1514050566906-8fb50b9b3cc1?auto=format&fit=crop&w=1200&q=70"
   },
   {
     title: "Pentas Seni",
     desc: "Melatih keberanian dan rasa percaya diri ananda",
-    img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80"
+    img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=70"
   }
 ];
 
@@ -132,9 +132,13 @@ const useDominantHues = (items) => {
   return hues;
 };
 
-// Deteksi mobile tanpa membaca window saat render (aman untuk SSR & responsif saat resize)
+const readIsMobile = (breakpoint) =>
+  typeof window !== 'undefined' && window.matchMedia(`(max-width: ${breakpoint - 1}px)`).matches;
+
+// Deteksi mobile. Nilai awal dibaca langsung (bukan false dulu), supaya di HP kartu tidak
+// sempat tampil dengan posisi desktop lalu "meluncur" ke posisi mobile saat halaman dibuka.
 const useIsMobile = (breakpoint = 768) => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => readIsMobile(breakpoint));
   useEffect(() => {
     const mq = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
     const update = () => setIsMobile(mq.matches);
@@ -162,7 +166,7 @@ const ImageFallback = ({ className = '' }) => (
 );
 
 const Wave = ({ fill, className = '' }) => (
-  <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className={`block w-full ${className}`}>
+  <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className={`block w-full ${className}`} aria-hidden="true">
     <path fill={fill} d={WAVE_PATH} />
   </svg>
 );
@@ -189,13 +193,9 @@ const GalleryCard = ({
       role="group"
       aria-roledescription="slide"
       aria-label={`${index + 1} dari ${total}: ${item.title}`}
-      tabIndex={isActive || !interactive ? -1 : 0}
-      onKeyDown={(e) => {
-        if (!isActive && interactive && (e.key === 'Enter' || e.key === ' ')) {
-          e.preventDefault();
-          onClick();
-        }
-      }}
+      aria-hidden={transform.hidden || undefined}
+      // Kartu samping hanya untuk klik mouse/sentuh. Pengguna keyboard memakai tombol panah,
+      // tombol sebelumnya/berikutnya, dan titik indikator, sehingga kartu ini tidak perlu jadi tab stop.
       onClick={() => interactive && onClick()}
       className={`absolute w-[75vw] max-w-[340px] md:max-w-[420px] h-[380px] md:h-[480px] rounded-[2rem] overflow-hidden will-change-transform bg-slate-200
         ${!interactive ? 'pointer-events-none' : ''}
@@ -216,10 +216,11 @@ const GalleryCard = ({
         />
       )}
 
-      {/* Tombol Expand: kini hanya petunjuk + jalur keyboard; klik di mana saja pada kartu aktif juga membuka modal */}
+      {/* Tombol Expand: petunjuk + jalur keyboard; klik di mana saja pada kartu aktif juga membuka modal */}
       <AnimatePresence>
         {isActive && (
           <motion.button
+            type="button"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -228,7 +229,7 @@ const GalleryCard = ({
               onExpand();
             }}
             aria-label={`Perbesar foto ${item.title}`}
-            className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3 py-1.5 bg-white/70 backdrop-blur-md border border-white/50 rounded-full text-slate-800 text-xs font-semibold hover:bg-white transition-colors shadow-sm cursor-pointer"
+            className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3 py-1.5 bg-white/70 backdrop-blur-md border border-white/50 rounded-full text-slate-800 text-xs font-semibold hover:bg-white transition-colors shadow-sm cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <Maximize2 className="w-3.5 h-3.5" />
             Expand
@@ -236,7 +237,7 @@ const GalleryCard = ({
         )}
       </AnimatePresence>
 
-      {/* Panel kaca kecil (menggantikan gradient putih tebal) agar foto tetap terlihat */}
+      {/* Panel kaca kecil agar foto tetap terlihat */}
       <div
         aria-hidden={!isActive}
         className={`absolute bottom-3 inset-x-3 md:bottom-4 md:inset-x-4 rounded-2xl bg-white/10 backdrop-blur-xl backdrop-saturate-150 border border-white/30 ring-1 ring-inset ring-black/5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] px-4 py-3 md:px-5 md:py-3.5 transition-all duration-500 ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}`}
@@ -254,9 +255,10 @@ const GalleryControls = ({
   items, currentIndex, isPlaying, autoRunning,
   onPrev, onNext, onTogglePlay, onGoTo,
 }) => (
-  <div className="flex flex-col items-center gap-5 relative z-30">
+  <div className="flex flex-col items-center gap-4 relative z-30">
     <div className="flex items-center gap-2 px-5 py-2.5 bg-white/70 backdrop-blur-lg border border-white/50 rounded-full shadow-md">
       <button
+        type="button"
         onClick={onPrev}
         aria-label="Foto sebelumnya"
         className="p-2 rounded-full text-slate-700 hover:bg-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
@@ -265,6 +267,7 @@ const GalleryControls = ({
       </button>
 
       <button
+        type="button"
         onClick={onTogglePlay}
         aria-label={isPlaying ? 'Jeda slideshow' : 'Putar slideshow'}
         className="p-2.5 rounded-full bg-blue-500 text-white hover:bg-blue-600 hover:scale-105 transition-all shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 mx-2 cursor-pointer"
@@ -273,6 +276,7 @@ const GalleryControls = ({
       </button>
 
       <button
+        type="button"
         onClick={onNext}
         aria-label="Foto berikutnya"
         className="p-2 rounded-full text-slate-700 hover:bg-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
@@ -281,27 +285,33 @@ const GalleryControls = ({
       </button>
     </div>
 
-    <div className="flex gap-2.5 mt-1">
+    {/* Titik indikator: area sentuh diperbesar lewat padding (visualnya tetap sekecil semula) */}
+    <div className="flex items-center">
       {items.map((item, idx) => {
         const isCurrent = currentIndex === idx;
         return (
           <button
+            type="button"
             key={item.title + idx}
             onClick={() => onGoTo(idx)}
             aria-label={`Ke foto ${idx + 1}: ${item.title}`}
-            aria-current={isCurrent}
-            className={`relative h-2 rounded-full overflow-hidden transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer ${isCurrent ? 'w-8 bg-blue-200' : 'w-2 bg-slate-300 hover:bg-slate-400'}`}
+            aria-current={isCurrent ? 'true' : undefined}
+            className="group p-2.5 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
           >
-            {isCurrent && (
-              // Progress autoplay: terisi selama AUTOPLAY_MS, penuh statis saat dijeda
-              <motion.span
-                key={`${currentIndex}-${autoRunning}`}
-                className="absolute inset-y-0 left-0 bg-blue-500 rounded-full"
-                initial={{ width: autoRunning ? '0%' : '100%' }}
-                animate={{ width: '100%' }}
-                transition={autoRunning ? { duration: AUTOPLAY_MS / 1000, ease: 'linear' } : { duration: 0 }}
-              />
-            )}
+            <span
+              className={`relative block h-2 rounded-full overflow-hidden transition-all duration-300 ${isCurrent ? 'w-8 bg-blue-200' : 'w-2 bg-slate-300 group-hover:bg-slate-400'}`}
+            >
+              {isCurrent && (
+                // Progress autoplay: terisi selama AUTOPLAY_MS, penuh statis saat dijeda
+                <motion.span
+                  key={`${currentIndex}-${autoRunning}`}
+                  className="absolute inset-y-0 left-0 bg-blue-500 rounded-full"
+                  initial={{ width: autoRunning ? '0%' : '100%' }}
+                  animate={{ width: '100%' }}
+                  transition={autoRunning ? { duration: AUTOPLAY_MS / 1000, ease: 'linear' } : { duration: 0 }}
+                />
+              )}
+            </span>
           </button>
         );
       })}
@@ -324,11 +334,14 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isHovering, setIsHovering] = useState(false);
+  const [isFocused, setIsFocused] = useState(false); // fokus keyboard di dalam galeri
   const [isExpanded, setIsExpanded] = useState(false);
   const [failed, setFailed] = useState({});
 
   const sectionRef = useRef(null);
   const justPanned = useRef(false); // cegah "klik" tidak sengaja setelah swipe/drag
+  const closeBtnRef = useRef(null);
+  const lastFocused = useRef(null);
   const inView = useInView(sectionRef, { amount: 0.3 });
   const isMobile = useIsMobile();
   const reduceMotion = useReducedMotion();
@@ -346,7 +359,13 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
   const handleNext = useCallback(() => setCurrentIndex((p) => (p + 1) % total), [total]);
   const handlePrev = useCallback(() => setCurrentIndex((p) => (p - 1 + total) % total), [total]);
 
-  const autoRunning = isPlaying && !isHovering && !isExpanded && !reduceMotion && inView && total > 1;
+  const autoRunning =
+    isPlaying && !isHovering && !isFocused && !isExpanded && !reduceMotion && inView && total > 1;
+
+  // Pengguna reduce motion: autoplay tidak jalan, jadi tombolnya juga harus menampilkan "Putar", bukan "Jeda".
+  useEffect(() => {
+    if (reduceMotion) setIsPlaying(false);
+  }, [reduceMotion]);
 
   /* ---------- PARALLAX background (mouse + scroll) ---------- */
   const mouseX = useMotionValue(0);
@@ -376,18 +395,6 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
     return () => clearTimeout(t);
   }, [currentIndex, autoRunning, handleNext]);
 
-  // Keyboard: panah kiri/kanan, Esc menutup modal (hanya saat galeri terlihat / modal terbuka)
-  useEffect(() => {
-    const onKey = (e) => {
-      if (!inView && !isExpanded) return;
-      if (e.key === 'ArrowRight') handleNext();
-      else if (e.key === 'ArrowLeft') handlePrev();
-      else if (e.key === 'Escape') setIsExpanded(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [handleNext, handlePrev, inView, isExpanded]);
-
   // Kunci scroll halaman saat modal terbuka
   useEffect(() => {
     if (!isExpanded) return;
@@ -395,6 +402,62 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = prev; };
   }, [isExpanded]);
+
+  // Fokus: masuk ke tombol Tutup saat modal terbuka, kembali ke pemicu saat modal ditutup
+  useEffect(() => {
+    if (isExpanded) {
+      closeBtnRef.current?.focus();
+    } else if (lastFocused.current) {
+      lastFocused.current.focus?.();
+      lastFocused.current = null;
+    }
+  }, [isExpanded]);
+
+  const openModal = () => {
+    lastFocused.current = document.activeElement;
+    setIsExpanded(true);
+  };
+  const closeModal = () => setIsExpanded(false);
+
+  // Panah kiri/kanan hanya bekerja saat carousel sedang difokus (sebelumnya global di seluruh halaman,
+  // sehingga bisa bentrok dengan slider lain atau kolom isian yang sedang diketik).
+  const handleCarouselKeyDown = (e) => {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      handleNext();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      handlePrev();
+    }
+  };
+
+  // Keyboard di dalam modal: Esc, panah, dan Tab dikurung di dalam dialog
+  const handleModalKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      handleNext();
+      return;
+    }
+    if (e.key === 'ArrowLeft') {
+      handlePrev();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const focusables = e.currentTarget.querySelectorAll('button');
+    if (!focusables.length) return;
+    const first = focusables[0];
+    const lastEl = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      lastEl.focus();
+    } else if (!e.shiftKey && document.activeElement === lastEl) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
 
   /* ---------- POSISI KARTU ---------- */
   const getTransform = (index) => {
@@ -436,7 +499,7 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
 
   const handleCardClick = (index) => {
     if (justPanned.current) return;
-    if (index === currentIndex) setIsExpanded(true);
+    if (index === currentIndex) openModal();
     else goTo(index);
   };
 
@@ -450,12 +513,12 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
       ref={sectionRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full min-h-[100vh] flex flex-col items-center justify-between pt-32 pb-32 overflow-hidden bg-white"
+      className="relative w-full min-h-[100svh] flex flex-col items-center justify-between pt-32 pb-32 overflow-hidden bg-white"
       aria-roledescription="carousel"
       aria-label="Galeri Kegiatan Sekolah"
     >
-      {/* Pengumuman untuk pembaca layar saat slide berganti */}
-      <p className="sr-only" aria-live="polite" aria-atomic="true">
+      {/* Pengumuman untuk pembaca layar. Dimatikan saat autoplay berjalan agar tidak "berisik" tiap pergantian slide. */}
+      <p className="sr-only" aria-live={autoRunning ? 'off' : 'polite'} aria-atomic="true">
         {`${active.title}. ${active.desc}. Foto ${currentIndex + 1} dari ${total}.`}
       </p>
 
@@ -485,7 +548,9 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
         {failed[currentIndex] && (
           <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-pink-100 to-yellow-100" />
         )}
-        <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px] z-10"></div>
+        {/* Tanpa backdrop-blur di sini: foto sudah di-blur, dan backdrop-blur seukuran section
+            memaksa browser menghitung ulang blur setiap frame saat parallax bergerak (berat di HP). */}
+        <div className="absolute inset-0 bg-white/10 z-10"></div>
       </div>
 
       {/* FLOATING ELEMENTS: warna mengikuti foto aktif (fallback ke warna bawaan) */}
@@ -514,22 +579,35 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
         <Wave fill="#ffffff" className="h-[60px] md:h-[100px]" />
       </div>
 
-      <div className="relative z-30 w-full max-w-7xl mx-auto px-4 flex flex-col items-center my-auto">
+      <div
+        className="relative z-30 w-full max-w-7xl mx-auto px-4 flex flex-col items-center my-auto"
+        // Autoplay ikut berhenti saat pengguna menavigasi dengan keyboard (hanya fokus keyboard,
+        // bukan fokus akibat klik mouse, supaya slideshow tidak "macet" setelah menekan tombol Putar).
+        onFocus={(e) => {
+          if (e.target.matches?.(':focus-visible')) setIsFocused(true);
+        }}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) setIsFocused(false);
+        }}
+      >
 
         {/* JUDUL */}
         <div className="text-center mb-16 relative">
           <div className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/50 backdrop-blur-xl border border-white/70 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)]">
-            <Sparkles className="w-6 h-6 text-blue-500 hidden md:block" />
+            <Sparkles className="w-6 h-6 text-blue-500 hidden md:block" aria-hidden="true" />
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
               Galeri Kegiatan Sekolah
             </h2>
-            <Sparkles className="w-6 h-6 text-pink-500 hidden md:block" />
+            <Sparkles className="w-6 h-6 text-pink-500 hidden md:block" aria-hidden="true" />
           </div>
         </div>
 
         {/* 3D CAROUSEL (tanpa preserve-3d agar z-index & klik kartu samping berfungsi) */}
         <motion.div
-          className="relative w-full h-[400px] md:h-[500px] flex items-center justify-center mb-10 touch-pan-y select-none"
+          tabIndex={0}
+          aria-label="Foto kegiatan. Gunakan tombol panah kiri dan kanan untuk berpindah foto."
+          onKeyDown={handleCarouselKeyDown}
+          className="relative w-full h-[400px] md:h-[500px] flex items-center justify-center mb-10 touch-pan-y select-none rounded-3xl focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-400/70"
           style={{ perspective: '1200px' }}
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
@@ -553,7 +631,7 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
               hasFailed={!!failed[index]}
               onFail={() => markFailed(index)}
               onClick={() => handleCardClick(index)}
-              onExpand={() => setIsExpanded(true)}
+              onExpand={openModal}
               reduceMotion={reduceMotion}
             />
           ))}
@@ -584,30 +662,36 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setIsExpanded(false)}
+            onClick={closeModal}
+            onKeyDown={handleModalKeyDown}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-label={active.title}
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-slate-900/80 backdrop-blur-xl p-4 cursor-zoom-out"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-slate-900/80 backdrop-blur-xl p-4 cursor-zoom-out outline-none"
           >
             <button
+              ref={closeBtnRef}
+              type="button"
               aria-label="Tutup"
-              className="absolute top-6 right-6 md:top-10 md:right-10 p-3 bg-white/20 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/30 transition-colors cursor-pointer"
-              onClick={() => setIsExpanded(false)}
+              className="absolute top-6 right-6 md:top-10 md:right-10 p-3 bg-white/20 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/30 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              onClick={closeModal}
             >
               <X className="w-6 h-6" />
             </button>
 
             <button
+              type="button"
               aria-label="Foto sebelumnya"
-              className="absolute left-3 md:left-10 top-1/2 -translate-y-1/2 p-3 bg-white/20 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/30 transition-colors cursor-pointer"
+              className="absolute left-3 md:left-10 top-1/2 -translate-y-1/2 p-3 bg-white/20 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/30 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
               onClick={(e) => { e.stopPropagation(); handlePrev(); }}
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
             <button
+              type="button"
               aria-label="Foto berikutnya"
-              className="absolute right-3 md:right-10 top-1/2 -translate-y-1/2 p-3 bg-white/20 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/30 transition-colors cursor-pointer"
+              className="absolute right-3 md:right-10 top-1/2 -translate-y-1/2 p-3 bg-white/20 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/30 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
               onClick={(e) => { e.stopPropagation(); handleNext(); }}
             >
               <ChevronRight className="w-6 h-6" />
