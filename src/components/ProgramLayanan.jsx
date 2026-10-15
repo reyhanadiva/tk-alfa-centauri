@@ -1,160 +1,236 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { MapPin, ArrowRight, Clock, Star, Smile, Heart } from 'lucide-react';
 
-const ProgramLayanan = () => {
-  const floatAnim = (duration, yOffset, delay = 0, rotate = [-10, 10, -10]) => ({
-    y: [0, yOffset, 0],
-    rotate: rotate,
-    transition: {
-      duration: duration,
-      repeat: Infinity,
-      ease: "easeInOut",
-      delay: delay,
-    },
-  });
+/* ------------------------------------------------------------------ */
+/* DATA                                                                */
+/* ------------------------------------------------------------------ */
 
-  const programs = [
-    {
-      unit: "Daycare",
-      age: "0 - 2 Tahun",
-      location: "Jl. Diponegoro No. 48, Bandung",
-      mapLink: "https://maps.app.goo.gl/HbHLZsX8tQ9kh7UG6",
-      image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=800&q=80",
+// Tiap unit punya warna tema sendiri (selaras dengan section "Mengapa Memilih Kami?").
+// Class ditulis lengkap agar tidak terbuang oleh purge Tailwind.
+const PROGRAMS = [
+  {
+    unit: 'Daycare',
+    age: '0 - 2 Tahun',
+    location: 'Jl. Diponegoro No. 48, Bandung',
+    mapLink: 'https://maps.app.goo.gl/HbHLZsX8tQ9kh7UG6',
+    image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=800&q=70',
+    theme: {
+      pill: 'bg-amber-100 text-amber-800',
+      chip: 'bg-amber-100 text-amber-600 group-hover/link:bg-amber-200',
+      glow: 'hover:shadow-amber-200/70',
     },
-    {
-      unit: "Playgroup",
-      age: "2 - 4 Tahun",
-      location: "Jl. Terate No. 12, Bandung",
-      mapLink: "https://maps.app.goo.gl/5Mfy6hzs89BeqywV7",
-      image: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    unit: 'Playgroup',
+    age: '2 - 4 Tahun',
+    location: 'Jl. Terate No. 12, Bandung',
+    mapLink: 'https://maps.app.goo.gl/5Mfy6hzs89BeqywV7',
+    image: 'https://images.unsplash.com/photo-1545558014-8692077e9b5c?auto=format&fit=crop&w=800&q=70',
+    theme: {
+      pill: 'bg-sky-100 text-sky-800',
+      chip: 'bg-sky-100 text-sky-600 group-hover/link:bg-sky-200',
+      glow: 'hover:shadow-sky-200/70',
     },
-    {
-      unit: "TK",
-      age: "4 - 6 Tahun",
-      location: "Jl. Terate No. 12, Bandung",
-      mapLink: "https://maps.app.goo.gl/5Mfy6hzs89BeqywV7",
-      image: "https://images.unsplash.com/photo-1503945438517-f65904a52ce6?auto=format&fit=crop&w=800&q=80",
-    }
-  ];
+  },
+  {
+    unit: 'TK',
+    age: '4 - 6 Tahun',
+    location: 'Jl. Terate No. 12, Bandung',
+    mapLink: 'https://maps.app.goo.gl/5Mfy6hzs89BeqywV7',
+    image: 'https://images.unsplash.com/photo-1503945438517-f65904a52ce6?auto=format&fit=crop&w=800&q=70',
+    theme: {
+      pill: 'bg-emerald-100 text-emerald-800',
+      chip: 'bg-emerald-100 text-emerald-600 group-hover/link:bg-emerald-200',
+      glow: 'hover:shadow-emerald-200/70',
+    },
+  },
+];
+
+const WAVE_PATH =
+  'M0,192L48,197.3C96,203,192,213,288,213.3C384,213,480,203,576,176C672,149,768,107,864,101.3C960,96,1056,128,1152,149.3C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z';
+
+/* ------------------------------------------------------------------ */
+/* KOMPONEN KECIL                                                      */
+/* ------------------------------------------------------------------ */
+
+// Hiasan melayang (dekoratif). Diam bila pengguna memilih reduce motion.
+const Floaty = ({ className = '', duration = 6, y = -20, delay = 0, rotate = [-10, 10, -10], children }) => {
+  const reduceMotion = useReducedMotion();
+  return (
+    <motion.div
+      aria-hidden="true"
+      className={`absolute z-0 pointer-events-none ${className}`}
+      animate={reduceMotion ? undefined : { y: [0, y, 0], rotate }}
+      transition={{ duration, repeat: Infinity, ease: 'easeInOut', delay }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* KOMPONEN UTAMA                                                      */
+/* ------------------------------------------------------------------ */
+
+const ProgramLayanan = () => {
+  const reduceMotion = useReducedMotion();
 
   return (
-    <section className="relative w-full bg-[#F8F9FA] px-4 md:px-8 pt-24 pb-32 overflow-hidden">
-      
-      {/* Elemen Melayang */}
-      <motion.div animate={floatAnim(6, -20)} className="absolute top-16 left-[8%] md:left-[12%] z-0 opacity-80 pointer-events-none">
-        <Star className="w-10 h-10 md:w-14 md:h-14 text-amber-400 fill-amber-300 drop-shadow-md" />
-      </motion.div>
+    <section
+      className="relative w-full bg-[#FFFCF5] px-4 md:px-8 pt-24 pb-32 overflow-hidden"
+      aria-labelledby="program-layanan-title"
+    >
+      {/* Blob warna lembut */}
+      <div className="absolute top-20 right-[-8%] w-[340px] h-[340px] bg-amber-200/40 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-1/2 left-[-8%] w-[340px] h-[340px] bg-sky-200/40 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute bottom-24 right-[15%] w-[300px] h-[300px] bg-emerald-100/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
 
-      <motion.div animate={floatAnim(7, 20, 1)} className="absolute top-32 right-[8%] md:right-[12%] z-0 opacity-80 pointer-events-none">
-        <Star className="w-12 h-12 md:w-16 md:h-16 text-yellow-400 fill-yellow-300 drop-shadow-md" />
-      </motion.div>
-
-      <motion.div animate={floatAnim(5, -15, 1.5, [0, 30, 0])} className="absolute bottom-40 left-[5%] z-0 opacity-60 pointer-events-none">
-        <Smile className="w-10 h-10 text-amber-500 drop-shadow-sm" />
-      </motion.div>
-
-      <motion.div animate={floatAnim(8, 15, 0.5, [-15, 15, -15])} className="absolute bottom-36 right-[6%] z-0 opacity-70 pointer-events-none">
-        <Heart className="w-8 h-8 text-rose-400 fill-rose-300 drop-shadow-sm" />
-      </motion.div>
+      {/* Elemen Melayang: yang besar hanya di layar lebar agar tidak menabrak judul */}
+      <Floaty duration={6} y={-20} className="hidden md:block top-16 left-[12%] opacity-80">
+        <Star className="w-14 h-14 text-amber-400 fill-amber-300 drop-shadow-md" />
+      </Floaty>
+      <Floaty duration={7} y={20} delay={1} className="hidden md:block top-32 right-[12%] opacity-80">
+        <Star className="w-16 h-16 text-yellow-400 fill-yellow-300 drop-shadow-md" />
+      </Floaty>
+      <Floaty duration={5} y={-15} delay={1.5} rotate={[0, 30, 0]} className="bottom-40 left-[5%] opacity-60">
+        <Smile className="w-9 h-9 md:w-10 md:h-10 text-amber-500 drop-shadow-sm" />
+      </Floaty>
+      <Floaty duration={8} y={15} delay={0.5} rotate={[-15, 15, -15]} className="bottom-36 right-[6%] opacity-70">
+        <Heart className="w-7 h-7 md:w-8 md:h-8 text-rose-400 fill-rose-300 drop-shadow-sm" />
+      </Floaty>
 
       <div className="relative z-10 max-w-7xl mx-auto">
-        
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4">
-            Program Layanan Kami
+        <motion.div
+          className="text-center mb-14"
+          initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h2
+            id="program-layanan-title"
+            className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4 text-balance"
+          >
+            Program{' '}
+            <span className="relative inline-block whitespace-nowrap">
+              Layanan Kami
+              <svg
+                className="absolute left-0 -bottom-3 w-full h-4 text-amber-400 overflow-visible"
+                viewBox="0 0 200 16"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3 8 Q 14.5 2 26 8 T 49 8 T 72 8 T 95 8 T 118 8 T 141 8 T 164 8 T 197 8"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
+            </span>
           </h2>
-          <p className="text-lg text-slate-500 max-w-2xl mx-auto font-medium">
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto font-medium text-pretty">
             Mendampingi setiap fase emas perkembangan ananda, dari usia bayi hingga kesiapan memasuki sekolah dasar.
           </p>
-        </div>
+        </motion.div>
 
-        {/* 3 Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-10">
-          {programs.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
+        {/* 3 Cards */}
+        <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12 list-none p-0">
+          {PROGRAMS.map((item, index) => (
+            <motion.li
+              key={item.unit}
+              initial={reduceMotion ? false : { opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
-              className="bg-white rounded-[2rem] p-3 md:p-4 shadow-sm hover:shadow-xl transition-shadow duration-300 flex flex-col h-full group border border-slate-100"
+              className={`group flex flex-col h-full bg-white rounded-[2rem] p-3 md:p-4 border border-slate-100 shadow-sm hover:shadow-xl ${item.theme.glow} hover:-translate-y-1 transition-[box-shadow,transform] duration-300 motion-reduce:transition-none motion-reduce:hover:translate-y-0`}
             >
-              <div className="relative aspect-[4/3] rounded-[1.5rem] overflow-hidden mb-5 flex-shrink-0">
-                <img 
-                  src={item.image} 
-                  alt={item.unit}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              {/* Foto dekoratif: judul kartu sudah menjelaskan konteksnya */}
+              <div className="relative aspect-[4/3] rounded-[1.5rem] overflow-hidden mb-5 flex-shrink-0 bg-slate-100">
+                <img
+                  src={item.image}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 motion-reduce:transition-none"
                 />
               </div>
 
               <div className="px-3 pb-3 flex flex-col flex-grow justify-between gap-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-1">{item.unit}</h3>
-                  <p className="text-slate-500 font-medium">Usia {item.age}</p>
+                <div className="flex flex-col items-start gap-2.5">
+                  <h3 className="text-2xl font-bold text-slate-900">{item.unit}</h3>
+                  <p className={`px-3.5 py-1 rounded-full text-sm font-bold ${item.theme.pill}`}>
+                    Usia {item.age}
+                  </p>
                 </div>
-                
+
                 <div className="pt-4 border-t border-slate-100">
-                  <a 
-                    href={item.mapLink} 
-                    target="_blank" 
+                  <a
+                    href={item.mapLink}
+                    target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between text-slate-600 hover:text-blue-600 transition-colors group/link w-full"
+                    className="group/link flex items-center gap-3 -m-2 p-2 rounded-2xl text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
                   >
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4.5 h-4.5 text-slate-400 group-hover/link:text-blue-600 transition-colors" />
-                      <span className="font-semibold text-sm group-hover/link:underline underline-offset-4">
+                    <span className={`flex items-center justify-center w-10 h-10 rounded-xl shrink-0 transition-colors ${item.theme.chip}`}>
+                      <MapPin className="w-[18px] h-[18px]" aria-hidden="true" />
+                    </span>
+                    <span className="flex flex-col min-w-0 flex-1">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Lokasi</span>
+                      <span className="font-semibold text-sm text-slate-800 text-pretty">
                         {item.location}
                       </span>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover/link:text-blue-600 transition-transform group-hover/link:translate-x-1" />
+                    </span>
+                    <ArrowRight
+                      className="w-4 h-4 shrink-0 text-slate-400 group-hover/link:text-slate-900 group-hover/link:translate-x-1 transition-transform motion-reduce:transition-none"
+                      aria-hidden="true"
+                    />
+                    <span className="sr-only">(buka di Google Maps, tab baru)</span>
                   </a>
                 </div>
               </div>
-            </motion.div>
+            </motion.li>
           ))}
-        </div>
+        </ul>
 
-        {/* Banner Jadwal (Lebar dikurangi sedikit menjadi max-w-xl agar lebih proporsional) */}
+        {/* Banner Jadwal */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={reduceMotion ? false : { opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="max-w-xl mx-auto bg-white border border-slate-200/80 rounded-2xl md:rounded-full p-2 shadow-md flex flex-col sm:flex-row items-center justify-between gap-3 relative z-20"
+          className="max-w-xl mx-auto bg-white border border-slate-200/80 rounded-3xl sm:rounded-full p-2 shadow-md flex flex-col sm:flex-row items-center justify-between gap-3"
         >
-          <div className="bg-[#FFF4D2] text-[#B47509] px-4 py-2 rounded-xl md:rounded-full flex items-center gap-2 w-full sm:w-auto flex-shrink-0 justify-center">
-            <Clock className="w-4 h-4" />
+          <div className="bg-amber-100 text-amber-800 px-4 py-2 rounded-2xl sm:rounded-full flex items-center gap-2 w-full sm:w-auto flex-shrink-0 justify-center">
+            <Clock className="w-4 h-4" aria-hidden="true" />
             <span className="font-bold text-sm">Waktu Belajar</span>
           </div>
-          
-          <div className="flex items-center justify-around w-full py-1 sm:py-0 px-3 gap-3 text-center sm:text-left">
-            <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1.5">Reguler:</span>
-              <span className="text-sm font-bold text-slate-800">08.00 - 12.30</span>
-            </div>
-            <div className="hidden sm:block w-px h-5 bg-slate-200"></div>
-            <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1.5">Full Day:</span>
-              <span className="text-sm font-bold text-slate-800">06.30 - 16.00</span>
-            </div>
-          </div>
-        </motion.div>
 
+          <dl className="flex items-center justify-around w-full py-1 sm:py-0 px-3 gap-3">
+            <div className="flex items-baseline gap-1.5">
+              <dt className="text-xs font-bold text-slate-500 uppercase tracking-wider">Reguler</dt>
+              <dd className="text-sm font-bold text-slate-800">08.00 – 12.30</dd>
+            </div>
+            <div className="w-px h-5 bg-slate-200" aria-hidden="true" />
+            <div className="flex items-baseline gap-1.5">
+              <dt className="text-xs font-bold text-slate-500 uppercase tracking-wider">Full Day</dt>
+              <dd className="text-sm font-bold text-slate-800">06.30 – 16.00</dd>
+            </div>
+          </dl>
+        </motion.div>
       </div>
 
       {/* Wavy Divider Bawah */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none translate-y-[1px]">
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none translate-y-[1px] pointer-events-none">
         <svg
-          xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1440 320"
           preserveAspectRatio="none"
           className="relative block w-full h-[60px] md:h-[100px]"
+          aria-hidden="true"
         >
-          <path
-            fill="#ffffff"
-            d="M0,192L48,197.3C96,203,192,213,288,213.3C384,213,480,203,576,176C672,149,768,107,864,101.3C960,96,1056,128,1152,149.3C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-          ></path>
+          <path fill="#ffffff" d={WAVE_PATH} />
         </svg>
       </div>
     </section>

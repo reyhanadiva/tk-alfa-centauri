@@ -4,6 +4,7 @@ import MengapaMemilihKami from './components/MengapaMemilihKami';
 import ProgramLayanan from './components/ProgramLayanan';
 import Fasilitas from './components/Fasilitas';
 import ProfilPendidik from './components/ProfilPendidik';
+import Galeri from './components/Galeri';
 import Testimoni from './components/Testimoni';
 import BeritaArtikel from './components/BeritaArtikel';
 import FAQ from './components/FAQ';
@@ -20,6 +21,7 @@ function App() {
       <Fasilitas  /> 
       <ProfilPendidik />
       <Testimoni />
+      <Galeri />
       <BeritaArtikel />
       <FAQ />
       <CTA />
