@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { SPMB_LABEL, SPMB_URL, wa } from '@/data/site';
+import { SPMB_URL, wa } from '@/data/site';
 import Button from './ui/Button';
 import WhatsAppIcon from './ui/WhatsAppIcon';
 import { Sparkle, TwinStars } from './ui/Ornaments';
@@ -66,15 +66,8 @@ export default function CTA() {
           <div className="dots-light pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
           <Sparkle className="twinkle absolute right-8 top-8 w-5" color="#FFD23F" />
 
-          <p className="relative inline-flex items-center gap-2.5 rounded-full bg-white/10 px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider text-sunny">
-            <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
-              {!reduce && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />}
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
-            </span>
-            {SPMB_LABEL}
-          </p>
 
-          <h2 id="cta-title" className="relative mt-6 text-4xl font-semibold leading-tight tracking-tight text-balance md:text-5xl">
+          <h2 id="cta-title" className="relative text-4xl font-semibold leading-tight tracking-tight text-balance md:text-5xl">
             Siap Menjadi <span className="text-sunny">Alcentaurian?</span>
           </h2>
 

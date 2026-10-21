@@ -138,10 +138,6 @@ const ProgramLayanan = () => {
         </motion.div>
 
         {/* 3 Cards. HP: slider geser (kartu berikutnya mengintip di kanan). Tablet ke atas: grid 3 kolom. */}
-        <p className="md:hidden mb-1 flex items-center gap-2 text-sm font-bold text-sky-700">
-          Geser untuk lihat {PROGRAMS.length} program
-          <span aria-hidden="true" className="motion-safe:animate-pulse">→</span>
-        </p>
         <motion.ul
           initial={reduceMotion ? false : 'hidden'}
           whileInView="show"
@@ -216,13 +212,13 @@ const ProgramLayanan = () => {
             <span className="font-bold text-sm">Waktu Belajar</span>
           </div>
 
-          <dl className="flex items-center justify-around w-full py-1 sm:py-0 px-3 gap-3">
+          <dl className="grid grid-cols-[1fr_auto_1fr] sm:flex items-center sm:justify-around w-full py-2 sm:py-0 px-2 sm:px-3 gap-3">
             {SCHEDULE.map((s, i) => (
               <React.Fragment key={s.name}>
-                {i > 0 && <div className="w-px h-5 bg-slate-200" aria-hidden="true" />}
-                <div className="flex items-baseline gap-1.5">
+                {i > 0 && <div className="w-px h-10 sm:h-5 bg-slate-200" aria-hidden="true" />}
+                <div className="flex flex-col items-center text-center gap-0.5 sm:flex-row sm:items-baseline sm:gap-1.5">
                   <dt className="text-xs font-bold text-night/60 uppercase tracking-wider">{s.name}</dt>
-                  <dd className="text-sm font-bold text-night">{s.time}</dd>
+                  <dd className="text-base sm:text-sm font-bold text-night whitespace-nowrap">{s.time}</dd>
                 </div>
               </React.Fragment>
             ))}

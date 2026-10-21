@@ -90,7 +90,7 @@ export const NETWORK = [
 /* ---------- Media sosial ---------- */
 // Isi URL-nya; ikon hanya tampil untuk akun yang sudah diisi.
 export const SOCIALS = {
-  instagram: '',
+  instagram: 'https://www.instagram.com/tk.alfacentauri/',
   youtube: '',
   facebook: '',
 };
