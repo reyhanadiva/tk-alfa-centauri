@@ -180,7 +180,33 @@
   }
 }
 .train-run {
-  animation: train-run 38s linear infinite;
+  /* Putaran pertama dimulai dari tengah layar (CENTAURI sudah terlihat, ALFA mengintip di kiri),
+     lalu lanjut berputar penuh dari luar layar kiri. Jeda sampai footer terlihat. */
+  animation:
+    train-first 24s linear forwards,
+    train-run 38s linear 24s infinite;
+  animation-play-state: paused;
+}
+.train-run.is-running {
+  animation-play-state: running;
+}
+@keyframes train-first {
+  from {
+    transform: translateX(calc(78vw - 100%));
+  }
+  to {
+    transform: translateX(100vw);
+  }
+}
+@media (min-width: 768px) {
+  @keyframes train-first {
+    from {
+      transform: translateX(calc(64vw - 100%));
+    }
+    to {
+      transform: translateX(100vw);
+    }
+  }
 }
 @keyframes train-wheel {
   to {

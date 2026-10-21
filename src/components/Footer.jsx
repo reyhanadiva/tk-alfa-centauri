@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MapPin, Mail, Instagram, Youtube, Facebook, ExternalLink, ArrowRight } from 'lucide-react';
 import { CAMPUSES, EMAIL, LOGO_SRC, NETWORK, SCHOOL, SOCIALS, SPMB_URL, WA_DISPLAY, wa } from '@/data/site';
 import Button from './ui/Button';
@@ -184,8 +184,23 @@ function Wheel() {
  * Bukit hijau dengan rel, dan kereta mainan yang melintas dari kiri ke kanan tanpa henti.
  */
 function TrainParade() {
+  const ref = useRef(null);
+  const [running, setRunning] = useState(false);
+
+  // Kereta baru mulai jalan saat footer terlihat, supaya pengunjung langsung melihat geraknya
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setRunning(true);
+      return;
+    }
+    const io = new IntersectionObserver(([e]) => e.isIntersecting && (setRunning(true), io.disconnect()), { threshold: 0.2 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <div aria-hidden="true" className="pointer-events-none relative mt-6 h-[150px] md:h-[170px]">
+    <div ref={ref} aria-hidden="true" className="pointer-events-none relative mt-6 h-[150px] md:h-[170px]">
       {/* bukit */}
       <svg viewBox="0 0 1440 170" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
         <path d="M0 70 C 220 20 420 30 640 62 C 860 94 1080 24 1300 34 C 1370 37 1410 46 1440 52 V170 H0 Z" fill="#A7DDB2" />
@@ -214,7 +229,7 @@ function TrainParade() {
       </div>
 
       {/* kereta */}
-      <div className="train-run absolute bottom-[28px] left-0 flex items-end gap-1.5">
+      <div className={`train-run ${running ? 'is-running' : ''} absolute bottom-[28px] left-0 flex items-end gap-1.5`}>
         {/* gerbong belakang membawa bintang maskot */}
         <div className="relative flex flex-col items-center">
           <div className="train-bob relative grid h-12 w-16 place-items-center rounded-xl bg-rose-400 md:h-14 md:w-20">
