@@ -77,12 +77,9 @@ const FEATURES = [
   },
 ];
 
-const WAVE_PATH =
-  'M0,192L48,197.3C96,203,192,213,288,213.3C384,213,480,203,576,176C672,149,768,107,864,101.3C960,96,1056,128,1152,149.3C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z';
-
 // ring-inset: kartu punya overflow-hidden, jadi ring di luar kartu akan terpotong.
 const FOCUS_RING =
-  'focus:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-slate-900';
+  'focus:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-night';
 
 const EASE = 'ease-[cubic-bezier(0.22,1,0.36,1)]';
 
@@ -163,17 +160,10 @@ const MengapaMemilihKami = () => {
 
   return (
     <section
-      id="program"
-      className="relative w-full bg-[#FFFCF5] pt-24 pb-28 px-4 md:px-8 overflow-hidden"
+      id="keunggulan"
+      className="relative w-full pt-16 pb-24 px-4 md:px-8 overflow-hidden"
       aria-labelledby="mengapa-memilih-kami-title"
     >
-      {/* Wavy Divider Atas */}
-      <div className="absolute -top-px left-0 w-full overflow-hidden leading-none rotate-180 pointer-events-none">
-        <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className="block w-full h-[50px] md:h-[80px]" aria-hidden="true">
-          <path fill="#ffffff" d={WAVE_PATH} />
-        </svg>
-      </div>
-
       {/* Blob warna-warni */}
       <div className="absolute top-32 left-[-6%] w-[380px] h-[380px] bg-sky-200/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
       <div className="absolute top-1/3 right-[-8%] w-[340px] h-[340px] bg-pink-200/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
@@ -211,7 +201,7 @@ const MengapaMemilihKami = () => {
         >
           <h2
             id="mengapa-memilih-kami-title"
-            className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4 text-balance"
+            className="text-4xl md:text-5xl font-bold text-night tracking-tight mb-4 text-balance"
           >
             Mengapa{' '}
             <span className="relative inline-block whitespace-nowrap">
@@ -233,13 +223,13 @@ const MengapaMemilihKami = () => {
               </svg>
             </span>
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto font-medium text-pretty">
+          <p className="text-lg text-night/70 max-w-2xl mx-auto font-medium text-pretty">
             Nilai unggul yang kami hadirkan untuk tumbuh kembang optimal ananda.
           </p>
         </motion.div>
 
         {/* Petunjuk interaksi: dirapatkan ke subtitle */}
-        <p className="text-center text-sm text-slate-500 font-medium mb-8">
+        <p className="text-center text-sm text-night/60 font-medium mb-8">
           <span className="lg:hidden">Ketuk</span>
           <span className="hidden lg:inline">Klik</span> salah satu panel untuk melihat selengkapnya
         </p>
@@ -310,12 +300,12 @@ const MengapaMemilihKami = () => {
                       <div className={`p-3 rounded-2xl shrink-0 ${theme.chip}`}>
                         <FeatureIcon Icon={Icon} filled={iconFilled} />
                       </div>
-                      <h3 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight text-balance">
+                      <h3 className="text-2xl md:text-3xl font-bold text-night tracking-tight text-balance">
                         {item.title}
                       </h3>
                     </div>
 
-                    <p className="text-slate-700 text-base md:text-lg font-medium max-w-xl text-pretty">
+                    <p className="text-night/80 text-base md:text-lg font-medium max-w-xl text-pretty">
                       {item.desc}
                     </p>
 

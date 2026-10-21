@@ -143,7 +143,8 @@ const Testimoni = () => {
 
   return (
     <section
-      className="relative w-full bg-white pt-16 pb-24 px-4 overflow-hidden"
+      id="testimoni"
+      className="relative w-full pt-20 pb-24 px-4 overflow-hidden"
       aria-labelledby="testimoni-title"
     >
       {/* Pola titik-titik pastel */}
@@ -170,7 +171,7 @@ const Testimoni = () => {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 id="testimoni-title" className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight text-balance">
+          <h2 id="testimoni-title" className="text-4xl md:text-5xl font-bold text-night tracking-tight text-balance">
             Apa Kata Orang Tua
           </h2>
         </motion.div>
@@ -261,7 +262,7 @@ const Testimoni = () => {
                 <Stars className="w-5 h-5" />
 
                 <blockquote className="mt-5 mb-6 m-0">
-                  <p className="text-[17px] text-slate-600 italic font-medium leading-[1.8] tracking-wide">
+                  <p className="text-[17px] text-night/70 italic font-medium leading-[1.8] tracking-wide">
                     {`“${active.text}”`}
                   </p>
                 </blockquote>
@@ -269,7 +270,7 @@ const Testimoni = () => {
                 <div className={`w-12 h-[3px] rounded-full mb-5 ${active.theme.bar}`} aria-hidden="true" />
 
                 <figcaption>
-                  <span className="block text-[17px] font-bold text-slate-900 mb-1">{active.name}</span>
+                  <span className="block text-[17px] font-bold text-night mb-1">{active.name}</span>
                   <span className={`block text-sm font-semibold ${active.theme.role}`}>{active.role}</span>
                 </figcaption>
               </motion.figure>
@@ -328,13 +329,13 @@ const Testimoni = () => {
                 >
                   <Stars className="w-4 h-4" />
                   <blockquote className="mt-3 mb-5 m-0">
-                    <p className="text-base text-slate-600 italic font-medium leading-relaxed text-pretty">
+                    <p className="text-base text-night/70 italic font-medium leading-relaxed text-pretty">
                       {`“${item.text}”`}
                     </p>
                   </blockquote>
                   <div className={`w-10 h-[3px] rounded-full mb-4 ${item.theme.bar}`} aria-hidden="true" />
                   <figcaption>
-                    <span className="block text-base font-bold text-slate-900 mb-0.5">{item.name}</span>
+                    <span className="block text-base font-bold text-night mb-0.5">{item.name}</span>
                     <span className={`block text-sm font-semibold ${item.theme.role}`}>{item.role}</span>
                   </figcaption>
                 </figure>

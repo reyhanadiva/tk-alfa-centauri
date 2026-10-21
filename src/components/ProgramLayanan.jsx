@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { MapPin, ArrowRight, Clock, Star, Smile, Heart } from 'lucide-react';
+import { SCHEDULE } from '@/data/site';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
@@ -47,9 +48,6 @@ const PROGRAMS = [
   },
 ];
 
-const WAVE_PATH =
-  'M0,192L48,197.3C96,203,192,213,288,213.3C384,213,480,203,576,176C672,149,768,107,864,101.3C960,96,1056,128,1152,149.3C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z';
-
 /* ------------------------------------------------------------------ */
 /* KOMPONEN KECIL                                                      */
 /* ------------------------------------------------------------------ */
@@ -78,7 +76,8 @@ const ProgramLayanan = () => {
 
   return (
     <section
-      className="relative w-full bg-[#FFFCF5] px-4 md:px-8 pt-24 pb-32 overflow-hidden"
+      id="program"
+      className="relative mx-2 md:mx-4 rounded-[2.5rem] md:rounded-[3.5rem] bg-cloud px-4 md:px-8 pt-20 pb-24 overflow-hidden"
       aria-labelledby="program-layanan-title"
     >
       {/* Blob warna lembut */}
@@ -111,7 +110,7 @@ const ProgramLayanan = () => {
         >
           <h2
             id="program-layanan-title"
-            className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4 text-balance"
+            className="text-4xl md:text-5xl font-bold text-night tracking-tight mb-4 text-balance"
           >
             Program{' '}
             <span className="relative inline-block whitespace-nowrap">
@@ -133,7 +132,7 @@ const ProgramLayanan = () => {
               </svg>
             </span>
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto font-medium text-pretty">
+          <p className="text-lg text-night/70 max-w-2xl mx-auto font-medium text-pretty">
             Mendampingi setiap fase emas perkembangan ananda, dari usia bayi hingga kesiapan memasuki sekolah dasar.
           </p>
         </motion.div>
@@ -162,7 +161,7 @@ const ProgramLayanan = () => {
 
               <div className="px-3 pb-3 flex flex-col flex-grow justify-between gap-6">
                 <div className="flex flex-col items-start gap-2.5">
-                  <h3 className="text-2xl font-bold text-slate-900">{item.unit}</h3>
+                  <h3 className="text-2xl font-bold text-night">{item.unit}</h3>
                   <p className={`px-3.5 py-1 rounded-full text-sm font-bold ${item.theme.pill}`}>
                     Usia {item.age}
                   </p>
@@ -173,19 +172,19 @@ const ProgramLayanan = () => {
                     href={item.mapLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group/link flex items-center gap-3 -m-2 p-2 rounded-2xl text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+                    className="group/link flex items-center gap-3 -m-2 p-2 rounded-2xl text-night/70 hover:text-night hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-night"
                   >
                     <span className={`flex items-center justify-center w-10 h-10 rounded-xl shrink-0 transition-colors ${item.theme.chip}`}>
                       <MapPin className="w-[18px] h-[18px]" aria-hidden="true" />
                     </span>
                     <span className="flex flex-col min-w-0 flex-1">
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Lokasi</span>
+                      <span className="text-xs font-bold uppercase tracking-wider text-night/60">Lokasi</span>
                       <span className="font-semibold text-sm text-slate-800 text-pretty">
                         {item.location}
                       </span>
                     </span>
                     <ArrowRight
-                      className="w-4 h-4 shrink-0 text-slate-400 group-hover/link:text-slate-900 group-hover/link:translate-x-1 transition-transform motion-reduce:transition-none"
+                      className="w-4 h-4 shrink-0 text-slate-400 group-hover/link:text-night group-hover/link:translate-x-1 transition-transform motion-reduce:transition-none"
                       aria-hidden="true"
                     />
                     <span className="sr-only">(buka di Google Maps, tab baru)</span>
@@ -209,29 +208,18 @@ const ProgramLayanan = () => {
           </div>
 
           <dl className="flex items-center justify-around w-full py-1 sm:py-0 px-3 gap-3">
-            <div className="flex items-baseline gap-1.5">
-              <dt className="text-xs font-bold text-slate-500 uppercase tracking-wider">Reguler</dt>
-              <dd className="text-sm font-bold text-slate-800">08.00 – 12.30</dd>
-            </div>
-            <div className="w-px h-5 bg-slate-200" aria-hidden="true" />
-            <div className="flex items-baseline gap-1.5">
-              <dt className="text-xs font-bold text-slate-500 uppercase tracking-wider">Full Day</dt>
-              <dd className="text-sm font-bold text-slate-800">06.30 – 16.00</dd>
-            </div>
+            {SCHEDULE.map((s, i) => (
+              <React.Fragment key={s.name}>
+                {i > 0 && <div className="w-px h-5 bg-slate-200" aria-hidden="true" />}
+                <div className="flex items-baseline gap-1.5">
+                  <dt className="text-xs font-bold text-night/60 uppercase tracking-wider">{s.name}</dt>
+                  <dd className="text-sm font-bold text-night">{s.time}</dd>
+                </div>
+              </React.Fragment>
+            ))}
           </dl>
         </motion.div>
-      </div>
-
-      {/* Wavy Divider Bawah */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none translate-y-[1px] pointer-events-none">
-        <svg
-          viewBox="0 0 1440 320"
-          preserveAspectRatio="none"
-          className="relative block w-full h-[60px] md:h-[100px]"
-          aria-hidden="true"
-        >
-          <path fill="#ffffff" d={WAVE_PATH} />
-        </svg>
+        <p className="mt-3 text-center text-sm font-medium text-night/60">{SCHEDULE[0].name}: {SCHEDULE[0].note}.</p>
       </div>
     </section>
   );

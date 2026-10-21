@@ -1,14 +1,13 @@
 import React, { useState, useId } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ChevronDown, ArrowRight, Star, Heart, Sparkles, Smile } from 'lucide-react';
+import { wa } from '@/data/site';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
 /* ------------------------------------------------------------------ */
 
-const WA_NUMBER = '6282223246649';
-const WA_MESSAGE = 'Halo Admin, saya ingin bertanya mengenai informasi TK Alfa Centauri.';
-const WA_HREF = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`;
+const WA_HREF = wa();
 
 // Jumlah pertanyaan yang tampil sebelum tombol "Lihat Semua" diklik.
 const INITIAL_COUNT = 4;
@@ -172,7 +171,7 @@ const FaqItem = ({ faq, isOpen, onToggle, baseId, reduceMotion }) => {
           >
             <span
               className={`text-[17px] font-bold transition-colors ${
-                isOpen ? 'text-blue-700' : 'text-slate-900'
+                isOpen ? 'text-blue-700' : 'text-night'
               }`}
             >
               {faq.question}
@@ -181,7 +180,7 @@ const FaqItem = ({ faq, isOpen, onToggle, baseId, reduceMotion }) => {
             <span
               aria-hidden="true"
               className={`flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
-                isOpen ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'
+                isOpen ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-night/60'
               }`}
             >
               <ChevronDown
@@ -207,7 +206,7 @@ const FaqItem = ({ faq, isOpen, onToggle, baseId, reduceMotion }) => {
             >
               <div className="px-6 md:px-7 pb-7 pt-0">
                 <div className="w-full h-px bg-slate-100 mb-5" aria-hidden="true" />
-                <div className="text-base text-slate-600 font-medium leading-[1.7]">
+                <div className="text-base text-night/70 font-medium leading-[1.7]">
                   {faq.answer}
                 </div>
               </div>
@@ -243,7 +242,8 @@ const FAQ = () => {
 
   return (
     <section
-      className="relative w-full bg-white py-24 px-4 md:px-8 overflow-hidden"
+      id="faq"
+      className="relative w-full py-24 px-4 md:px-8 overflow-hidden"
       aria-labelledby={`${baseId}-title`}
     >
       {/* Blob pastel */}
@@ -297,13 +297,13 @@ const FAQ = () => {
         >
           <h2
             id={`${baseId}-title`}
-            className="text-4xl md:text-[52px] font-bold text-slate-900 tracking-tight leading-[1.1] mb-6"
+            className="text-4xl md:text-[52px] font-bold text-night tracking-tight leading-[1.1] mb-6"
           >
             <span className="block">Ada pertanyaan?</span>
             <span className="block">Kami bantu jawab.</span>
           </h2>
 
-          <p className="text-[17px] text-slate-600 font-medium leading-relaxed mb-10 max-w-md text-pretty">
+          <p className="text-[17px] text-night/70 font-medium leading-relaxed mb-10 max-w-md text-pretty">
             Jawaban ringkas seputar kurikulum, program belajar, fasilitas, dan layanan TK Alfa Centauri.
           </p>
 
@@ -373,7 +373,7 @@ const FAQ = () => {
                 onClick={toggleShowAll}
                 aria-expanded={showAll}
                 aria-controls={listId}
-                className={`inline-flex items-center gap-2 px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-full text-sm transition-colors ${FOCUS_RING}`}
+                className={`inline-flex items-center gap-2 px-6 py-3 bg-slate-100 hover:bg-slate-200 text-night/80 font-semibold rounded-full text-sm transition-colors ${FOCUS_RING}`}
               >
                 <span>
                   {showAll ? 'Tampilkan Lebih Sedikit' : `Lihat Semua Pertanyaan (${FAQS.length})`}

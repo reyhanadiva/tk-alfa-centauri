@@ -1,342 +1,230 @@
-import { useCallback, useEffect, useState, type MouseEvent } from 'react';
-import { AnimatePresence, motion, useReducedMotion, type Variants } from 'framer-motion';
-import { Star, ArrowRight, MessageCircle, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { ArrowRight, Baby, MapPin, Clock } from 'lucide-react';
+import { SCHOOL, SPMB_LABEL, SPMB_URL, wa } from '@/data/site';
+import Button from './ui/Button';
+import WhatsAppIcon from './ui/WhatsAppIcon';
+import { Cloud, Sparkle, TwinStars } from './ui/Ornaments';
 
-/* ------------------------------------------------------------------ */
-/* DATA & KONFIGURASI                                                  */
-/* ------------------------------------------------------------------ */
+/*
+  Hero: dunia pagi yang cerah (langit, matahari, awan, bukit, sekolah kecil di atas bukit).
+  Teks gelap di atas latar terang, foto anak dalam bingkai ala polaroid, maskot dua bintang.
+  Bukit paling depan berwarna sama dengan latar halaman (cream), jadi menyambung mulus ke section berikutnya.
+*/
 
-const HERO_BASE = 'https://images.unsplash.com/photo-1516627145497-ae6968895b74';
-const HERO_WIDTHS = [800, 1280, 2000];
-const heroUrl = (w: number) => `${HERO_BASE}?q=75&w=${w}&auto=format&fit=crop`;
+// TODO: ganti dengan foto asli kegiatan TK (taruh di folder public, mis. '/images/hero-1.jpg')
+const PHOTO_MAIN = 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=75&w=1100&auto=format&fit=crop';
+const PHOTO_SMALL = 'https://images.unsplash.com/photo-1587691592099-24045742c181?q=75&w=700&auto=format&fit=crop';
 
-type NavItem = { label: string; href: string };
-
-// Pastikan tiap section punya id yang sama: beranda (hero ini), tentang, galeri, program, fasilitas, berita, kontak
-const MENU_LINKS: NavItem[] = [
-  { label: 'Beranda', href: '#beranda' },
-  { label: 'Tentang', href: '#tentang' },
-  { label: 'Galeri', href: '#galeri' },
-  { label: 'Program', href: '#program' },
-  { label: 'Fasilitas', href: '#fasilitas' },
-  { label: 'Berita', href: '#berita' },
-  { label: 'Kontak', href: '#kontak' },
+const FACTS = [
+  { Icon: Baby, label: 'Usia 0–6 tahun' },
+  { Icon: MapPin, label: '2 kampus di Bandung' },
+  { Icon: Clock, label: 'Reguler & Fullday' },
 ];
 
-// Peran tiap ajakan dibedakan:
-// - Tombol navbar  : "Info SPMB"       -> membaca jalur/syarat/jadwal (muncul setelah hero discroll)
-// - CTA utama hero : "Daftar Sekarang" -> mengisi formulir pendaftaran
-// - CTA kedua hero : "Hubungi Admin"   -> bertanya dulu lewat WhatsApp
-// TODO: ganti tiga tujuan ini dengan tautan/ID asli.
-const SPMB_INFO_HREF = '#spmb';
-const REGISTER_HREF = '#daftar';
-const WHATSAPP_HREF = 'https://wa.me/62XXXXXXXXXXX';
-
-const NAV_OFFSET = 80; // tinggi navbar fixed, supaya judul section tidak tertutup saat scroll ke anchor
-
-const FOCUS_RING =
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900';
-
-const containerVariants: Variants = {
+const container: Variants = {
   hidden: {},
-  show: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.15 },
-  },
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
 };
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, type: 'spring', bounce: 0.4 },
-  },
+const rise: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 };
+const still: Variants = { hidden: { opacity: 1 }, show: { opacity: 1 } };
 
-// Versi tanpa gerak untuk pengguna dengan prefers-reduced-motion
-const staticVariants: Variants = {
-  hidden: { opacity: 1 },
-  show: { opacity: 1 },
-};
-
-/* ------------------------------------------------------------------ */
-/* KOMPONEN                                                            */
-/* ------------------------------------------------------------------ */
+/** Foto dengan cadangan warna bila gagal dimuat */
+function Photo({ src, alt, className = '' }: { src: string; alt: string; className?: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return <div className={`bg-gradient-to-br from-sky-200 via-amber-100 to-rose-200 ${className}`} role="img" aria-label={alt} />;
+  }
+  return <img src={src} alt={alt} decoding="async" onError={() => setFailed(true)} className={`object-cover ${className}`} />;
+}
 
 export default function Hero() {
-  const reduceMotion = useReducedMotion();
-  const [scrolled, setScrolled] = useState(false);
-  const [showNavCta, setShowNavCta] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [imgFailed, setImgFailed] = useState(false);
-
-  const item = reduceMotion ? staticVariants : itemVariants;
-
-  // Navbar: transparan di atas, berubah jadi kaca saat discroll.
-  // Tombol "Info SPMB" baru muncul setelah pengunjung melewati CTA hero (tidak dobel saat hero terlihat).
-  useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 24);
-      setShowNavCta(y > window.innerHeight * 0.55);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  // Menu mobile: kunci scroll, Esc untuk menutup, tutup otomatis saat layar melebar
-  useEffect(() => {
-    if (!menuOpen) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMenuOpen(false);
-    };
-    const onResize = () => {
-      if (window.innerWidth >= 1024) setMenuOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    window.addEventListener('resize', onResize);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener('keydown', onKey);
-      window.removeEventListener('resize', onResize);
-    };
-  }, [menuOpen]);
-
-  // Smooth scroll ke anchor (dengan offset navbar). Jika id tujuan belum ada, biarkan perilaku bawaan.
-  const handleAnchor = useCallback(
-    (e: MouseEvent<HTMLAnchorElement>, href: string) => {
-      if (!href.startsWith('#')) return;
-      setMenuOpen(false);
-      const target = document.getElementById(href.slice(1));
-      if (!target) return;
-      e.preventDefault();
-      const top =
-        href === '#beranda' ? 0 : target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
-      window.scrollTo({ top: Math.max(top, 0), behavior: reduceMotion ? 'auto' : 'smooth' });
-    },
-    [reduceMotion]
-  );
-
-  const navSurface =
-    scrolled || menuOpen
-      ? 'py-3 bg-slate-900/60 backdrop-blur-xl backdrop-saturate-150 border-b border-white/15 shadow-[0_8px_30px_rgba(0,0,0,0.15)]'
-      : 'py-6 bg-transparent border-b border-transparent';
+  const reduce = useReducedMotion();
+  const item = reduce ? still : rise;
 
   return (
     <section
       id="beranda"
-      className="relative min-h-[100svh] w-full flex flex-col overflow-hidden"
+      className="relative isolate overflow-hidden bg-[linear-gradient(180deg,#9FD6FF_0%,#CFEBFF_42%,#EEF8FF_72%,#FFF9EE_100%)]"
     >
-      {/* Skip link untuk pengguna keyboard / pembaca layar */}
-      <a
-        href="#beranda-konten"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-full focus:bg-yellow-400 focus:px-5 focus:py-2.5 focus:text-sm focus:font-bold focus:text-slate-900 focus:shadow-lg focus:outline-none"
-      >
-        Lewati ke konten utama
-      </a>
+      <Sky />
 
-      {/* Background image (dengan fallback bila gagal dimuat) */}
-      {imgFailed ? (
-        <div className="absolute inset-0 z-0 bg-gradient-to-br from-sky-600 via-indigo-700 to-indigo-950" />
-      ) : (
-        <img
-          src={heroUrl(2000)}
-          srcSet={HERO_WIDTHS.map((w) => `${heroUrl(w)} ${w}w`).join(', ')}
-          sizes="100vw"
-          alt="Anak-anak belajar dan bermain di sekolah taman kanak-kanak"
-          fetchPriority="high"
-          decoding="async"
-          onError={() => setImgFailed(true)}
-          className="absolute inset-0 h-full w-full object-cover z-0"
-        />
-      )}
-
-      {/* Overlay kiri-ke-kanan agar teks terbaca (indigo, selaras dengan section Tentang Kami) */}
-      <div className="absolute inset-0 bg-gradient-to-r from-indigo-950/85 via-indigo-950/50 to-transparent z-0" />
-      {/* Overlay bawah agar ombak putih menyatu halus walau bagian bawah foto terang */}
-      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-indigo-950/40 to-transparent z-0" />
-
-      {/* Top Navigation Bar (fixed, jadi kaca saat discroll) */}
-      <nav
-        aria-label="Navigasi utama"
-        className={`fixed top-0 inset-x-0 z-50 px-6 lg:px-12 flex items-center justify-between gap-6 transition-all duration-300 ${navSurface}`}
-      >
-        {/* Logo */}
-        <a
-          href="#beranda"
-          onClick={(e) => handleAnchor(e, '#beranda')}
-          className={`font-fredoka text-white font-semibold text-lg sm:text-xl tracking-wide flex items-center gap-2 rounded-md ${FOCUS_RING}`}
-        >
-          <Star className="text-yellow-400 fill-yellow-400" size={24} aria-hidden="true" />
-          TK ALFA CENTAURI
-        </a>
-
-        {/* Menu links (desktop) */}
-        <ul className="hidden lg:flex flex-1 justify-center gap-6 xl:gap-8 text-sm font-semibold">
-          {MENU_LINKS.map((link) => (
-            <li key={link.label}>
-              <a
-                href={link.href}
-                onClick={(e) => handleAnchor(e, link.href)}
-                className={`text-slate-100 hover:text-white transition-colors rounded-md px-1 py-1 ${FOCUS_RING}`}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        {/* Tombol navbar: muncul setelah scroll (ruangnya tetap dipesan agar menu tidak bergeser) */}
-        <a
-          href={SPMB_INFO_HREF}
-          onClick={(e) => handleAnchor(e, SPMB_INFO_HREF)}
-          className={`hidden lg:inline-flex font-nunito bg-blue-400 hover:bg-blue-500 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${FOCUS_RING} ${
-            showNavCta ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 invisible'
-          }`}
-        >
-          Info SPMB
-        </a>
-
-        {/* Hamburger (mobile & tablet) */}
-        <button
-          type="button"
-          onClick={() => setMenuOpen((o) => !o)}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-menu"
-          aria-label={menuOpen ? 'Tutup menu' : 'Buka menu'}
-          className={`lg:hidden p-2.5 rounded-full text-white bg-white/10 hover:bg-white/20 border border-white/25 backdrop-blur-md transition-colors ${FOCUS_RING}`}
-        >
-          {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
-        </button>
-      </nav>
-
-      {/* Menu mobile: panel kaca layar penuh */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            id="mobile-menu"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.2 }}
-            className="fixed inset-0 z-40 lg:hidden bg-slate-900/80 backdrop-blur-2xl pt-28 px-6 pb-10 flex flex-col overflow-y-auto"
-          >
-            <ul className="flex flex-col">
-              {MENU_LINKS.map((link) => (
-                <li key={link.label} className="border-b border-white/10">
-                  <a
-                    href={link.href}
-                    onClick={(e) => handleAnchor(e, link.href)}
-                    className={`block py-4 font-fredoka text-2xl font-semibold text-white hover:text-yellow-300 transition-colors rounded-md ${FOCUS_RING}`}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-
-            <a
-              href={SPMB_INFO_HREF}
-              onClick={(e) => handleAnchor(e, SPMB_INFO_HREF)}
-              className={`mt-8 inline-flex items-center justify-center gap-2 font-nunito bg-blue-400 hover:bg-blue-500 text-white px-6 py-3.5 rounded-full text-base font-bold transition-colors ${FOCUS_RING}`}
-            >
-              Info SPMB
-              <ArrowRight size={20} aria-hidden="true" />
-            </a>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Hero Content */}
-      <motion.div
-        id="beranda-konten"
+      <div
+        id="konten"
         tabIndex={-1}
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="relative z-10 flex-1 flex flex-col justify-center px-6 lg:px-12 xl:px-24 max-w-4xl pt-28 pb-28 md:pb-36 focus:outline-none"
+        className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-5 pt-28 pb-36 sm:pt-32 md:pb-48 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:px-8 lg:pt-36 lg:pb-56 focus:outline-none"
       >
-        {/* Status SPMB: label informasi (bukan tombol) dengan indikator "live" */}
-        <motion.p
-          variants={item}
-          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/10 border border-white/25 backdrop-blur-md text-white text-xs font-bold uppercase tracking-wider mb-6 w-fit"
-        >
-          <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
-            {!reduceMotion && (
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            )}
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
-          </span>
-          SPMB TA 2027/2028 Dibuka
-        </motion.p>
-
-        {/* Eyebrow */}
-        <motion.p
-          variants={item}
-          className="font-fredoka text-yellow-400 font-semibold text-lg md:text-xl mb-3 tracking-wide"
-        >
-          Daycare, Playgroup &amp; TK Alfa Centauri
-        </motion.p>
-
-        {/* Headline */}
-        <motion.h1
-          variants={item}
-          className="font-fredoka text-5xl md:text-6xl lg:text-7xl font-semibold text-white leading-[1.15] mb-6 tracking-tight text-balance"
-        >
-          Bermain, Belajar, Berkarakter
-        </motion.h1>
-
-        {/* Subheadline */}
-        <motion.p
-          variants={item}
-          className="font-nunito text-lg text-slate-200 leading-relaxed max-w-xl mb-10 text-pretty"
-        >
-          Pendidikan berkualitas untuk setiap tahap perkembangan anak. Memadukan
-          pengasuhan penuh kasih sayang dengan penanaman nilai Islami sejak usia
-          dini.
-        </motion.p>
-
-        {/* Dual CTAs */}
-        <motion.div variants={item} className="flex flex-wrap items-center gap-4">
-          <a
-            href={REGISTER_HREF}
-            onClick={(e) => handleAnchor(e, REGISTER_HREF)}
-            className={`font-nunito bg-yellow-400 hover:bg-yellow-500 text-slate-900 px-8 py-3.5 rounded-full font-bold text-base shadow-lg shadow-yellow-400/20 transition-all flex items-center gap-2 transform hover:-translate-y-1 hover:shadow-xl hover:shadow-yellow-400/30 ${FOCUS_RING}`}
+        {/* ---------- Teks ---------- */}
+        <motion.div variants={container} initial="hidden" animate="show" className="max-w-2xl">
+          <motion.p
+            variants={item}
+            className="inline-flex items-center gap-2.5 rounded-full border-2 border-white bg-white/70 px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider text-night shadow-[0_3px_0_0_rgba(27,37,89,0.08)] backdrop-blur"
           >
-            Daftar Sekarang
-            <ArrowRight size={20} aria-hidden="true" />
-          </a>
-          <a
-            href={WHATSAPP_HREF}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`font-nunito bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/30 px-8 py-3.5 rounded-full font-bold text-base transition-all flex items-center gap-2 transform hover:-translate-y-1 ${FOCUS_RING}`}
+            <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
+              {!reduce && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />}
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+            </span>
+            {SPMB_LABEL}
+          </motion.p>
+
+          <motion.p variants={item} className="mt-6 font-display text-lg font-semibold text-sky-700 md:text-xl">
+            {SCHOOL.fullName}
+          </motion.p>
+
+          <motion.h1
+            variants={item}
+            className="mt-2 text-[2.75rem] font-semibold leading-[1.05] tracking-tight text-night sm:text-6xl lg:text-7xl"
           >
-            <MessageCircle size={20} aria-hidden="true" />
-            Hubungi Admin
-            <span className="sr-only">(membuka WhatsApp di tab baru)</span>
-          </a>
+            <span className="text-sky-600">Bermain,</span> <span className="text-emerald-600">Belajar,</span>{' '}
+            <span className="relative inline-block">
+              Berkarakter
+              <svg className="absolute -bottom-2 left-0 h-4 w-full overflow-visible text-sunny" viewBox="0 0 200 16" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M3 8 Q 14.5 2 26 8 T 49 8 T 72 8 T 95 8 T 118 8 T 141 8 T 164 8 T 197 8" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+              </svg>
+            </span>
+          </motion.h1>
+
+          <motion.p variants={item} className="mt-7 max-w-xl text-lg leading-relaxed text-night/75 text-pretty">
+            Pendidikan berkualitas untuk setiap tahap perkembangan anak. Memadukan pengasuhan penuh kasih sayang dengan
+            penanaman nilai Islami sejak usia dini.
+          </motion.p>
+
+          <motion.div variants={item} className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <Button href={SPMB_URL}>
+              Daftar Sekarang
+              <ArrowRight size={20} aria-hidden="true" />
+            </Button>
+            <Button href={wa()} variant="white">
+              <WhatsAppIcon className="h-5 w-5 text-emerald-600" />
+              Hubungi Admin
+            </Button>
+          </motion.div>
+
+          <motion.ul variants={item} className="mt-9 flex flex-wrap gap-2.5">
+            {FACTS.map(({ Icon, label }) => (
+              <li
+                key={label}
+                className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3.5 py-2 text-sm font-bold text-night/80 ring-1 ring-night/5 backdrop-blur"
+              >
+                <Icon size={16} className="text-sky-600" aria-hidden="true" />
+                {label}
+              </li>
+            ))}
+          </motion.ul>
         </motion.div>
-      </motion.div>
 
-      {/* Wavy shape divider at the bottom */}
-      <div className="absolute -bottom-px w-full overflow-hidden leading-none z-10 pointer-events-none">
-        <svg
-          className="w-full h-[80px] md:h-[120px] block"
-          viewBox="0 0 1440 120"
-          preserveAspectRatio="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
+        {/* ---------- Kolase foto ---------- */}
+        <motion.div
+          initial={reduce ? false : { opacity: 0, scale: 0.92, rotate: -2 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ type: 'spring', stiffness: 120, damping: 16, delay: 0.25 }}
+          className="relative mx-auto w-full max-w-[30rem] lg:mr-0"
         >
-          <path
-            fill="white"
-            d="M0,60 C240,100 480,20 720,50 C960,80 1200,110 1440,60 L1440,120 L0,120 Z"
-          />
-        </svg>
+          {/* foto utama */}
+          <div className="relative ml-auto w-[86%] rotate-2 rounded-[2.5rem] bg-white p-3 pb-5 shadow-[0_30px_60px_-28px_rgba(27,37,89,0.55)]">
+            <Photo
+              src={PHOTO_MAIN}
+              alt="Anak-anak sedang belajar dan bermain bersama di kelas"
+              className="aspect-[4/5] w-full rounded-[2rem]"
+            />
+          </div>
+
+          {/* foto kecil */}
+          <div className="absolute -bottom-8 left-0 w-[46%] -rotate-6 rounded-[1.75rem] bg-white p-2.5 pb-4 shadow-[0_24px_40px_-20px_rgba(27,37,89,0.55)]">
+            <Photo src={PHOTO_SMALL} alt="" className="aspect-square w-full rounded-[1.4rem]" />
+          </div>
+
+          {/* maskot dua bintang */}
+          <div className="absolute -top-10 left-[2%] sm:-top-12">
+            <TwinStars className="w-28 sm:w-36" />
+          </div>
+
+          {/* stiker nilai */}
+          <div className="absolute -right-2 bottom-16 rotate-3 rounded-2xl border-2 border-white bg-sunny px-4 py-2.5 shadow-[0_5px_0_0_#E8B408] sm:-right-4">
+            <p className="flex items-center gap-1.5 font-display text-sm font-semibold text-night sm:text-base">
+              <Sparkle className="w-4" color="#1B2559" />
+              Taqwa · Cerdas · Kreatif
+            </p>
+          </div>
+        </motion.div>
       </div>
+
+      <Hills />
     </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Latar langit: matahari, awan, kilau                                 */
+/* ------------------------------------------------------------------ */
+
+function Sky() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+      {/* matahari */}
+      <div className="absolute -right-24 -top-24 h-72 w-72 sm:-right-16 sm:-top-16 lg:right-[4%] lg:top-[-6rem] lg:h-96 lg:w-96">
+        <svg viewBox="0 0 200 200" className="spin-slow absolute inset-0 h-full w-full">
+          {Array.from({ length: 12 }, (_, i) => (
+            <rect key={i} x="96" y="6" width="8" height="34" rx="4" fill="#FFE27A" opacity="0.8" transform={`rotate(${i * 30} 100 100)`} />
+          ))}
+        </svg>
+        <div className="absolute inset-[24%] rounded-full bg-[radial-gradient(circle_at_35%_35%,#FFF3B0,#FFD23F_70%)] shadow-[0_0_80px_20px_rgba(255,210,63,0.45)]" />
+      </div>
+
+      {/* awan */}
+      <Cloud className="absolute left-[38%] top-[8%] hidden w-24 md:block" opacity={0.85} />
+      <Cloud className="absolute right-[4%] top-[44%] hidden w-24 sm:block lg:hidden" opacity={0.9} />
+      <Cloud className="absolute right-[-2%] top-[68%] hidden w-36 lg:block" opacity={0.9} />
+      <Cloud className="absolute left-[-3%] top-[52%] w-24 sm:w-32" opacity={0.75} />
+
+      {/* kilau */}
+      <Sparkle className="twinkle absolute left-[46%] top-[22%] hidden w-5 md:block" color="#FFFFFF" />
+      <Sparkle className="twinkle absolute left-[8%] top-[36%] w-4 [animation-delay:1.2s]" color="#FFFFFF" />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Bukit + sekolah kecil (lapisan paling depan = warna halaman)        */
+/* ------------------------------------------------------------------ */
+
+function Hills() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[120px] sm:h-[170px] lg:h-[230px]">
+      <svg viewBox="0 0 1440 230" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+        {/* bukit jauh */}
+        <path d="M0 120 C 180 60 360 70 520 110 C 700 150 860 70 1060 62 C 1230 56 1340 90 1440 104 V230 H0 Z" fill="#C9EBAE" />
+        {/* bukit tengah */}
+        <path d="M0 160 C 220 112 420 120 640 152 C 860 184 1060 118 1260 126 C 1350 130 1400 140 1440 146 V230 H0 Z" fill="#9FD685" />
+        {/* tanah depan = warna halaman */}
+        <path d="M0 196 C 260 170 520 178 760 194 C 1000 210 1220 186 1440 190 V230 H0 Z" fill="#FFF9EE" />
+      </svg>
+
+      {/* sekolah kecil di atas bukit jauh */}
+      <svg viewBox="0 0 80 70" className="absolute bottom-[52%] right-[22%] hidden w-14 sm:block lg:w-20">
+        <path d="M40 4 V18" stroke="#1B2559" strokeWidth="2" />
+        <path d="M40 4 L52 8 L40 12 Z" fill="#FF7A8A" />
+        <path d="M8 34 L40 16 L72 34 Z" fill="#FF7A8A" />
+        <rect x="14" y="33" width="52" height="34" rx="3" fill="#FFF9EE" />
+        <rect x="34" y="46" width="12" height="21" rx="2" fill="#7CC4F5" />
+        <rect x="20" y="40" width="9" height="9" rx="2" fill="#FFD23F" />
+        <rect x="51" y="40" width="9" height="9" rx="2" fill="#FFD23F" />
+        <circle cx="40" cy="26" r="3.5" fill="#FFD23F" />
+      </svg>
+
+      {/* pohon & bunga kecil */}
+      <svg viewBox="0 0 40 60" className="absolute bottom-[34%] left-[12%] hidden w-8 sm:block lg:w-11">
+        <rect x="18" y="34" width="5" height="24" rx="2" fill="#B07A4A" />
+        <circle cx="20" cy="24" r="16" fill="#6CC069" />
+        <circle cx="13" cy="18" r="5" fill="#8FD687" />
+      </svg>
+      <svg viewBox="0 0 40 60" className="absolute bottom-[40%] right-[8%] hidden w-7 lg:block">
+        <rect x="18" y="34" width="5" height="24" rx="2" fill="#B07A4A" />
+        <circle cx="20" cy="24" r="16" fill="#5DB35B" />
+      </svg>
+    </div>
   );
 }
