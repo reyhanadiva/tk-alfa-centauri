@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapPin, Mail, Instagram, Youtube, Facebook, ExternalLink, ArrowRight } from 'lucide-react';
-import { CAMPUSES, EMAIL, NETWORK, SCHOOL, SOCIALS, SPMB_URL, WA_DISPLAY, wa } from '@/data/site';
+import { CAMPUSES, EMAIL, LOGO_SRC, NETWORK, SCHOOL, SOCIALS, SPMB_URL, WA_DISPLAY, wa } from '@/data/site';
 import Button from './ui/Button';
 import WhatsAppIcon from './ui/WhatsAppIcon';
 import { Sparkle, TwinStars } from './ui/Ornaments';
@@ -73,7 +73,9 @@ export default function Footer() {
           {/* Profil */}
           <div className="lg:col-span-4">
             <div className="flex items-center gap-3">
-              <TwinStars className="w-16" glow />
+              <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-white shadow-[0_4px_0_0_rgba(255,255,255,0.25)]">
+                <img src={LOGO_SRC} alt="" width="56" height="56" className="h-14 w-14" />
+              </span>
               <div>
                 <p className="font-display text-2xl font-semibold leading-tight text-white">{SCHOOL.name}</p>
                 <p className="text-sm font-bold text-sky-300">{SCHOOL.city}</p>

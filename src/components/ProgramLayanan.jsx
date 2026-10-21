@@ -137,16 +137,25 @@ const ProgramLayanan = () => {
           </p>
         </motion.div>
 
-        {/* 3 Cards */}
-        <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12 list-none p-0">
+        {/* 3 Cards. HP: slider geser (kartu berikutnya mengintip di kanan). Tablet ke atas: grid 3 kolom. */}
+        <p className="md:hidden mb-1 flex items-center gap-2 text-sm font-bold text-sky-700">
+          Geser untuk lihat {PROGRAMS.length} program
+          <span aria-hidden="true" className="motion-safe:animate-pulse">→</span>
+        </p>
+        <motion.ul
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+          aria-label="Program layanan"
+          className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pt-3 pb-6 mb-6 list-none scroll-px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:p-0 md:mb-12"
+        >
           {PROGRAMS.map((item, index) => (
             <motion.li
               key={item.unit}
-              initial={reduceMotion ? false : { opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.5, delay: index * 0.15 }}
-              className={`group flex flex-col h-full bg-white rounded-[2rem] p-3 md:p-4 border border-slate-100 shadow-sm hover:shadow-xl ${item.theme.glow} hover:-translate-y-1 transition-[box-shadow,transform] duration-300 motion-reduce:transition-none motion-reduce:hover:translate-y-0`}
+              // animasi masuk dipicu oleh daftar (bukan tiap kartu), karena di HP kartu ke-2/3 berada
+              // di luar layar (geser ke samping) sehingga tidak akan pernah "terlihat" oleh pemicu per kartu
+              variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, delay: index * 0.15 } } }}
+              className={`group flex w-[82%] shrink-0 snap-start flex-col h-full bg-white rounded-[2rem] p-3 md:w-auto md:p-4 border border-slate-100 shadow-sm hover:shadow-xl ${item.theme.glow} hover:-translate-y-1 transition-[box-shadow,transform] duration-300 motion-reduce:transition-none motion-reduce:hover:translate-y-0`}
             >
               {/* Foto dekoratif: judul kartu sudah menjelaskan konteksnya */}
               <div className="relative aspect-[4/3] rounded-[1.5rem] overflow-hidden mb-5 flex-shrink-0 bg-slate-100">
@@ -193,7 +202,7 @@ const ProgramLayanan = () => {
               </div>
             </motion.li>
           ))}
-        </ul>
+        </motion.ul>
 
         {/* Banner Jadwal */}
         <motion.div

@@ -193,7 +193,7 @@ const MengapaMemilihKami = () => {
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
-          className="text-center mb-3"
+          className="text-center mb-12"
           initial={reduceMotion ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
@@ -228,11 +228,6 @@ const MengapaMemilihKami = () => {
           </p>
         </motion.div>
 
-        {/* Petunjuk interaksi: dirapatkan ke subtitle */}
-        <p className="text-center text-sm text-night/60 font-medium mb-8">
-          <span className="lg:hidden">Ketuk</span>
-          <span className="hidden lg:inline">Klik</span> salah satu panel untuk melihat selengkapnya
-        </p>
 
         {/* Expanding Cards (pola accordion: satu tombol per kartu, konten sebagai region) */}
         <ul className="flex flex-col lg:flex-row gap-4 h-auto lg:h-[600px] list-none p-0 m-0">
@@ -247,14 +242,15 @@ const MengapaMemilihKami = () => {
                 key={item.id}
                 ref={(el) => { cardRefs.current[index] = el; }}
                 className={`group relative overflow-hidden rounded-[2rem] lg:rounded-[2.5rem] bg-slate-200 ring-4 ring-white shadow-lg hover:shadow-2xl ${theme.glow} w-full
-                  transition-[flex-grow,height,box-shadow] duration-700 ${EASE} motion-reduce:transition-none
+                  transition-[flex-grow,height,box-shadow] duration-500 ${EASE} motion-reduce:transition-none
                   ${
                     isActive
                       ? 'h-[600px] sm:h-[540px] lg:h-full lg:flex-[4_1_0%]'
                       : 'h-[110px] lg:h-full lg:flex-[1_1_0%]'
                   }`}
               >
-                {/* Background Image (dengan fallback bila gagal dimuat) */}
+                {/* Foto berukuran tetap (seukuran kartu terbuka), kartu hanya "membuka" potongannya.
+                    Jadi browser tidak perlu mengubah ukuran foto di setiap frame animasi (penyebab terasa lag). */}
                 {failed[index] ? (
                   <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-300 to-slate-400 text-white/80">
                     <ImageOff className="w-8 h-8" aria-hidden="true" />
@@ -267,7 +263,7 @@ const MengapaMemilihKami = () => {
                     loading={index === 0 ? 'eager' : 'lazy'}
                     decoding="async"
                     onError={() => markFailed(index)}
-                    className={`absolute inset-0 w-full h-full object-cover transition-transform duration-700 motion-reduce:transition-none ${
+                    className={`absolute left-1/2 top-1/2 h-[600px] w-full max-w-none -translate-x-1/2 -translate-y-1/2 object-cover transition-transform duration-700 motion-reduce:transition-none sm:h-[540px] lg:h-[600px] lg:w-[min(960px,80vw)] ${
                       isActive ? '' : 'group-hover:scale-105'
                     }`}
                   />
@@ -295,7 +291,7 @@ const MengapaMemilihKami = () => {
                     }`}
                 >
                   {/* min-w mencegah teks "reflow" saat kartu masih melebar */}
-                  <div className="flex flex-col gap-3 p-5 md:p-6 rounded-[1.5rem] md:rounded-3xl bg-white/95 backdrop-blur-md shadow-xl lg:min-w-[440px]">
+                  <div className="flex flex-col gap-3 p-5 md:p-6 rounded-[1.5rem] md:rounded-3xl bg-white shadow-xl lg:min-w-[440px]">
                     <div className="flex items-center gap-3">
                       <div className={`p-3 rounded-2xl shrink-0 ${theme.chip}`}>
                         <FeatureIcon Icon={Icon} filled={iconFilled} />

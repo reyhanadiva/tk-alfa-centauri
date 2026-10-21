@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { GraduationCap, Star, Sparkles, Pause, Play } from 'lucide-react';
+import { GraduationCap, Star, Sparkles } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
@@ -154,7 +154,7 @@ const PersonCard = ({ person, index, hidden = false }) => (
  * Deretan kartu yang berjalan terus. Daftar ditulis dua kali lalu digeser -50%, jadi putarannya tanpa putus.
  * Berhenti saat disorot mouse, saat disentuh, atau saat ada fokus keyboard di dalamnya.
  */
-const Marquee = ({ people, paused, reduce }) => {
+const Marquee = ({ people, reduce }) => {
   const [touching, setTouching] = useState(false);
 
   if (reduce) {
@@ -167,7 +167,7 @@ const Marquee = ({ people, paused, reduce }) => {
 
   // makin banyak orang, makin lama satu putaran (kecepatan tetap terasa sama)
   const duration = `${people.length * 6}s`;
-  const stopped = paused || touching;
+  const stopped = touching;
 
   return (
     <div
@@ -193,7 +193,6 @@ const Marquee = ({ people, paused, reduce }) => {
 const ProfilPendidik = () => {
   const [activeTab, setActiveTab] = useState('pendidik');
   const reduceMotion = useReducedMotion();
-  const [paused, setPaused] = useState(false);
   const tabRefs = useRef([]);
 
   const activeIndex = TABS.findIndex((t) => t.id === activeTab);
@@ -293,29 +292,16 @@ const ProfilPendidik = () => {
         </div>
       </div>
 
-      {/* Kartu berjalan pelan tanpa henti (seperti English Now). Berhenti saat disorot / disentuh,
-          dan bisa dijeda lewat tombol. Pengguna "kurangi animasi" mendapat daftar biasa yang bisa digeser. */}
+      {/* Kartu berjalan pelan tanpa henti (seperti English Now). Berhenti saat disorot / disentuh.
+          Pengguna "kurangi animasi" mendapat daftar biasa yang bisa digeser. */}
       <div
         role="tabpanel"
         id="panel-profil"
         aria-labelledby={`tab-${activeTab}`}
         className="relative z-10 w-full"
       >
-        <Marquee key={activeTab} people={currentData} paused={paused} reduce={reduceMotion} />
+        <Marquee key={activeTab} people={currentData} reduce={reduceMotion} />
 
-        {!reduceMotion && (
-          <div className="mt-2 flex justify-center">
-            <button
-              type="button"
-              onClick={() => setPaused((p) => !p)}
-              aria-pressed={paused}
-              className={`inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-night shadow-[0_3px_0_0_#EADFC2] ${FOCUS_RING}`}
-            >
-              {paused ? <Play className="w-4 h-4 fill-current" aria-hidden="true" /> : <Pause className="w-4 h-4 fill-current" aria-hidden="true" />}
-              {paused ? 'Jalankan' : 'Jeda'}
-            </button>
-          </div>
-        )}
       </div>
     </section>
   );

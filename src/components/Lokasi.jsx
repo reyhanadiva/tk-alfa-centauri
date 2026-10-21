@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { MapPin, Navigation, Clock, Mail, Copy, Check, Baby } from 'lucide-react';
-import { CAMPUSES, EMAIL, SCHEDULE, WA_DISPLAY, wa } from '@/data/site';
-import Button from './ui/Button';
+import { MapPin, Navigation, Copy, Check, Baby } from 'lucide-react';
+import { CAMPUSES, wa } from '@/data/site';
 import WhatsAppIcon from './ui/WhatsAppIcon';
 import { Cloud, Floaty, Sparkle, Squiggle } from './ui/Ornaments';
 
 /*
   Section Lokasi & Kontak (id="kontak").
-  Karena ada DUA kampus dengan jenjang berbeda, pengunjung dibantu memilih:
-  1. "Usia ananda berapa?" → langsung ditunjukkan jenjang & kampus yang tepat.
-  2. Kartu kampus: jenjang + usia, alamat, petunjuk arah, salin alamat, tanya jadwal kunjungan.
-  3. Peta Google Maps yang berganti mengikuti kampus terpilih (dimuat saat mendekati layar).
+  Karena ada DUA lokasi dengan jenjang berbeda, pengunjung dibantu memilih:
+  1. "Usia ananda berapa?" → langsung ditunjukkan jenjang & lokasi yang tepat.
+  2. Kartu lokasi: jenjang + usia, alamat, petunjuk arah, salin alamat, jadwalkan kunjungan.
+  3. Peta Google Maps yang berganti mengikuti lokasi terpilih (dimuat saat mendekati layar).
+  Jam belajar & kontak sengaja tidak diulang di sini (sudah ada di Program Layanan, FAQ, dan footer).
 */
 
 const CAMPUS_THEME = {
@@ -19,7 +19,7 @@ const CAMPUS_THEME = {
   diponegoro: { chip: 'bg-amber-100 text-amber-800', ring: 'ring-amber-400', dot: 'bg-amber-500', soft: 'bg-amber-50' },
 };
 
-// Pilihan usia → jenjang & kampus (diambil dari data kampus, jadi selalu sinkron)
+// Pilihan usia → jenjang & lokasi (diambil dari data lokasi, jadi selalu sinkron)
 const AGE_OPTIONS = CAMPUSES.flatMap((c) => c.programs.map((p) => ({ ...p, campusId: c.id, campusName: c.name }))).sort(
   (a, b) => parseInt(a.age, 10) - parseInt(b.age, 10)
 );
@@ -74,7 +74,7 @@ export default function Lokasi() {
             </span>
           </h2>
           <p className="mt-5 text-lg font-medium text-night/70 text-pretty">
-            Kami punya dua kampus di Kota Bandung dengan jenjang yang berbeda. Pilih usia ananda untuk melihat kampus
+            Kami punya dua lokasi di Kota Bandung dengan jenjang yang berbeda. Pilih usia ananda untuk melihat lokasi
             yang tepat.
           </p>
         </motion.div>
@@ -124,9 +124,9 @@ export default function Lokasi() {
         </motion.div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1.15fr] lg:gap-8">
-          {/* ---------- Kiri: kampus, jam, kontak ---------- */}
+          {/* ---------- Kiri: kartu lokasi ---------- */}
           <motion.div className="flex flex-col gap-4" {...fadeUp(0.05)}>
-            <div role="radiogroup" aria-label="Pilih kampus" className="flex flex-col gap-4">
+            <div role="radiogroup" aria-label="Pilih lokasi" className="flex flex-col gap-4">
               {CAMPUSES.map((c) => {
                 const selected = c.id === activeId;
                 const theme = CAMPUS_THEME[c.id];
@@ -202,39 +202,11 @@ export default function Lokasi() {
               })}
             </div>
 
-            {/* jam belajar */}
-            <div className="rounded-[1.75rem] bg-night p-5 text-white shadow-[0_6px_0_0_#111842] md:p-6">
-              <p className="flex items-center gap-2 font-display text-lg font-semibold">
-                <Clock size={18} className="text-sunny" aria-hidden="true" />
-                Jam Belajar
-              </p>
-              <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-                {SCHEDULE.map((s) => (
-                  <div key={s.name} className="rounded-2xl bg-white/10 px-4 py-3">
-                    <dt className="text-xs font-extrabold uppercase tracking-wider text-sky-200">{s.name}</dt>
-                    <dd className="mt-0.5 font-display text-2xl font-semibold">{s.time}</dd>
-                    {s.note && <dd className="text-xs font-medium text-white/70">{s.note}</dd>}
-                  </div>
-                ))}
-              </dl>
-            </div>
-
-            {/* kontak */}
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button href={wa()} variant="night" className="flex-1">
-                <WhatsAppIcon className="h-5 w-5 text-emerald-300" />
-                {WA_DISPLAY}
-              </Button>
-              <Button href={`mailto:${EMAIL}`} variant="white" className="flex-1" newTab={false}>
-                <Mail size={18} aria-hidden="true" />
-                Email
-              </Button>
-            </div>
           </motion.div>
 
           {/* ---------- Kanan: peta ---------- */}
           <motion.div {...fadeUp(0.1)} className="relative">
-            <div className="relative h-full min-h-[380px] overflow-hidden rounded-[2rem] border-4 border-white bg-cloud shadow-[0_30px_60px_-30px_rgba(27,37,89,0.45)]">
+            <div className="relative h-full min-h-[360px] overflow-hidden rounded-[2rem] border-4 border-white bg-cloud shadow-[0_30px_60px_-30px_rgba(27,37,89,0.45)]">
               <iframe
                 key={active.id}
                 title={`Peta ${active.name}`}

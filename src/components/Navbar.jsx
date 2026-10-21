@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Menu, X, ArrowRight } from 'lucide-react';
-import { NAV_LINKS, SPMB_URL } from '@/data/site';
-import { TwinStars } from './ui/Ornaments';
+import { LOGO_SRC, NAV_LINKS, SPMB_URL } from '@/data/site';
 import Button from './ui/Button';
 
 /*
@@ -71,7 +70,7 @@ export default function Navbar() {
             className="flex items-center gap-2.5 rounded-xl focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-400"
             aria-label="TK Alfa Centauri, beranda"
           >
-            <TwinStars className="w-11" />
+            <img src={LOGO_SRC} alt="" width="44" height="44" className="h-11 w-11 shrink-0" />
             <span className="font-display text-lg sm:text-xl font-semibold leading-none text-night">
               TK Alfa <span className="text-sky-600">Centauri</span>
             </span>

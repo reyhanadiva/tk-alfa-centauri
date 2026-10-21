@@ -1,203 +1,135 @@
-import React, { useRef, useState } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, Star, Smile, Heart, Sparkles } from 'lucide-react';
-import { SPMB_URL, wa } from '@/data/site';
+import React, { useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight, MapPin } from 'lucide-react';
+import { SPMB_LABEL, SPMB_URL, wa } from '@/data/site';
 import Button from './ui/Button';
 import WhatsAppIcon from './ui/WhatsAppIcon';
-import { TwinStars } from './ui/Ornaments';
+import { Cloud, Sparkle, TwinStars } from './ui/Ornaments';
 
-/* ------------------------------------------------------------------ */
-/* DATA & KONFIGURASI                                                  */
-/* ------------------------------------------------------------------ */
+/*
+  Ajakan penutup. Memakai warna utama brand (kuning bintang) supaya terasa "matahari terakhir" sebelum
+  footer malam, dengan status SPMB, dua tombol, jalan pintas ke lokasi, dan kolase foto + maskot.
+*/
 
-// Foto latar SEMENTARA (dummy). Ganti dengan foto asli, misalnya foto bersama murid dan guru:
-// taruh di folder `public` lalu isi dengan '/images/cta.jpg'.
-const BG_IMAGE = 'https://picsum.photos/seed/alfa-centauri-cta/1600/900';
+// TODO: ganti dengan foto asli (mis. foto bersama murid & guru) di folder public
+const PHOTOS = [
+  'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=700&q=70',
+  'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=70',
+];
 
 const WA_HREF = wa('Halo Admin, saya ingin bertanya mengenai pendaftaran di TK Alfa Centauri.');
 const EASE_OUT = [0.22, 1, 0.36, 1];
 
-// Bentuk organik lembut di sudut kartu, sama seperti di Tentang Kami.
-const BLOBS = [
-  {
-    position: '-top-16 -right-16 md:-top-24 md:-right-24',
-    size: 'w-56 h-56 md:w-80 md:h-80',
-    shape: 'rounded-[60%_40%_30%_70%/60%_30%_70%_40%]',
-    color: 'bg-white/15',
-    duration: 18,
-    rotate: 25,
-  },
-  {
-    position: '-bottom-20 -left-20 md:-bottom-28 md:-left-24',
-    size: 'w-64 h-64 md:w-96 md:h-96',
-    shape: 'rounded-[30%_70%_70%_30%/30%_30%_70%_70%]',
-    color: 'bg-yellow-300/20',
-    duration: 22,
-    rotate: -25,
-  },
-];
+function Photo({ src, className = '' }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <div className={`bg-gradient-to-br from-sky-200 via-amber-100 to-rose-200 ${className}`} />;
+  return <img src={src} alt="" loading="lazy" decoding="async" onError={() => setFailed(true)} className={`object-cover ${className}`} />;
+}
 
-// Ornamen kecil melayang: hanya md ke atas agar tidak menumpuk dengan teks di HP.
-const ORNAMENTS = [
-  { Icon: Sparkles, position: 'top-[18%] left-[7%] lg:left-[11%]', size: 'w-9 h-9', color: 'text-white fill-white/30', duration: 6, y: -14, delay: 0, rotate: [-8, 8, -8] },
-  { Icon: Heart, position: 'top-[22%] right-[7%] lg:right-[12%]', size: 'w-9 h-9 lg:w-11 lg:h-11', color: 'text-rose-300 fill-rose-300', duration: 5, y: -15, delay: 1, rotate: [0, 20, 0] },
-  { Icon: Smile, position: 'bottom-[22%] left-[6%] lg:left-[10%]', size: 'w-9 h-9 lg:w-10 lg:h-10', color: 'text-yellow-200', duration: 8, y: 14, delay: 0.5, rotate: [-12, 12, -12] },
-  { Icon: Star, position: 'bottom-[20%] right-[6%] lg:right-[10%]', size: 'w-8 h-8 lg:w-10 lg:h-10', color: 'text-yellow-300 fill-yellow-300', duration: 7, y: 16, delay: 1.6, rotate: [6, -6, 6] },
-];
-
-const containerVariants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
-};
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE_OUT } },
-};
-const underlineVariants = {
-  hidden: { pathLength: 0 },
-  show: { pathLength: 1, transition: { duration: 0.9, delay: 0.6, ease: 'easeInOut' } },
-};
-// Versi tanpa gerak untuk pengguna dengan prefers-reduced-motion
-const staticVariants = { hidden: { opacity: 1 }, show: { opacity: 1 } };
-const staticUnderlineVariants = { hidden: { pathLength: 1 }, show: { pathLength: 1 } };
-
-/* ------------------------------------------------------------------ */
-/* KOMPONEN UTAMA                                                      */
-/* ------------------------------------------------------------------ */
-
-const CTA = () => {
-  const cardRef = useRef(null);
-  const reduceMotion = useReducedMotion();
-  const [imgFailed, setImgFailed] = useState(false);
-
-  // Parallax halus untuk foto latar (sama seperti Tentang Kami)
-  const { scrollYProgress } = useScroll({ target: cardRef, offset: ['start end', 'end start'] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ['-8%', '8%']);
-
-  const item = reduceMotion ? staticVariants : itemVariants;
-  const underline = reduceMotion ? staticUnderlineVariants : underlineVariants;
+export default function CTA() {
+  const reduce = useReducedMotion();
+  const rise = (delay = 0) => ({
+    initial: reduce ? false : { opacity: 0, y: 24 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.3 },
+    transition: { duration: 0.6, ease: EASE_OUT, delay },
+  });
 
   return (
-    <section id="daftar" className="w-full pt-8 pb-24 px-4 md:px-6 lg:px-8" aria-labelledby="cta-title">
-      <div className="max-w-7xl mx-auto">
-        <div
-          ref={cardRef}
-          className="relative w-full overflow-hidden rounded-[2.5rem] md:rounded-[3.5rem] bg-indigo-600 shadow-[0_25px_50px_rgba(49,46,129,0.28)]"
-        >
-          {/* =========================================
-              BACKGROUND (foto + overlay gradasi)
-          ========================================= */}
-          <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
-            {imgFailed ? (
-              <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-500 via-indigo-500 to-sky-500" />
-            ) : (
-              <motion.div className="absolute inset-0" style={reduceMotion ? undefined : { y: bgY }}>
-                <img
-                  src={BG_IMAGE}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  onError={() => setImgFailed(true)}
-                  className="w-full h-full object-cover scale-[1.2]"
-                />
-              </motion.div>
-            )}
-            {/* Arah gradasi dibalik dari Tentang Kami agar tidak terlihat kembar, tapi tetap satu keluarga. */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-fuchsia-600/65 via-indigo-600/60 to-sky-600/55" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-indigo-950/35" />
-          </div>
-
-          {/* =========================================
-              BLOB + ORNAMEN (dekoratif)
-          ========================================= */}
-          <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden" aria-hidden="true">
-            {BLOBS.map((b, i) => (
-              <motion.div
-                key={`blob-${i}`}
-                className={`absolute ${b.position} ${b.size} ${b.shape} ${b.color} backdrop-blur-sm`}
-                animate={reduceMotion ? undefined : { rotate: [0, b.rotate, 0], scale: [1, 1.08, 1] }}
-                transition={{ duration: b.duration, repeat: Infinity, ease: 'easeInOut' }}
-              />
+    <section id="daftar" className="w-full px-4 pb-24 pt-8 md:px-6 lg:px-8" aria-labelledby="cta-title">
+      <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] bg-sunny shadow-[0_10px_0_0_#E8B408] md:rounded-[3.5rem]">
+        {/* sinar matahari lembut + tekstur titik */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-40 -top-40 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.65),transparent_65%)]" />
+          <svg viewBox="0 0 200 200" className="spin-slow absolute -right-32 -top-32 h-[30rem] w-[30rem] opacity-40">
+            {Array.from({ length: 16 }, (_, i) => (
+              <rect key={i} x="97" y="0" width="6" height="40" rx="3" fill="#FFF6C9" transform={`rotate(${i * 22.5} 100 100)`} />
             ))}
+          </svg>
+          <div className="dots absolute inset-0 opacity-40" />
+          <Cloud className="absolute bottom-6 left-[42%] hidden w-28 md:block" opacity={0.9} />
+          <Sparkle className="twinkle absolute left-[6%] top-10 w-6" color="#FFFFFF" />
+          <Sparkle className="twinkle absolute bottom-12 left-[30%] w-4 [animation-delay:1.3s]" color="#1B2559" />
+        </div>
 
-            {ORNAMENTS.map(({ Icon, position, size, color, duration, y, delay, rotate }, i) => (
-              <motion.div
-                key={`orn-${i}`}
-                className={`absolute hidden md:block opacity-85 ${position}`}
-                animate={reduceMotion ? undefined : { y: [0, y, 0], rotate }}
-                transition={{ duration, repeat: Infinity, ease: 'easeInOut', delay }}
-              >
-                <Icon className={`${size} ${color} drop-shadow-xl`} />
-              </motion.div>
-            ))}
-          </div>
-
-          {/* =========================================
-              KONTEN UTAMA
-          ========================================= */}
-          <motion.div
-            className="relative z-20 flex flex-col items-center px-6 py-16 md:py-24 text-center max-w-4xl mx-auto"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            {/* Maskot dua bintang (sama dengan hero & Tentang Kami) */}
-            <motion.div variants={item} className="mb-5">
-              <TwinStars className="w-28 md:w-36" glow />
-            </motion.div>
+        <div className="relative grid items-center gap-12 px-6 py-14 md:px-12 md:py-16 lg:grid-cols-[1.15fr_1fr] lg:gap-8 lg:px-16 lg:py-20">
+          {/* ---------- Teks ---------- */}
+          <div>
+            <motion.p
+              {...rise()}
+              className="inline-flex items-center gap-2.5 rounded-full bg-night px-4 py-1.5 text-xs font-extrabold uppercase tracking-wider text-white"
+            >
+              <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
+                {!reduce && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />}
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+              </span>
+              {SPMB_LABEL}
+            </motion.p>
 
             <motion.h2
+              {...rise(0.05)}
               id="cta-title"
-              variants={item}
-              className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 tracking-tight leading-tight text-balance drop-shadow-[0_2px_12px_rgba(30,27,75,0.45)]"
+              className="mt-6 text-4xl font-semibold leading-tight tracking-tight text-night text-balance md:text-5xl lg:text-6xl"
             >
               Siap Menjadi{' '}
-              <span className="relative inline-block text-yellow-300">
+              <span className="relative inline-block">
                 Alcentaurian?
-                <svg
-                  viewBox="0 0 120 12"
-                  preserveAspectRatio="none"
-                  className="absolute left-0 -bottom-2 md:-bottom-3 w-full h-2.5 md:h-3.5 overflow-visible"
-                  aria-hidden="true"
-                >
-                  <motion.path
-                    d="M2 7 C 14 1, 26 12, 40 6 S 66 1, 80 6 S 106 11, 118 5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    vectorEffect="non-scaling-stroke"
-                    variants={underline}
-                  />
+                <svg className="absolute -bottom-2 left-0 h-4 w-full overflow-visible text-white" viewBox="0 0 200 16" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M3 8 Q 14.5 2 26 8 T 49 8 T 72 8 T 95 8 T 118 8 T 141 8 T 164 8 T 197 8" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
                 </svg>
               </span>
             </motion.h2>
 
-            <motion.p
-              variants={item}
-              className="text-lg md:text-xl text-white/95 font-medium mb-10 max-w-2xl leading-relaxed text-pretty drop-shadow-[0_1px_6px_rgba(30,27,75,0.5)]"
-            >
-              Langkah pertama ananda untuk tumbuh menjadi generasi unggul dimulai dari sini.
-              Bergabunglah bersama keluarga besar Alfa Centauri.
+            <motion.p {...rise(0.1)} className="mt-7 max-w-xl text-lg font-medium leading-relaxed text-night/80 text-pretty">
+              Langkah pertama ananda untuk tumbuh menjadi generasi unggul dimulai dari sini. Bergabunglah bersama
+              keluarga besar Alfa Centauri.
             </motion.p>
 
-            {/* Satu aksi utama (kuning, paling menonjol) + satu aksi pendukung (kaca) */}
-            <motion.div variants={item} className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-              <Button href={SPMB_URL} className="w-full sm:w-auto">
+            <motion.div {...rise(0.15)} className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
+              <Button href={SPMB_URL} variant="night">
                 Info SPMB
-                <ArrowRight className="w-5 h-5" aria-hidden="true" />
+                <ArrowRight className="h-5 w-5" aria-hidden="true" />
               </Button>
-              <Button href={WA_HREF} variant="glass" className="w-full sm:w-auto">
-                <WhatsAppIcon className="w-5 h-5" />
+              <Button href={WA_HREF} variant="white">
+                <WhatsAppIcon className="h-5 w-5 text-emerald-600" />
                 Hubungi Admin
               </Button>
             </motion.div>
+
+            <motion.a
+              {...rise(0.2)}
+              href="#kontak"
+              className="mt-6 inline-flex items-center gap-2 rounded-full text-[15px] font-bold text-night/75 underline-offset-4 hover:text-night hover:underline focus:outline-none focus-visible:ring-4 focus-visible:ring-night/30"
+            >
+              <MapPin className="h-4 w-4" aria-hidden="true" />
+              Atau lihat dulu lokasi sekolah
+            </motion.a>
+          </div>
+
+          {/* ---------- Kolase foto + maskot ---------- */}
+          <motion.div
+            initial={reduce ? false : { opacity: 0, scale: 0.92, rotate: 2 }}
+            whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ type: 'spring', stiffness: 120, damping: 16, delay: 0.15 }}
+            className="relative mx-auto w-full max-w-[26rem] pb-10 lg:mr-0"
+            aria-hidden="true"
+          >
+            <div className="ml-auto w-[80%] rotate-3 rounded-[2rem] bg-white p-3 pb-4 shadow-[0_24px_40px_-20px_rgba(27,37,89,0.5)]">
+              <Photo src={PHOTOS[0]} className="aspect-[4/5] w-full rounded-[1.5rem]" />
+            </div>
+            <div className="absolute bottom-0 left-0 w-[48%] -rotate-6 rounded-[1.6rem] bg-white p-2.5 pb-3.5 shadow-[0_24px_40px_-20px_rgba(27,37,89,0.5)]">
+              <Photo src={PHOTOS[1]} className="aspect-square w-full rounded-[1.2rem]" />
+            </div>
+            <div className="absolute -top-10 left-[4%]">
+              <TwinStars className="w-28 md:w-36" />
+            </div>
+            <span className="absolute -right-2 bottom-14 rotate-3 rounded-2xl bg-night px-4 py-2 font-display text-sm font-semibold text-white shadow-[0_4px_0_0_#111842] md:text-base">
+              Daycare · Playgroup · TK
+            </span>
           </motion.div>
         </div>
       </div>
     </section>
   );
-};
-
-export default CTA;
+}

@@ -129,3 +129,33 @@
     display: none;
   }
 }
+
+/* Galeri: kolom foto berjalan naik / turun tanpa putus */
+@keyframes gallery-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+@keyframes gallery-down {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.gallery-up {
+  animation: gallery-up 50s linear infinite;
+}
+.gallery-down {
+  animation: gallery-down 50s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gallery-up,
+  .gallery-down {
+    animation: none;
+  }
+}

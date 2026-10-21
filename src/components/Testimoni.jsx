@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Star } from 'lucide-react';
+import { Cloud, Squiggle, TwinStars } from './ui/Ornaments';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
@@ -9,11 +10,11 @@ import { Star } from 'lucide-react';
 // Warna aksen per testimoni. Class ditulis lengkap agar aman dari purge Tailwind.
 // Teks peran memakai shade 700 supaya kontrasnya cukup di atas latar putih.
 const THEMES = {
-  sky: { glow: 'from-sky-200 to-indigo-200', ring: 'ring-sky-300', bar: 'bg-sky-400', quote: 'text-sky-100', role: 'text-sky-700' },
-  emerald: { glow: 'from-emerald-200 to-teal-200', ring: 'ring-emerald-300', bar: 'bg-emerald-400', quote: 'text-emerald-100', role: 'text-emerald-700' },
-  violet: { glow: 'from-violet-200 to-fuchsia-200', ring: 'ring-violet-300', bar: 'bg-violet-400', quote: 'text-violet-100', role: 'text-violet-700' },
-  amber: { glow: 'from-amber-200 to-orange-200', ring: 'ring-amber-300', bar: 'bg-amber-400', quote: 'text-amber-100', role: 'text-amber-700' },
-  rose: { glow: 'from-rose-200 to-pink-200', ring: 'ring-rose-300', bar: 'bg-rose-400', quote: 'text-rose-100', role: 'text-rose-700' },
+  sky: { glow: 'from-sky-200 to-indigo-200', ring: 'ring-sky-300', bar: 'bg-sky-400', quote: 'text-sky-100', role: 'text-sky-700' , soft: 'bg-sky-100' },
+  emerald: { glow: 'from-emerald-200 to-teal-200', ring: 'ring-emerald-300', bar: 'bg-emerald-400', quote: 'text-emerald-100', role: 'text-emerald-700' , soft: 'bg-emerald-100' },
+  violet: { glow: 'from-violet-200 to-fuchsia-200', ring: 'ring-violet-300', bar: 'bg-violet-400', quote: 'text-violet-100', role: 'text-violet-700' , soft: 'bg-violet-100' },
+  amber: { glow: 'from-amber-200 to-orange-200', ring: 'ring-amber-300', bar: 'bg-amber-400', quote: 'text-amber-100', role: 'text-amber-700' , soft: 'bg-amber-100' },
+  rose: { glow: 'from-rose-200 to-pink-200', ring: 'ring-rose-300', bar: 'bg-rose-400', quote: 'text-rose-100', role: 'text-rose-700' , soft: 'bg-rose-100' },
 };
 
 const TESTIMONIALS = [
@@ -194,15 +195,41 @@ const Testimoni = () => {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 id="testimoni-title" className="text-4xl md:text-5xl font-bold text-night tracking-tight text-balance">
-            Apa Kata Orang Tua
+          <h2 id="testimoni-title" className="text-4xl md:text-5xl font-semibold text-night tracking-tight text-balance">
+            Apa Kata{' '}
+            <span className="relative inline-block whitespace-nowrap">
+              Orang Tua
+              <Squiggle className="text-sunny" />
+            </span>
           </h2>
+          <p className="mt-5 text-lg font-medium text-night/70 text-pretty">
+            Cerita langsung dari ayah & bunda Alcentaurian.
+          </p>
         </motion.div>
 
         {/* ============================================================ */}
         {/* LAYOUT DESKTOP (xl): foto mengembang + teks di samping        */}
         {/* ============================================================ */}
         <div className="hidden xl:block relative mx-auto w-[856px] h-[500px]">
+          {/* Panggung warna lembut di belakang deretan foto (warnanya mengikuti orang tua aktif),
+              plus maskot & awan di sisi kiri-kanan supaya ruang kosong terasa terisi tanpa ramai */}
+          <div aria-hidden="true" className="pointer-events-none absolute -inset-x-28 -bottom-10 top-24 -z-10">
+            {TESTIMONIALS.map((t, i) => (
+              <div
+                key={t.id}
+                className={`absolute inset-0 rounded-[4rem] transition-opacity duration-700 motion-reduce:transition-none ${t.theme.soft} ${
+                  i === activeIndex ? 'opacity-70' : 'opacity-0'
+                }`}
+              />
+            ))}
+            <div className="dots absolute inset-0 rounded-[4rem] opacity-50" />
+          </div>
+          <div aria-hidden="true" className="pointer-events-none absolute -left-60 top-6">
+            <TwinStars className="w-36" />
+          </div>
+          <Cloud className="pointer-events-none absolute -right-56 top-10 w-36" opacity={0.95} />
+          <Cloud className="pointer-events-none absolute -left-52 bottom-6 w-28" opacity={0.9} />
+
           <div
             role="tablist"
             aria-label="Pilih testimoni"

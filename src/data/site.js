@@ -19,6 +19,9 @@ export const wa = (message = 'Halo Admin, saya ingin bertanya mengenai informasi
 
 export const EMAIL = 'tk@alfacentauri.sch.id';
 
+// Logo resmi (PNG). Ganti dengan versi beresolusi tinggi / SVG bila tersedia.
+export const LOGO_SRC = '/logo-tk-alfa-centauri.png';
+
 /* ---------- Pendaftaran ---------- */
 // Halaman pendaftaran di website lama. Ganti bila alamat halaman SPMB berubah.
 export const SPMB_URL = 'https://alfacentauri.sch.id/tk/ppdb.php';
@@ -39,7 +42,7 @@ export const NAV_LINKS = [
 export const CAMPUSES = [
   {
     id: 'terate',
-    name: 'Kampus Terate',
+    name: 'Lokasi Terate',
     units: 'Playgroup & TK',
     programs: [
       { unit: 'Playgroup', age: '2–4 tahun' },
@@ -52,7 +55,7 @@ export const CAMPUSES = [
   },
   {
     id: 'diponegoro',
-    name: 'Kampus Diponegoro',
+    name: 'Lokasi Diponegoro',
     units: 'Daycare',
     programs: [{ unit: 'Daycare', age: '0–2 tahun' }],
     address: 'Jl. Diponegoro No. 48, Citarum, Bandung Wetan, Kota Bandung 40115',
@@ -74,8 +77,7 @@ export const NETWORK = [
   { name: 'SD Alfa Centauri', href: 'https://sdalfacentauri.sch.id' },
   { name: 'SMP Alfa Centauri', href: 'https://smpalfacentauri.sch.id' },
   { name: 'SMA Alfa Centauri', href: 'https://smaalfacentauri.sch.id' },
-  // TODO: isi alamat website English Now (kosong = tampil sebagai teks biasa)
-  { name: 'English Now', href: '' },
+  { name: 'English Now', href: 'http://englishnow.co.id/' },
   { name: "Language Course for Da'wah & Ummah (LCDU)", href: 'https://lcdu.org' },
 ];
 
