@@ -6,19 +6,24 @@ import WhatsAppIcon from './ui/WhatsAppIcon';
 import { Cloud, Sparkle, Star } from './ui/Ornaments';
 
 /*
-  Footer: langit siang dengan parade kereta mainan. Gerbong warna-warni membawa huruf A-L-F-A
+  Footer: langit siang dengan parade kereta mainan. Gerbong warna-warni membawa huruf A-L-F-A dan C-E-N-T-A-U-R-I
   dan bintang maskot, melintas di atas rel di bukit hijau. Diam bila pengguna memilih reduce motion.
 */
 
 const SOCIAL_ICONS = { instagram: Instagram, youtube: Youtube, facebook: Facebook };
 
 // Class ditulis lengkap agar aman dari purge Tailwind
-const WAGONS = [
-  { letter: 'A', body: 'bg-sky-400', roof: 'bg-sky-600' },
-  { letter: 'L', body: 'bg-emerald-400', roof: 'bg-emerald-600' },
-  { letter: 'F', body: 'bg-violet-400', roof: 'bg-violet-600' },
-  { letter: 'A', body: 'bg-amber-400', roof: 'bg-amber-600' },
+const PALETTE = [
+  { body: 'bg-sky-400', roof: 'bg-sky-600' },
+  { body: 'bg-emerald-400', roof: 'bg-emerald-600' },
+  { body: 'bg-violet-400', roof: 'bg-violet-600' },
+  { body: 'bg-amber-400', roof: 'bg-amber-600' },
 ];
+// Dua kelompok gerbong: ALFA, lalu CENTAURI (jarak lebih lebar di antaranya)
+const WORDS = ['ALFA', 'CENTAURI'];
+const WAGONS = WORDS.flatMap((word, wi) =>
+  [...word].map((letter, i) => ({ letter, ...PALETTE[(i + wi * 2) % PALETTE.length], gap: wi > 0 && i === 0 })),
+);
 
 export default function Footer() {
   const socials = Object.entries(SOCIALS).filter(([, url]) => url);
@@ -219,8 +224,8 @@ function TrainParade() {
         </div>
 
         {WAGONS.map((w, i) => (
-          <div key={i} className="relative flex flex-col items-center">
-            <span className="absolute -left-2 bottom-5 h-1 w-3 rounded bg-night/70" />
+          <div key={i} className={`relative flex flex-col items-center ${w.gap ? 'ml-5 md:ml-8' : ''}`}>
+            <span className={`absolute bottom-5 h-1 rounded bg-night/70 ${w.gap ? '-left-7 w-8 md:-left-10 md:w-10' : '-left-2 w-3'}`} />
             <div className={`train-bob relative grid h-12 w-14 place-items-center rounded-xl md:h-14 md:w-16 ${w.body}`} style={{ animationDelay: `${i * 0.12}s` }}>
               <span className={`absolute inset-x-0 top-0 h-2 rounded-t-xl ${w.roof}`} />
               <span className="font-display text-2xl font-bold text-white drop-shadow-[0_2px_0_rgba(0,0,0,0.15)] md:text-3xl">{w.letter}</span>

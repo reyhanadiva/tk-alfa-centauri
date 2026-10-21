@@ -180,7 +180,7 @@
   }
 }
 .train-run {
-  animation: train-run 26s linear infinite;
+  animation: train-run 38s linear infinite;
 }
 @keyframes train-wheel {
   to {
