@@ -19,12 +19,20 @@ export default function Navbar() {
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 24);
-      setPastHero(window.scrollY > window.innerHeight * 0.6);
+      // Di atas hero navbar menyatu dengan langit; kaca mengambang baru muncul setelah hero terlewati
+      const hero = document.getElementById('beranda');
+      const limit = (hero ? hero.offsetHeight : window.innerHeight) - 96;
+      const past = window.scrollY > limit;
+      setScrolled(past);
+      setPastHero(past);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, []);
 
   // Menu HP: Esc menutup, otomatis tertutup saat layar melebar
@@ -60,7 +68,7 @@ export default function Navbar() {
         aria-label="Navigasi utama"
         className={`mx-auto transition-[max-width,border-radius,background-color,box-shadow,border-color] duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${
           floating
-            ? 'max-w-6xl rounded-[1.75rem] border-2 border-white bg-white/85 backdrop-blur-xl shadow-[0_14px_40px_-18px_rgba(27,37,89,0.45)]'
+            ? 'max-w-6xl rounded-[1.75rem] border border-white/70 bg-white/60 backdrop-blur-xl backdrop-saturate-150 shadow-[0_14px_40px_-18px_rgba(27,37,89,0.45)]'
             : 'max-w-7xl rounded-none border-2 border-transparent bg-transparent'
         }`}
       >

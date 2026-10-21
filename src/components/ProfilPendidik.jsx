@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, useMotionValue, useAnimationFrame } from 'framer-motion';
 import { GraduationCap, Star, Sparkles } from 'lucide-react';
+import { pexels } from '@/data/site';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
@@ -33,14 +34,14 @@ const TIM_PENDIDIK = [
     role: 'Guru Kelas Utama',
     roleColor: 'bg-blue-100 text-blue-700 border-blue-200',
     almamater: 'S1 Pendidikan Guru, Universitas Negeri Jakarta (2022)',
-    image: 'https://images.unsplash.com/photo-1531123897727-8f129e1bf98c?auto=format&fit=crop&w=600&q=70',
+    image: pexels(8155035, 600),
   },
   {
     name: 'Sarah Widyawati, S.Psi.',
     role: 'Co-Teacher',
     roleColor: 'bg-amber-100 text-amber-700 border-amber-200',
     almamater: 'S1 Psikologi, Universitas Indonesia (2023)',
-    image: 'https://images.unsplash.com/photo-1598550874175-4d0ef4374bce?auto=format&fit=crop&w=600&q=70',
+    image: pexels(8526806, 600),
   },
   {
     name: 'Nabila Zahra, S.Sos.',
@@ -110,6 +111,30 @@ const Floaty = ({ className = '', duration = 5, y = -15, delay = 0, rotate = [0,
 };
 
 /** Kartu satu pendidik. Kartu sedikit miring bergantian, lurus & terangkat saat disorot. */
+// Foto guru; bila gagal dimuat tampil inisial nama di atas warna lembut (bukan ikon gambar rusak)
+const TeacherPhoto = ({ person, hidden }) => {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    const initials = person.name.split(/[ ,]/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('');
+    return (
+      <div className="grid h-full w-full place-items-center bg-gradient-to-br from-sky-100 via-amber-50 to-rose-100" role={hidden ? undefined : 'img'} aria-label={hidden ? undefined : person.name}>
+        <span className="font-display text-5xl font-semibold text-night/40">{initials}</span>
+      </div>
+    );
+  }
+  return (
+    <img
+      src={person.image}
+      alt={hidden ? '' : person.name}
+      loading="lazy"
+      decoding="async"
+      draggable={false}
+      onError={() => setFailed(true)}
+      className="pointer-events-none w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 motion-reduce:transition-none"
+    />
+  );
+};
+
 const PersonCard = ({ person, index, hidden = false }) => (
   <li className="shrink-0 pr-4 md:pr-5" aria-hidden={hidden || undefined}>
     <article
@@ -119,14 +144,7 @@ const PersonCard = ({ person, index, hidden = false }) => (
     >
       {/* Foto profil */}
       <div className="relative aspect-square rounded-[1.25rem] overflow-hidden mb-4 bg-slate-100">
-        <img
-          src={person.image}
-          alt={hidden ? '' : person.name}
-          loading="lazy"
-          decoding="async"
-          draggable={false}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 motion-reduce:transition-none"
-        />
+        <TeacherPhoto person={person} hidden={hidden} />
         <div className="absolute top-3 left-3">
           <span className={`px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide shadow-sm border ${person.roleColor}`}>
             {person.role}
@@ -151,37 +169,79 @@ const PersonCard = ({ person, index, hidden = false }) => (
 );
 
 /**
- * Deretan kartu yang berjalan terus. Daftar ditulis dua kali lalu digeser -50%, jadi putarannya tanpa putus.
- * Berhenti saat disorot mouse, saat disentuh, atau saat ada fokus keyboard di dalamnya.
+ * Deretan kartu yang berjalan terus dan BISA DITARIK kanan-kiri (mouse maupun jari).
+ * Daftar ditulis dua kali; posisi dibungkus (wrap) supaya putarannya tanpa putus ke dua arah.
+ * Berhenti saat disorot mouse atau saat sedang ditarik, lalu jalan lagi setelah dilepas.
  */
+const SPEED = 0.035; // piksel per milidetik (±35 px/detik)
+
 const Marquee = ({ people, reduce }) => {
-  const [touching, setTouching] = useState(false);
+  const trackRef = useRef(null);
+  const x = useMotionValue(0);
+  const half = useRef(0);
+  const hover = useRef(false);
+  const drag = useRef(null);
+  const [dragging, setDragging] = useState(false);
 
-  if (reduce) {
-    return (
-      <ul className="flex overflow-x-auto px-4 md:px-8 pt-4 pb-8 list-none m-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {people.map((p, i) => <PersonCard key={p.name} person={p} index={i} />)}
-      </ul>
-    );
-  }
+  // lebar satu salinan daftar (setengah dari track)
+  useEffect(() => {
+    const measure = () => {
+      if (trackRef.current) half.current = trackRef.current.scrollWidth / 2;
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [people]);
 
-  // makin banyak orang, makin lama satu putaran (kecepatan tetap terasa sama)
-  const duration = `${people.length * 6}s`;
-  const stopped = touching;
+  const wrap = (v) => {
+    const h = half.current;
+    if (!h) return v;
+    return ((v % h) - h) % h; // selalu di antara -h dan 0
+  };
+
+  useAnimationFrame((_, delta) => {
+    if (reduce || hover.current || drag.current) return;
+    x.set(wrap(x.get() - SPEED * Math.min(delta, 50)));
+  });
+
+  const onPointerDown = (e) => {
+    drag.current = { startX: e.clientX, startY: e.clientY, from: x.get(), active: false };
+  };
+  const onPointerMove = (e) => {
+    const d = drag.current;
+    if (!d) return;
+    const dx = e.clientX - d.startX;
+    const dy = e.clientY - d.startY;
+    if (!d.active) {
+      // di layar sentuh, gerakan dominan vertikal = pengguna sedang scroll halaman, bukan menarik kartu
+      if (Math.abs(dx) < 6 || Math.abs(dy) > Math.abs(dx)) return;
+      d.active = true;
+      setDragging(true);
+      e.currentTarget.setPointerCapture?.(e.pointerId);
+    }
+    x.set(wrap(d.from + dx));
+  };
+  const endDrag = () => {
+    drag.current = null;
+    setDragging(false);
+  };
 
   return (
     <div
-      className="group/marquee overflow-hidden pt-4 pb-8 [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]"
-      onTouchStart={() => setTouching(true)}
-      onTouchEnd={() => setTouching(false)}
+      className={`overflow-hidden pt-4 pb-8 touch-pan-y select-none [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)] ${
+        reduce ? '' : dragging ? 'cursor-grabbing' : 'cursor-grab'
+      }`}
+      onMouseEnter={() => { hover.current = true; }}
+      onMouseLeave={() => { hover.current = false; endDrag(); }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
     >
-      <ul
-        className="marquee flex w-max list-none p-0 m-0 group-hover/marquee:[animation-play-state:paused] focus-within:[animation-play-state:paused]"
-        style={{ animationDuration: duration, animationPlayState: stopped ? 'paused' : undefined }}
-      >
+      <motion.ul ref={trackRef} style={{ x }} className="flex w-max list-none p-0 m-0">
         {people.map((p, i) => <PersonCard key={p.name} person={p} index={i} />)}
         {people.map((p, i) => <PersonCard key={`${p.name}-copy`} person={p} index={i + people.length} hidden />)}
-      </ul>
+      </motion.ul>
     </div>
   );
 };

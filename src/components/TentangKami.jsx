@@ -116,7 +116,7 @@ const TentangKami = ({ overlapHero = true }) => {
         ========================================= */}
         <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
           {imgFailed ? (
-            <div className="absolute inset-0 bg-gradient-to-br from-sky-500 via-indigo-500 to-fuchsia-500" />
+            <div className="absolute inset-0 bg-gradient-to-br from-night via-sky-700 to-sky-400" />
           ) : (
             <motion.div
               className="absolute inset-0"
@@ -134,9 +134,9 @@ const TentangKami = ({ overlapHero = true }) => {
               />
             </motion.div>
           )}
-          {/* Overlay gradient biru → indigo → magenta (menggantikan slate gelap). Atur angka /xx untuk intensitas. */}
-          <div className="absolute inset-0 bg-gradient-to-br from-sky-600/60 via-indigo-600/50 to-fuchsia-600/55" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-indigo-950/35" />
+          {/* Overlay gradient biru malam → biru langit (warna brand). Atur angka /xx untuk intensitas. */}
+          <div className="absolute inset-0 bg-gradient-to-br from-night/80 via-sky-800/55 to-sky-500/35" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-night-900/40" />
         </div>
 
         {/* =========================================

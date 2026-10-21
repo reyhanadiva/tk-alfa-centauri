@@ -19,6 +19,12 @@ export const wa = (message = 'Halo Admin, saya ingin bertanya mengenai informasi
 
 export const EMAIL = 'tk@alfacentauri.sch.id';
 
+/* ---------- Foto sementara ---------- */
+// Foto stok gratis dari Pexels (dipakai sampai ada foto asli sekolah). Cukup isi ID foto Pexels.
+// Ganti dengan foto asli: taruh di folder public, lalu pakai '/images/nama-file.jpg'.
+export const pexels = (id, w = 800) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
+
 // Logo resmi (PNG). Ganti dengan versi beresolusi tinggi / SVG bila tersedia.
 export const LOGO_SRC = '/logo-tk-alfa-centauri.png';
 

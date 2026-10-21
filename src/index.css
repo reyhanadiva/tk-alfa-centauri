@@ -159,3 +159,72 @@
     animation: none;
   }
 }
+
+/* CTA: pita kapsul berjalan */
+.marquee-chips {
+  animation: marquee-x 40s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-chips {
+    animation: none;
+  }
+}
+
+/* Footer: parade kereta mainan */
+@keyframes train-run {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100vw);
+  }
+}
+.train-run {
+  animation: train-run 26s linear infinite;
+}
+@keyframes train-wheel {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.train-wheel {
+  animation: train-wheel 0.9s linear infinite;
+}
+@keyframes train-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+.train-bob {
+  animation: train-bob 0.45s ease-in-out infinite;
+}
+@keyframes train-puff {
+  0% {
+    opacity: 0.9;
+    transform: translate(0, 0) scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(18px, -30px) scale(1.6);
+  }
+}
+.train-puff {
+  opacity: 0;
+  animation: train-puff 1.8s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .train-run {
+    animation: none;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .train-wheel,
+  .train-bob,
+  .train-puff {
+    animation: none;
+  }
+}

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { MapPin, Navigation, Copy, Check, Baby } from 'lucide-react';
-import { CAMPUSES, wa } from '@/data/site';
-import WhatsAppIcon from './ui/WhatsAppIcon';
+import { CAMPUSES } from '@/data/site';
 import { Cloud, Floaty, Sparkle, Squiggle } from './ui/Ornaments';
 
 /*
@@ -186,16 +185,6 @@ export default function Lokasi() {
                         {copied === c.id ? <Check size={14} className="text-emerald-600" aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
                         <span aria-live="polite">{copied === c.id ? 'Tersalin!' : 'Salin alamat'}</span>
                       </button>
-                      <a
-                        href={wa(`Halo Admin, saya ingin menjadwalkan kunjungan ke ${c.name} (${c.units}) TK Alfa Centauri.`)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-sm font-bold text-emerald-800 ring-1 ring-emerald-200 transition-colors hover:bg-emerald-100 focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-400"
-                      >
-                        <WhatsAppIcon className="h-3.5 w-3.5" />
-                        Jadwalkan kunjungan
-                        <span className="sr-only">(buka WhatsApp di tab baru)</span>
-                      </a>
                     </div>
                   </div>
                 );

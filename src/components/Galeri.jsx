@@ -2,44 +2,32 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, ImageOff, Maximize2 } from 'lucide-react';
 import { Cloud, Floaty, Sparkle, Squiggle } from './ui/Ornaments';
+import { pexels } from '@/data/site';
 
 /*
   Galeri: "dinding foto" ala English Now, versi ceria.
   - Kolom-kolom foto berjalan naik & turun bergantian tanpa putus; kolom di pinggir sedikit miring
     menghadap ke tengah, seperti dinding melengkung.
   - Tiap foto berbingkai polaroid dengan STIKER nama kegiatan (jadi judul tetap terbaca).
-  - Berhenti saat disorot; klik foto untuk membuka versi besar beserta keterangannya.
+  - Tetap berjalan saat disorot (kursor berubah jadi kaca pembesar); klik foto untuk membuka versi besar.
   - "Kurangi animasi": dinding diam.
 */
 
 // Data default (mockup). Nanti bisa dikirim lewat prop `items` dari CMS/API.
 // TODO: ganti dengan foto kegiatan asli (taruh di folder public, mis. '/images/galeri/seni.jpg').
 const DEFAULT_ITEMS = [
-  {
-    title: 'Kreativitas Seni',
-    desc: 'Ananda bebas berekspresi mewarnai dunia mereka',
-    img: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=70',
-  },
-  {
-    title: 'Eksplorasi Alam',
-    desc: 'Belajar langsung dari lingkungan hijau sekitar',
-    img: 'https://images.unsplash.com/photo-1472289065668-ce650ac443d2?auto=format&fit=crop&w=800&q=70',
-  },
-  {
-    title: 'Bermain Bersama',
-    desc: 'Membangun empati, kepedulian, dan interaksi sosial',
-    img: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=70',
-  },
-  {
-    title: 'Kunjungan Edukatif',
-    desc: 'Pengalaman seru belajar di luar ruang kelas',
-    img: 'https://images.unsplash.com/photo-1514050566906-8fb50b9b3cc1?auto=format&fit=crop&w=800&q=70',
-  },
-  {
-    title: 'Pentas Seni',
-    desc: 'Melatih keberanian dan rasa percaya diri ananda',
-    img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=70',
-  },
+  { title: 'Kreativitas Seni', desc: 'Ananda bebas berekspresi mewarnai dunia mereka', img: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=70' },
+  { title: 'Eksplorasi Alam', desc: 'Belajar langsung dari lingkungan hijau sekitar', img: 'https://images.unsplash.com/photo-1472289065668-ce650ac443d2?auto=format&fit=crop&w=800&q=70' },
+  { title: 'Bermain Bersama', desc: 'Membangun empati, kepedulian, dan interaksi sosial', img: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=70' },
+  { title: 'Kunjungan Edukatif', desc: 'Pengalaman seru belajar di luar ruang kelas', img: pexels(12471794) },
+  { title: 'Belajar Bersama Guru', desc: 'Didampingi guru dengan sabar dan penuh perhatian', img: pexels(8382326) },
+  { title: 'Kelas Melukis', desc: 'Mengenal warna dan melatih motorik halus', img: pexels(8382373) },
+  { title: 'Berkebun', desc: 'Menanam benih dan merawatnya setiap hari', img: pexels(11286030) },
+  { title: 'Literasi Pagi', desc: 'Membaca buku cerita bersama teman', img: pexels(8500359) },
+  { title: 'Eksperimen Sains', desc: 'Mengamati warna dan zat cair dengan rasa ingin tahu', img: pexels(8926832) },
+  { title: 'Bermain Balok', desc: 'Menyusun, membangun, dan berimajinasi', img: pexels(8612970) },
+  { title: 'Main di Luar', desc: 'Bergerak aktif dan bermain bersama di udara terbuka', img: pexels(10498841) },
+  { title: 'Seru di Playground', desc: 'Berani mencoba dan bergiliran dengan teman', img: pexels(16420133) },
 ];
 
 // Warna stiker per foto (urutan aksen tetap: sky → emerald → violet → amber → rose)
@@ -89,7 +77,7 @@ function Tile({ item, index, copy, onOpen }) {
         tabIndex={copy ? -1 : 0}
         onClick={() => onOpen(index)}
         aria-label={`Lihat foto ${item.title}`}
-        className={`group relative block w-full rounded-[1.6rem] bg-white p-2 pb-2.5 text-left shadow-[0_6px_0_0_#E7ECF5] transition-transform duration-300 hover:rotate-0 hover:scale-[1.03] motion-reduce:transition-none focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-400 ${tilt}`}
+        className={`group relative block w-full rounded-[1.6rem] bg-white p-2 pb-2.5 text-left shadow-[0_6px_0_0_#E7ECF5] transition-transform duration-300 cursor-zoom-in hover:rotate-0 hover:scale-[1.03] motion-reduce:transition-none focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-400 ${tilt}`}
       >
         <span className="relative block overflow-hidden rounded-[1.2rem] bg-slate-100">
           <Photo src={item.img} alt="" className={`w-full ${ASPECTS[index % ASPECTS.length]}`} />
@@ -209,7 +197,7 @@ const Galeri = ({ items = DEFAULT_ITEMS }) => {
                 style={reduce ? undefined : { transform: `rotateY(${col.tilt}deg) scale(${col.scale})` }}
               >
                 <ul
-                  className={`list-none p-0 m-0 ${reduce ? '' : col.dir === 'up' ? 'gallery-up' : 'gallery-down'} group-hover/wall:[animation-play-state:paused] focus-within:[animation-play-state:paused]`}
+                  className={`list-none p-0 m-0 ${reduce ? '' : col.dir === 'up' ? 'gallery-up' : 'gallery-down'} focus-within:[animation-play-state:paused]`}
                   style={reduce ? undefined : { animationDuration: `${col.dur}s` }}
                 >
                   {order.map((i) => (

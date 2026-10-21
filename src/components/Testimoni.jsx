@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Star } from 'lucide-react';
 import { Cloud, Squiggle, TwinStars } from './ui/Ornaments';
+import { pexels } from '@/data/site';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
@@ -58,6 +59,31 @@ const TESTIMONIALS = [
     image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=70',
     theme: THEMES.rose,
   },
+  // --- testimoni contoh tambahan (dummy). Ganti dengan testimoni asli + izin orang tua ---
+  {
+    id: 5,
+    name: 'Bunda Rina',
+    role: 'Wali Murid Daycare',
+    text: 'Pengasuhnya telaten sekali. Si kecil yang awalnya sering menangis saat ditinggal, sekarang malah semangat berangkat setiap pagi.',
+    image: pexels(19999995, 800),
+    theme: THEMES.sky,
+  },
+  {
+    id: 6,
+    name: 'Ayah Fajar',
+    role: 'Wali Murid TK A',
+    text: 'Anak saya jadi rajin shalat dan hafal doa harian. Pembiasaannya terasa sampai ke rumah, tanpa paksaan.',
+    image: pexels(19424220, 800),
+    theme: THEMES.emerald,
+  },
+  {
+    id: 7,
+    name: 'Bunda Laila',
+    role: 'Wali Murid Playgroup',
+    text: 'Kegiatannya beragam dan seru, dari berkebun sampai eksperimen sederhana. Ananda selalu punya cerita baru sepulang sekolah.',
+    image: pexels(8070478, 800),
+    theme: THEMES.violet,
+  },
 ];
 
 /*
@@ -65,11 +91,14 @@ const TESTIMONIALS = [
   ditambah teks yang bisa keluar dari kluster saat kartu aktif di tengah, jadi layout ini
   baru aman dipakai mulai breakpoint xl (>= 1280px). Di bawah itu dipakai layout bertumpuk.
 */
-const INACTIVE_W = 90;
+const INACTIVE_W = 72;
 const ACTIVE_W = 400;
-const GAP = 24;
+const GAP = 18;
 const TEXT_W = 380;
-const SPLIT_INDEX = 2; // aktif <= index ini: teks di kanan; lebih dari itu: teks di kiri
+// aktif di paruh kiri: teks di kanan foto; di paruh kanan: teks di kiri foto
+const SPLIT_INDEX = 3;
+// lebar total deretan foto, dihitung dari jumlah testimoni
+const ROW_W = (n) => (n - 1) * (INACTIVE_W + GAP) + ACTIVE_W;
 
 /*
   Lengkungan deretan foto berbentuk kubah: foto aktif paling tinggi, makin jauh makin turun
@@ -79,8 +108,10 @@ const SPLIT_INDEX = 2; // aktif <= index ini: teks di kanan; lebih dari itu: tek
   Untuk kembali ke bentuk senyum: CURVE_PX = 4, TILT_DEG = -2, MOBILE_CURVE_PX = 3.
   Pada bentuk senyum jangan terlalu besar: foto di ujung bisa menyentuh teks di atasnya.
 */
-const CURVE_PX = -4;
-const TILT_DEG = 2;
+const CURVE_PX = -2.5;
+const TILT_DEG = 1.5;
+// batas lengkungan agar foto paling ujung tidak turun/miring terlalu jauh
+const MAX_OFFSET = 4;
 const MOBILE_CURVE_PX = -3;
 
 const AUTOPLAY_MS = 6500;
@@ -133,7 +164,8 @@ const Testimoni = () => {
   // Desktop: busur mengikuti foto aktif (aktif = titik terendah).
   const desktopArc = (index) => {
     const offset = index - activeIndex;
-    return `translateY(${-(offset * offset * CURVE_PX)}px) rotate(${offset * TILT_DEG}deg)`;
+    const o = Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, offset));
+    return `translateY(${-(o * o * CURVE_PX)}px) rotate(${o * TILT_DEG}deg)`;
   };
 
   // Layar kecil: busur tetap, berpusat di avatar tengah (hanya terangkat di ujung).
@@ -210,10 +242,10 @@ const Testimoni = () => {
         {/* ============================================================ */}
         {/* LAYOUT DESKTOP (xl): foto mengembang + teks di samping        */}
         {/* ============================================================ */}
-        <div className="hidden xl:block relative mx-auto w-[856px] h-[500px]">
+        <div className="hidden xl:block relative mx-auto h-[500px]" style={{ width: ROW_W(TESTIMONIALS.length) }}>
           {/* Panggung warna lembut di belakang deretan foto (warnanya mengikuti orang tua aktif),
               plus maskot & awan di sisi kiri-kanan supaya ruang kosong terasa terisi tanpa ramai */}
-          <div aria-hidden="true" className="pointer-events-none absolute -inset-x-28 -bottom-10 top-24 -z-10">
+          <div aria-hidden="true" className="pointer-events-none absolute -inset-x-16 -bottom-10 top-24 -z-10">
             {TESTIMONIALS.map((t, i) => (
               <div
                 key={t.id}
@@ -224,17 +256,17 @@ const Testimoni = () => {
             ))}
             <div className="dots absolute inset-0 rounded-[4rem] opacity-50" />
           </div>
-          <div aria-hidden="true" className="pointer-events-none absolute -left-60 top-6">
-            <TwinStars className="w-36" />
+          <div aria-hidden="true" className="pointer-events-none absolute -left-36 top-0">
+            <TwinStars className="w-28" />
           </div>
-          <Cloud className="pointer-events-none absolute -right-56 top-10 w-36" opacity={0.95} />
-          <Cloud className="pointer-events-none absolute -left-52 bottom-6 w-28" opacity={0.9} />
+          <Cloud className="pointer-events-none absolute -right-40 top-10 w-32" opacity={0.95} />
+          <Cloud className="pointer-events-none absolute -left-36 bottom-6 w-24" opacity={0.9} />
 
           <div
             role="tablist"
             aria-label="Pilih testimoni"
             onKeyDown={handleKeyDown(desktopTabs)}
-            className="flex items-end gap-6 h-full"
+            className="flex items-end gap-[18px] h-full"
           >
             {TESTIMONIALS.map((item, index) => {
               const isActive = index === activeIndex;
@@ -266,7 +298,7 @@ const Testimoni = () => {
                     className={`block overflow-hidden rounded-[2.5rem] shadow-md transition-[width,height,opacity,filter,box-shadow] duration-500 ease-out motion-reduce:transition-none ${
                       isActive
                         ? 'w-[400px] h-[500px] border-4 border-white'
-                        : 'w-[90px] h-[130px] grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:shadow-xl'
+                        : 'w-[72px] h-[110px] grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:shadow-xl'
                     }`}
                   >
                     <img
@@ -410,7 +442,7 @@ const Testimoni = () => {
             role="tablist"
             aria-label="Pilih testimoni"
             onKeyDown={handleKeyDown(mobileTabs)}
-            className="mt-8 pt-4 flex items-center justify-center gap-2 sm:gap-3"
+            className="mt-8 pt-4 flex items-center justify-center gap-1.5 sm:gap-3"
           >
             {TESTIMONIALS.map((item, index) => {
               const isActive = index === activeIndex;
@@ -427,7 +459,7 @@ const Testimoni = () => {
                   tabIndex={isActive ? 0 : -1}
                   onClick={() => choose(index)}
                   style={{ transform: mobileArc(index) }}
-                  className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-white shadow-md transition-[opacity,filter,box-shadow] duration-300 motion-reduce:transition-none ${FOCUS_RING} ${
+                  className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-white shadow-md transition-[opacity,filter,box-shadow] duration-300 motion-reduce:transition-none ${FOCUS_RING} ${
                     isActive
                       ? `ring-4 ${item.theme.ring}`
                       : 'grayscale opacity-60 hover:grayscale-0 hover:opacity-100'

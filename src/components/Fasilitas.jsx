@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Star, Sparkles, Heart, Presentation, Trees, Clapperboard, BookOpen, ShieldCheck, Hand } from 'lucide-react';
+import { Star, Sparkles, Heart } from 'lucide-react';
+import { pexels } from '@/data/site';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
@@ -10,42 +11,32 @@ import { Star, Sparkles, Heart, Presentation, Trees, Clapperboard, BookOpen, Shi
 const FACILITIES = [
   {
     title: 'Ruang Kelas Interaktif',
-    Icon: Presentation,
-    iconColor: 'text-sky-600',
     desc: 'Tata ruang dinamis dengan teknologi interaktif untuk belajar yang lebih seru.',
     image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1000&q=70',
     theme: { bar: 'bg-sky-400', glow: 'hover:shadow-sky-200/80', grad: 'from-sky-950/90 via-sky-900/40' },
   },
   {
     title: 'Playground & Outdoor',
-    Icon: Trees,
-    iconColor: 'text-emerald-600',
     desc: 'Area bermain luas dan aman di udara terbuka.',
     image: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=1000&q=70',
     theme: { bar: 'bg-emerald-400', glow: 'hover:shadow-emerald-200/80', grad: 'from-emerald-950/90 via-emerald-900/40' },
   },
   {
     title: 'Mini Theater',
-    Icon: Clapperboard,
-    iconColor: 'text-violet-600',
     desc: 'Ruang audio visual untuk menonton tayangan edukasi dan berbagi presentasi.',
     image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1000&q=70',
     theme: { bar: 'bg-violet-400', glow: 'hover:shadow-violet-200/80', grad: 'from-violet-950/90 via-violet-900/40' },
   },
   {
     title: 'Perpustakaan',
-    Icon: BookOpen,
-    iconColor: 'text-amber-600',
     desc: 'Koleksi buku cerita dan buku pelajaran yang beragam.',
     image: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1000&q=70',
     theme: { bar: 'bg-amber-400', glow: 'hover:shadow-amber-200/80', grad: 'from-amber-950/90 via-amber-900/40' },
   },
   {
     title: 'Sistem Keamanan',
-    Icon: ShieldCheck,
-    iconColor: 'text-rose-600',
     desc: 'Pengawasan CCTV 24 jam dan pos satpam di akses utama.',
-    image: 'https://images.unsplash.com/photo-1558000143-a609d5ddc67b?auto=format&fit=crop&w=1000&q=70',
+    image: pexels(5589597, 1000),
     theme: { bar: 'bg-rose-400', glow: 'hover:shadow-rose-200/80', grad: 'from-rose-950/90 via-rose-900/40' },
   },
 ];
@@ -88,46 +79,6 @@ const Floaty = ({ className = '', duration = 6, y = -15, delay = 0, rotate = [-1
 
 const Fasilitas = () => {
   const reduceMotion = useReducedMotion();
-  const trackRef = useRef(null);
-  const [progress, setProgress] = useState(0); // 0..1, posisi geser
-  const [dragging, setDragging] = useState(false);
-  const drag = useRef(null);
-
-  // indikator posisi geser
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return undefined;
-    const onScroll = () => {
-      const max = el.scrollWidth - el.clientWidth;
-      setProgress(max > 0 ? el.scrollLeft / max : 0);
-    };
-    onScroll();
-    el.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      el.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
-  }, []);
-
-  // Desktop: bisa digeser dengan menarik mouse (di HP sudah bisa swipe)
-  const onPointerDown = (e) => {
-    if (e.pointerType !== 'mouse' || e.button !== 0) return;
-    drag.current = { x: e.clientX, left: trackRef.current.scrollLeft, moved: false };
-  };
-  const onPointerMove = (e) => {
-    if (!drag.current) return;
-    const dx = e.clientX - drag.current.x;
-    if (Math.abs(dx) > 4) {
-      drag.current.moved = true;
-      setDragging(true);
-    }
-    trackRef.current.scrollLeft = drag.current.left - dx;
-  };
-  const endDrag = () => {
-    drag.current = null;
-    setDragging(false);
-  };
 
   return (
     <section
@@ -189,17 +140,10 @@ const Fasilitas = () => {
         transition={{ duration: 0.7, ease: 'easeOut', delay: 0.1 }}
       >
         <ul
-          ref={trackRef}
           aria-label="Daftar fasilitas"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={endDrag}
-          onPointerLeave={endDrag}
-          className={`relative flex gap-4 md:gap-6 overflow-x-auto pb-8 pt-4 select-none [@media(hover:hover)]:cursor-grab ${
-            dragging ? 'snap-none [@media(hover:hover)]:cursor-grabbing' : 'snap-x snap-mandatory'
-          } px-4 md:px-8 lg:px-[max(2rem,calc((100vw-80rem)/2))]
+          className="relative flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-8 pt-4 px-4 md:px-8 lg:px-[max(2rem,calc((100vw-80rem)/2))]
             scroll-pl-4 md:scroll-pl-8 lg:scroll-pl-[max(2rem,calc((100vw-80rem)/2))]
-            list-none m-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]`}
+            list-none m-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         >
           {FACILITIES.map((item, index) => (
             <li
@@ -217,7 +161,6 @@ const Fasilitas = () => {
                 alt=""
                 loading={index === 0 ? 'eager' : 'lazy'}
                 decoding="async"
-                draggable={false}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out motion-reduce:transition-none"
               />
 
@@ -226,20 +169,6 @@ const Fasilitas = () => {
                 className={`pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t ${item.theme.grad} to-transparent`}
                 aria-hidden="true"
               />
-
-              {/* Stiker ikon fasilitas + nomor urut */}
-              <span
-                aria-hidden="true"
-                className={`absolute left-5 top-5 grid size-14 -rotate-6 place-items-center rounded-2xl bg-white shadow-[0_5px_0_0_rgba(27,37,89,0.15)] transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110 motion-reduce:transition-none md:left-6 md:top-6 ${item.iconColor}`}
-              >
-                <item.Icon className="h-7 w-7" strokeWidth={2.2} />
-              </span>
-              <span
-                aria-hidden="true"
-                className="absolute right-5 top-5 rounded-full bg-white/90 px-3 py-1 font-display text-sm font-semibold text-night md:right-6 md:top-6"
-              >
-                {String(index + 1).padStart(2, '0')}/{String(FACILITIES.length).padStart(2, '0')}
-              </span>
 
               {/* Judul selalu tampil, deskripsi mengembang saat hover */}
               <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
@@ -258,20 +187,6 @@ const Fasilitas = () => {
             </li>
           ))}
         </ul>
-
-        {/* indikator posisi + petunjuk geser */}
-        <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 md:px-8" aria-hidden="true">
-          <span className="h-2 flex-1 overflow-hidden rounded-full bg-night/10">
-            <span
-              className="block h-full rounded-full bg-sunny transition-[width] duration-150"
-              style={{ width: `${Math.max(14, progress * 100)}%` }}
-            />
-          </span>
-          <span className="flex items-center gap-1.5 text-sm font-bold text-night/60">
-            <Hand className="h-4 w-4" />
-            Geser
-          </span>
-        </div>
       </motion.div>
     </section>
   );
