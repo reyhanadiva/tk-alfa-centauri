@@ -81,7 +81,8 @@ const Fasilitas = () => {
 
   return (
     <section
-      className="relative w-full bg-white pt-24 pb-20 overflow-hidden"
+      id="fasilitas"
+      className="relative w-full pt-24 pb-20 overflow-hidden"
       aria-labelledby="fasilitas-title"
     >
       {/* Blob warna lembut */}
@@ -111,7 +112,7 @@ const Fasilitas = () => {
         >
           <h2
             id="fasilitas-title"
-            className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4 text-balance"
+            className="text-4xl md:text-5xl font-bold text-night tracking-tight mb-4 text-balance"
           >
             Fasilitas &{' '}
             {/* Aksen bintang kecil sebagai pengganti underline; dibungkus nowrap agar tidak turun baris sendirian */}
@@ -123,7 +124,7 @@ const Fasilitas = () => {
               />
             </span>
           </h2>
-          <p className="text-lg text-slate-600 font-medium max-w-2xl mx-auto text-pretty">
+          <p className="text-lg text-night/70 font-medium max-w-2xl mx-auto text-pretty">
             Lingkungan belajar yang dirancang khusus untuk kenyamanan, keamanan, dan kebebasan bereksplorasi.
           </p>
         </motion.div>
@@ -151,7 +152,7 @@ const Fasilitas = () => {
                 aspect-[4/5] sm:aspect-[4/3] md:aspect-[16/10]
                 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-slate-100 border border-slate-100
                 shadow-md hover:shadow-2xl ${item.theme.glow} transition-shadow duration-500 motion-reduce:transition-none
-                focus:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-slate-900/70`}
+                focus:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-night/70`}
             >
               {/* Foto dekoratif: judul kartu sudah menjelaskan konteksnya */}
               <img

@@ -3,7 +3,86 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    /* Anchor menu tidak tertutup navbar */
+    scroll-padding-top: 6.5rem;
+    scroll-behavior: smooth;
+  }
+
   body {
-    font-family: 'Nunito', system-ui, sans-serif;
+    @apply bg-cream font-sans text-night antialiased;
+  }
+
+  /* Semua judul memakai font display (Fredoka) supaya satu karakter di seluruh halaman */
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  /* Tekstur titik lembut (dipakai di latar section) */
+  .dots {
+    background-image: radial-gradient(rgb(27 37 89 / 0.09) 1.5px, transparent 1.6px);
+    background-size: 22px 22px;
+  }
+
+  .dots-light {
+    background-image: radial-gradient(rgb(255 255 255 / 0.22) 1.5px, transparent 1.6px);
+    background-size: 22px 22px;
+  }
+}
+
+/* Awan berjalan pelan */
+@keyframes cloud-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(46px);
+  }
+}
+.cloud-drift {
+  animation: cloud-drift 14s ease-in-out infinite alternate;
+}
+
+/* Sinar matahari berputar sangat pelan */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-slow {
+  animation: spin-slow 60s linear infinite;
+}
+
+/* Bintang berkelip */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+.twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud-drift,
+  .spin-slow,
+  .twinkle {
+    animation: none;
   }
 }

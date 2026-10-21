@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { Star, Heart, ArrowUpRight } from 'lucide-react';
+import { Heart, ArrowUpRight } from 'lucide-react';
+import { TwinStars } from './ui/Ornaments';
 
 /* ------------------------------------------------------------------ */
 /* DATA & KONFIGURASI                                                  */
@@ -74,28 +75,6 @@ const staticUnderlineVariants = {
 /* KOMPONEN KECIL                                                      */
 /* ------------------------------------------------------------------ */
 
-// Motif dua bintang: lambang kesuksesan di dunia dan akhirat
-const TwoStars = ({ variants, reduceMotion }) => (
-  <motion.div
-    variants={variants}
-    className="flex items-end justify-center gap-2 md:gap-3 mb-6"
-    aria-hidden="true"
-  >
-    <motion.div
-      animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [-6, 6, -6] }}
-      transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-    >
-      <Star className="w-10 h-10 md:w-14 md:h-14 text-yellow-300 fill-yellow-300 drop-shadow-[0_0_18px_rgba(253,224,71,0.55)]" />
-    </motion.div>
-    <motion.div
-      className="-mb-2 md:-mb-3"
-      animate={reduceMotion ? undefined : { y: [0, -10, 0], rotate: [6, -6, 6] }}
-      transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-    >
-      <Star className="w-14 h-14 md:w-20 md:h-20 text-yellow-300 fill-yellow-300 drop-shadow-[0_0_22px_rgba(253,224,71,0.6)]" />
-    </motion.div>
-  </motion.div>
-);
 
 /* ------------------------------------------------------------------ */
 /* KOMPONEN UTAMA                                                      */
@@ -119,18 +98,20 @@ const TentangKami = ({ overlapHero = true }) => {
   const item = reduceMotion ? staticVariants : itemVariants;
   const underline = reduceMotion ? staticUnderlineVariants : underlineVariants;
 
+  // overlapHero: kartu sedikit naik menimpa bukit di bawah hero
   const sectionClass = overlapHero
-    ? 'relative z-10 mt-6 md:mt-10 pb-16'
-    : 'bg-white py-16';
+    ? 'relative z-10 -mt-10 md:-mt-16 lg:-mt-24 pb-8'
+    : 'py-16';
 
   return (
     <section
+      id="tentang"
       className={`w-full px-4 md:px-6 lg:px-8 ${sectionClass}`}
       aria-labelledby="tentang-kami-title"
     >
       <div
         ref={cardRef}
-        className="relative w-full mx-auto min-h-[60vh] md:min-h-[70vh] rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden shadow-[0_-12px_40px_rgba(79,70,229,0.18),0_25px_50px_rgba(49,46,129,0.28)] flex flex-col items-center justify-center bg-sky-600"
+        className="relative w-full max-w-7xl mx-auto min-h-[60vh] md:min-h-[70vh] rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden shadow-[0_-12px_40px_rgba(79,70,229,0.18),0_25px_50px_rgba(49,46,129,0.28)] flex flex-col items-center justify-center bg-sky-600"
       >
         {/* =========================================
             BACKGROUND (foto + overlay hangat/ceria)
@@ -195,13 +176,16 @@ const TentangKami = ({ overlapHero = true }) => {
           whileInView="show"
           viewport={{ once: true, amount: 0.3 }}
         >
-          <TwoStars variants={item} reduceMotion={reduceMotion} />
+          {/* Maskot dua bintang: lambang kesuksesan di dunia dan akhirat */}
+          <motion.div variants={item} className="mb-6">
+            <TwinStars className="w-32 md:w-44" glow />
+          </motion.div>
 
           {/* Headline: "Finest" dengan garis bawah bergelombang bergaya tangan */}
           <motion.h2
             id="tentang-kami-title"
             variants={item}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 tracking-tight leading-tight w-full text-balance drop-shadow-[0_2px_12px_rgba(30,27,75,0.45)]"
+            className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-8 tracking-tight leading-tight w-full text-balance drop-shadow-[0_2px_12px_rgba(30,27,75,0.45)]"
           >
             To Be The{' '}
             <span className="relative inline-block text-yellow-300">

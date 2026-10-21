@@ -62,7 +62,7 @@ const TIM_MANAJEMEN = [
   {
     name: 'Rizky Pratama, S.E.',
     role: 'Keuangan',
-    roleColor: 'bg-slate-200 text-slate-700 border-slate-300',
+    roleColor: 'bg-slate-200 text-night/80 border-slate-300',
     almamater: 'S1 Akuntansi, Universitas Katolik Parahyangan (2022)',
     image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=70',
   },
@@ -86,11 +86,6 @@ const TABS = [
   { id: 'pendidik', label: 'Tim Pendidik', data: TIM_PENDIDIK },
   { id: 'manajemen', label: 'Tim Manajemen', data: TIM_MANAJEMEN },
 ];
-
-const WAVE_TOP =
-  'M0,192L48,197.3C96,203,192,213,288,213.3C384,213,480,203,576,176C672,149,768,107,864,101.3C960,96,1056,128,1152,149.3C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z';
-const WAVE_BOTTOM =
-  'M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,202.7C672,203,768,181,864,170.7C960,160,1056,160,1152,176C1248,192,1344,224,1392,240L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z';
 
 const FOCUS_RING =
   'focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-400';
@@ -148,15 +143,10 @@ const ProfilPendidik = () => {
 
   return (
     <section
-      className="relative w-full bg-[#F4F9FF] pt-24 pb-28 overflow-hidden"
+      id="pendidik"
+      className="relative mx-2 md:mx-4 rounded-[2.5rem] md:rounded-[3.5rem] bg-butter pt-20 pb-20 overflow-hidden"
       aria-labelledby="profil-title"
     >
-      {/* Wavy Divider Atas (membelah dari bg putih Fasilitas di atasnya) */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180 pointer-events-none -translate-y-[1px]">
-        <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className="block w-full h-[50px] md:h-[80px]" aria-hidden="true">
-          <path fill="#ffffff" d={WAVE_TOP} />
-        </svg>
-      </div>
 
       {/* Blob warna lembut */}
       <div className="absolute top-32 left-[-5%] w-[300px] h-[300px] bg-amber-200/50 rounded-full blur-[80px] pointer-events-none" aria-hidden="true" />
@@ -182,11 +172,11 @@ const ProfilPendidik = () => {
         >
           <h2
             id="profil-title"
-            className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4 text-balance"
+            className="text-4xl md:text-5xl font-bold text-night tracking-tight mb-4 text-balance"
           >
             Profil Pendidik & Manajemen
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto font-medium text-pretty">
+          <p className="text-lg text-night/70 max-w-2xl mx-auto font-medium text-pretty">
             Barisan talenta muda yang adaptif terhadap ilmu <span className="italic">parenting</span> modern, memastikan ananda mendapat pendampingan yang relevan.
           </p>
         </motion.div>
@@ -202,7 +192,7 @@ const ProfilPendidik = () => {
             {/* Indikator geser: pakai transform (bukan left) agar animasinya ringan */}
             <div
               aria-hidden="true"
-              className={`absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-0.375rem)] bg-slate-900 rounded-full z-0 transition-transform duration-300 ease-out motion-reduce:transition-none ${
+              className={`absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-0.375rem)] bg-night rounded-full z-0 transition-transform duration-300 ease-out motion-reduce:transition-none ${
                 activeIndex === 1 ? 'translate-x-full' : 'translate-x-0'
               }`}
             />
@@ -220,7 +210,7 @@ const ProfilPendidik = () => {
                   tabIndex={selected ? 0 : -1}
                   onClick={() => setActiveTab(tab.id)}
                   className={`relative z-10 py-2.5 rounded-full text-sm md:text-base font-bold transition-colors duration-300 motion-reduce:transition-none ${FOCUS_RING} ${
-                    selected ? 'text-white' : 'text-slate-600 hover:text-slate-900'
+                    selected ? 'text-white' : 'text-night/70 hover:text-night'
                   }`}
                 >
                   {tab.label}
@@ -271,16 +261,16 @@ const ProfilPendidik = () => {
 
                 {/* Detail */}
                 <div className="px-1 pb-1 flex flex-col flex-grow">
-                  <h3 className="text-lg font-bold text-slate-900 mb-3 text-balance">
+                  <h3 className="text-lg font-bold text-night mb-3 text-balance">
                     {person.name}
                   </h3>
 
                   <div className="mt-auto pt-3 border-t border-slate-100">
                     <div className="flex items-start gap-2.5">
                       <div className="mt-0.5 bg-slate-50 p-1.5 rounded-lg flex-shrink-0">
-                        <GraduationCap className="w-4 h-4 text-slate-500" aria-hidden="true" />
+                        <GraduationCap className="w-4 h-4 text-night/60" aria-hidden="true" />
                       </div>
-                      <p className="text-sm font-semibold text-slate-700 leading-snug">
+                      <p className="text-sm font-semibold text-night/80 leading-snug">
                         {person.almamater}
                       </p>
                     </div>
@@ -292,12 +282,6 @@ const ProfilPendidik = () => {
         </div>
       </div>
 
-      {/* Wavy Divider Bawah (melebur ke bg putih Testimoni di bawahnya) */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none translate-y-[1px] pointer-events-none">
-        <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className="block w-full h-[50px] md:h-[80px]" aria-hidden="true">
-          <path fill="#ffffff" d={WAVE_BOTTOM} />
-        </svg>
-      </div>
     </section>
   );
 };

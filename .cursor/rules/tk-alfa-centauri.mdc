@@ -1,0 +1,46 @@
+---
+description: Aturan desain & kode landing page TK Alfa Centauri
+alwaysApply: true
+---
+
+# TK Alfa Centauri: landing page
+
+Stack: Vite + React 18 + Tailwind CSS v3 + Framer Motion + lucide-react.
+Import modul memakai alias `@/` (mis. `@/data/site`).
+
+## Konsep
+- "Satu hari di langit Alfa Centauri": hero = pagi cerah (langit, matahari, bukit), footer = malam berbintang.
+- Alpha Centauri adalah sistem DUA bintang, sesuai filosofi "dua bintang: sukses dunia & akhirat".
+  Maskotnya sepasang bintang (`TwinStars` di `src/components/ui/Ornaments.jsx`). Pakai maskot ini, jangan bikin ikon bintang baru.
+- Kids-friendly tapi rapi: sudut sangat bulat (rounded-2xl s/d rounded-[3.5rem]), warna cerah, tidak gelap/suram.
+
+## Warna (tailwind.config.js)
+- `night` (biru malam) untuk judul & permukaan gelap. Jangan pakai `slate-900`.
+- `sunny` (kuning) untuk tombol utama. Kuning bukan warna teks di atas latar terang.
+- Latar halaman `cream`. Section "pita" memakai `cloud` (biru muda) atau `butter` (kuning muda) dengan sudut membulat.
+- Aksen per kartu memakai urutan tetap: sky → emerald → violet → amber → rose.
+- Hindari ombak (wave) di antara section; transisi memakai pita membulat atau bukit.
+
+## Tipografi
+- `font-display` (Fredoka) otomatis untuk h1–h3 (lihat `src/index.css`). Body `font-sans` (Nunito).
+- Font dimuat lokal lewat @fontsource di `src/main.tsx`, bukan Google Fonts.
+
+## Komponen bersama
+- Tombol ajakan: SELALU `src/components/ui/Button.jsx` (varian sun / night / white / glass).
+- Kata yang ditekankan di judul: `Squiggle` dari Ornaments.
+- Hiasan: `TwinStars`, `Cloud`, `Sparkle`, `Floaty` dari Ornaments.
+- Logo WhatsApp: `src/components/ui/WhatsAppIcon.jsx`.
+
+## Data
+- Kontak, WhatsApp (`wa()`), link SPMB, alamat kampus, jam belajar, jaringan sekolah ada di `src/data/site.js`.
+  Jangan menulis nomor WA / alamat langsung di komponen.
+
+## Copy
+- Bahasa Indonesia yang hangat dan rapi, sapaan "ananda" untuk anak. Gunakan "melalui", bukan "lewat".
+- Jangan menulis klaim yang belum pasti (angka, prestasi, jadwal). Tandai dengan TODO bila perlu konfirmasi.
+- Tidak memakai eyebrow/badge kecil di atas judul section.
+
+## Aksesibilitas & kinerja
+- Semua animasi menghormati `prefers-reduced-motion` (useReducedMotion / class `motion-reduce:`).
+- Setiap section punya `id` untuk menu: tentang, keunggulan, program, fasilitas, pendidik, testimoni, galeri, berita, faq, kontak, daftar.
+- Cek tampilan di 375px, 768px, 1280px, 1440px.

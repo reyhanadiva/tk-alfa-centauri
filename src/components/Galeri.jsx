@@ -156,7 +156,7 @@ const useIsMobile = (breakpoint = 768) => {
 // Tampilan cadangan kalau foto gagal dimuat
 const ImageFallback = ({ className = '' }) => (
   <div
-    className={`flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-blue-100 via-pink-100 to-yellow-100 text-slate-500 ${className}`}
+    className={`flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-blue-100 via-pink-100 to-yellow-100 text-night/60 ${className}`}
     role="img"
     aria-label="Foto tidak dapat dimuat"
   >
@@ -261,7 +261,7 @@ const GalleryControls = ({
         type="button"
         onClick={onPrev}
         aria-label="Foto sebelumnya"
-        className="p-2 rounded-full text-slate-700 hover:bg-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
+        className="p-2 rounded-full text-night/80 hover:bg-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
       >
         <ChevronLeft className="w-6 h-6" />
       </button>
@@ -279,7 +279,7 @@ const GalleryControls = ({
         type="button"
         onClick={onNext}
         aria-label="Foto berikutnya"
-        className="p-2 rounded-full text-slate-700 hover:bg-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
+        className="p-2 rounded-full text-night/80 hover:bg-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
       >
         <ChevronRight className="w-6 h-6" />
       </button>
@@ -326,11 +326,9 @@ const GalleryControls = ({
 /**
  * Props:
  * - items: [{ title, desc, img }] (default: data mockup)
- * - bottomWaveColor: warna ombak bawah; samakan dengan warna bagian ATAS section Berita.
- *   Default "#ffffff" (menyatu dengan strip putih Berita). Kalau ombak atas Berita dihapus
- *   dan Berita langsung berlatar #f8fafc, ganti menjadi "#f8fafc".
+ * - bottomWaveColor: warna ombak bawah; samakan dengan warna latar halaman (cream #FFF9EE).
  */
-const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
+const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#FFF9EE' }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isHovering, setIsHovering] = useState(false);
@@ -510,10 +508,11 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
 
   return (
     <section
+      id="galeri"
       ref={sectionRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full min-h-[100svh] flex flex-col items-center justify-between pt-32 pb-32 overflow-hidden bg-white"
+      className="relative w-full min-h-[100svh] flex flex-col items-center justify-between pt-32 pb-32 overflow-hidden bg-cream"
       aria-roledescription="carousel"
       aria-label="Galeri Kegiatan Sekolah"
     >
@@ -576,7 +575,7 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
 
       {/* TRANSISI OMBAK ATAS (putih, menyatu dengan section di atasnya) */}
       <div className="absolute -top-px left-0 w-full overflow-hidden leading-none rotate-180 pointer-events-none z-20">
-        <Wave fill="#ffffff" className="h-[60px] md:h-[100px]" />
+        <Wave fill="#FFF9EE" className="h-[60px] md:h-[100px]" />
       </div>
 
       <div
@@ -668,7 +667,7 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#ffffff' }) => {
             role="dialog"
             aria-modal="true"
             aria-label={active.title}
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-slate-900/80 backdrop-blur-xl p-4 cursor-zoom-out outline-none"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-night/80 backdrop-blur-xl p-4 cursor-zoom-out outline-none"
           >
             <button
               ref={closeBtnRef}

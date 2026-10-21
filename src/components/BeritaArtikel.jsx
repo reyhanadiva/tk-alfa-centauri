@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, ImageOff, Star, Sparkles } from 'lucide-react';
+import Button from './ui/Button';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
@@ -71,10 +72,7 @@ const CATEGORY_STYLES = {
   Parenting: 'bg-purple-50 text-purple-700 border-purple-200',
   Lingkungan: 'bg-emerald-50 text-emerald-700 border-emerald-200',
 };
-const DEFAULT_CATEGORY_STYLE = 'bg-slate-50 text-slate-700 border-slate-200';
-
-const WAVE_BOTTOM =
-  'M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,202.7C672,203,768,181,864,170.7C960,160,1056,160,1152,176C1248,192,1344,224,1392,240L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z';
+const DEFAULT_CATEGORY_STYLE = 'bg-slate-50 text-night/80 border-slate-200';
 
 /* ------------------------------------------------------------------ */
 /* KOMPONEN KECIL                                                      */
@@ -149,14 +147,10 @@ const BeritaArtikel = () => {
 
   return (
     <section
-      className="relative w-full bg-[#F8F9FA] pt-24 pb-32 px-4 md:px-8 overflow-hidden"
+      id="berita"
+      className="relative mx-2 md:mx-4 mt-10 rounded-[2.5rem] md:rounded-[3.5rem] bg-cloud pt-20 pb-20 px-4 md:px-8 overflow-hidden"
       aria-labelledby="berita-title"
     >
-      {/*
-        Ombak atas sengaja dihapus. Peralihan dari Galeri ke section ini sekarang hanya satu gelombang,
-        yaitu ombak bawah milik Galeri (warnanya disamakan dengan latar section ini, #F8F9FA).
-        Sebelumnya ada dua gelombang putih bertumpuk sehingga muncul pita putih di tengahnya.
-      */}
 
       {/* Blob warna lembut */}
       <div className="absolute top-20 right-[-5%] w-[350px] h-[350px] bg-blue-100/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
@@ -176,7 +170,7 @@ const BeritaArtikel = () => {
         <motion.div className="mb-8 md:mb-10" {...fadeUp()}>
           <h2
             id="berita-title"
-            className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight text-balance"
+            className="text-4xl md:text-5xl font-bold text-night tracking-tight text-balance"
           >
             Berita dan Acara Sekolah
           </h2>
@@ -198,12 +192,12 @@ const BeritaArtikel = () => {
 
             <div className="p-5 md:p-8 flex flex-col justify-center">
               <div className="flex flex-wrap items-center gap-3 mb-3">
-                <time dateTime={MAIN_ARTICLE.dateTime} className="text-sm font-medium text-slate-500">
+                <time dateTime={MAIN_ARTICLE.dateTime} className="text-sm font-medium text-night/60">
                   {MAIN_ARTICLE.date}
                 </time>
                 <CategoryBadge category={MAIN_ARTICLE.category} />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold text-slate-900 group-hover:text-blue-700 transition-colors leading-snug text-balance">
+              <h3 className="text-xl md:text-2xl font-bold text-night group-hover:text-blue-700 transition-colors leading-snug text-balance">
                 {/* Tautan "diregangkan" ke seluruh kartu: seluruh area bisa diklik, tapi hanya satu tab stop */}
                 <a
                   href={MAIN_ARTICLE.href}
@@ -227,12 +221,12 @@ const BeritaArtikel = () => {
               >
                 <article className="pr-4 md:pr-5 flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <time dateTime={item.dateTime} className="text-xs md:text-sm font-medium text-slate-500">
+                    <time dateTime={item.dateTime} className="text-xs md:text-sm font-medium text-night/60">
                       {item.date}
                     </time>
                     <CategoryBadge category={item.category} />
                   </div>
-                  <h4 className="text-base font-bold text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-3 leading-snug">
+                  <h4 className="text-base font-bold text-night group-hover:text-blue-700 transition-colors line-clamp-3 leading-snug">
                     <a
                       href={item.href}
                       className="focus:outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-4 focus-visible:after:ring-inset focus-visible:after:ring-blue-500"
@@ -255,25 +249,13 @@ const BeritaArtikel = () => {
 
         {/* Tombol Call to Action */}
         <motion.div className="mt-10 md:mt-12 text-left" {...fadeUp(0.1)}>
-          <a
-            href={ALL_NEWS_HREF}
-            className="group/cta inline-flex items-center gap-2 px-7 py-3 bg-blue-600 text-[15px] text-white font-semibold rounded-full hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-300"
-          >
+          <Button href={ALL_NEWS_HREF} variant="night">
             Lihat semua berita
-            <ArrowRight
-              className="w-4 h-4 transition-transform group-hover/cta:translate-x-1 motion-reduce:transition-none"
-              aria-hidden="true"
-            />
-          </a>
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
+          </Button>
         </motion.div>
       </div>
 
-      {/* Wavy Divider Bawah */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none translate-y-[1px] pointer-events-none">
-        <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className="block w-full h-[50px] md:h-[80px]" aria-hidden="true">
-          <path fill="#ffffff" d={WAVE_BOTTOM} />
-        </svg>
-      </div>
     </section>
   );
 };

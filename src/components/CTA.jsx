@@ -1,8 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import {
-  ArrowRight, Star, Smile, Heart, Sparkles,
-} from 'lucide-react';
+import { ArrowRight, Star, Smile, Heart, Sparkles } from 'lucide-react';
+import { SPMB_URL, wa } from '@/data/site';
+import Button from './ui/Button';
+import WhatsAppIcon from './ui/WhatsAppIcon';
+import { TwinStars } from './ui/Ornaments';
 
 /* ------------------------------------------------------------------ */
 /* DATA & KONFIGURASI                                                  */
@@ -12,13 +14,7 @@ import {
 // taruh di folder `public` lalu isi dengan '/images/cta.jpg'.
 const BG_IMAGE = 'https://picsum.photos/seed/alfa-centauri-cta/1600/900';
 
-// TODO: ganti dengan alamat halaman informasi pendaftaran yang sebenarnya.
-const SPMB_HREF = '#';
-
-// Nomor dan pesan WhatsApp disamakan dengan section FAQ.
-const WA_NUMBER = '6282223246649';
-const WA_MESSAGE = 'Halo Admin, saya ingin bertanya mengenai pendaftaran di TK Alfa Centauri.';
-const WA_HREF = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`;
+const WA_HREF = wa('Halo Admin, saya ingin bertanya mengenai pendaftaran di TK Alfa Centauri.');
 const EASE_OUT = [0.22, 1, 0.36, 1];
 
 // Bentuk organik lembut di sudut kartu, sama seperti di Tentang Kami.
@@ -65,44 +61,6 @@ const underlineVariants = {
 const staticVariants = { hidden: { opacity: 1 }, show: { opacity: 1 } };
 const staticUnderlineVariants = { hidden: { pathLength: 1 }, show: { pathLength: 1 } };
 
-const FOCUS_RING =
-  'focus:outline-none focus-visible:ring-4 focus-visible:ring-yellow-200';
-
-/* ------------------------------------------------------------------ */
-/* KOMPONEN KECIL                                                      */
-/* ------------------------------------------------------------------ */
-
-// Lucide tidak menyediakan logo merek, jadi logo WhatsApp dibuat sebagai SVG sendiri.
-// Ikon ini memberi tahu pengunjung bahwa tombolnya membuka WhatsApp (bukan telepon atau email).
-const WhatsAppIcon = ({ className = '' }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-  </svg>
-);
-
-// Motif dua bintang (callback ke section Tentang Kami): lambang kesuksesan di dunia dan akhirat
-const TwoStars = ({ variants, reduceMotion }) => (
-  <motion.div
-    variants={variants}
-    className="flex items-end justify-center gap-2 mb-5"
-    aria-hidden="true"
-  >
-    <motion.div
-      animate={reduceMotion ? undefined : { y: [0, -6, 0], rotate: [-6, 6, -6] }}
-      transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-    >
-      <Star className="w-8 h-8 md:w-11 md:h-11 text-yellow-300 fill-yellow-300 drop-shadow-[0_0_16px_rgba(253,224,71,0.55)]" />
-    </motion.div>
-    <motion.div
-      className="-mb-1.5 md:-mb-2"
-      animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [6, -6, 6] }}
-      transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-    >
-      <Star className="w-11 h-11 md:w-16 md:h-16 text-yellow-300 fill-yellow-300 drop-shadow-[0_0_20px_rgba(253,224,71,0.6)]" />
-    </motion.div>
-  </motion.div>
-);
-
 /* ------------------------------------------------------------------ */
 /* KOMPONEN UTAMA                                                      */
 /* ------------------------------------------------------------------ */
@@ -120,10 +78,7 @@ const CTA = () => {
   const underline = reduceMotion ? staticUnderlineVariants : underlineVariants;
 
   return (
-    <section
-      className="w-full bg-white py-16 px-4 md:px-6 lg:px-8"
-      aria-labelledby="cta-title"
-    >
+    <section id="daftar" className="w-full pt-8 pb-24 px-4 md:px-6 lg:px-8" aria-labelledby="cta-title">
       <div className="max-w-7xl mx-auto">
         <div
           ref={cardRef}
@@ -136,10 +91,7 @@ const CTA = () => {
             {imgFailed ? (
               <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-500 via-indigo-500 to-sky-500" />
             ) : (
-              <motion.div
-                className="absolute inset-0"
-                style={reduceMotion ? undefined : { y: bgY }}
-              >
+              <motion.div className="absolute inset-0" style={reduceMotion ? undefined : { y: bgY }}>
                 <img
                   src={BG_IMAGE}
                   alt=""
@@ -150,8 +102,7 @@ const CTA = () => {
                 />
               </motion.div>
             )}
-            {/* Arah gradasi dibalik dari Tentang Kami agar tidak terlihat kembar, tapi tetap satu keluarga.
-                Atur angka /xx untuk intensitas; jaga cukup pekat supaya teks putih tetap terbaca di atas foto. */}
+            {/* Arah gradasi dibalik dari Tentang Kami agar tidak terlihat kembar, tapi tetap satu keluarga. */}
             <div className="absolute inset-0 bg-gradient-to-tr from-fuchsia-600/65 via-indigo-600/60 to-sky-600/55" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-indigo-950/35" />
           </div>
@@ -191,12 +142,15 @@ const CTA = () => {
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <TwoStars variants={item} reduceMotion={reduceMotion} />
+            {/* Maskot dua bintang (sama dengan hero & Tentang Kami) */}
+            <motion.div variants={item} className="mb-5">
+              <TwinStars className="w-28 md:w-36" glow />
+            </motion.div>
 
             <motion.h2
               id="cta-title"
               variants={item}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight leading-tight text-balance drop-shadow-[0_2px_12px_rgba(30,27,75,0.45)]"
+              className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 tracking-tight leading-tight text-balance drop-shadow-[0_2px_12px_rgba(30,27,75,0.45)]"
             >
               Siap Menjadi{' '}
               <span className="relative inline-block text-yellow-300">
@@ -229,31 +183,17 @@ const CTA = () => {
             </motion.p>
 
             {/* Satu aksi utama (kuning, paling menonjol) + satu aksi pendukung (kaca) */}
-            <motion.div
-              variants={item}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto"
-            >
-              <a
-                href={SPMB_HREF}
-                className={`group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-yellow-300 text-slate-900 font-bold shadow-lg shadow-indigo-950/20 hover:bg-yellow-200 hover:-translate-y-0.5 transition-[background-color,transform] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${FOCUS_RING}`}
-              >
+            <motion.div variants={item} className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+              <Button href={SPMB_URL} className="w-full sm:w-auto">
                 Info SPMB
-                <ArrowRight
-                  className="w-4 h-4 group-hover:translate-x-1 transition-transform motion-reduce:transition-none"
-                  aria-hidden="true"
-                />
-              </a>
-              <a
-                href={WA_HREF}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/15 backdrop-blur-md border-2 border-white/70 text-white font-bold hover:bg-white/25 transition-colors ${FOCUS_RING}`}
-              >
+                <ArrowRight className="w-5 h-5" aria-hidden="true" />
+              </Button>
+              <Button href={WA_HREF} variant="glass" className="w-full sm:w-auto">
                 <WhatsAppIcon className="w-5 h-5" />
                 Hubungi Admin
-                <span className="sr-only">(buka WhatsApp di tab baru)</span>
-              </a>
-            </motion.div>          </motion.div>
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </section>
