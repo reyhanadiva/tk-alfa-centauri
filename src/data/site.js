@@ -41,6 +41,10 @@ export const CAMPUSES = [
     id: 'terate',
     name: 'Kampus Terate',
     units: 'Playgroup & TK',
+    programs: [
+      { unit: 'Playgroup', age: '2–4 tahun' },
+      { unit: 'TK', age: '4–6 tahun' },
+    ],
     address: 'Jl. Terate No. 12, Samoja, Batununggal, Kota Bandung 40273',
     mapsLink: 'https://maps.app.goo.gl/5Mfy6hzs89BeqywV7',
     // Pencarian peta untuk iframe (tanpa API key)
@@ -50,6 +54,7 @@ export const CAMPUSES = [
     id: 'diponegoro',
     name: 'Kampus Diponegoro',
     units: 'Daycare',
+    programs: [{ unit: 'Daycare', age: '0–2 tahun' }],
     address: 'Jl. Diponegoro No. 48, Citarum, Bandung Wetan, Kota Bandung 40115',
     mapsLink: 'https://maps.app.goo.gl/HbHLZsX8tQ9kh7UG6',
     mapsQuery: 'Alfa Centauri, Jl. Diponegoro No. 48, Citarum, Bandung Wetan, Bandung',

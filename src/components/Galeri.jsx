@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import {
-  motion, AnimatePresence, useReducedMotion, useInView,
-  useMotionValue, useSpring, useScroll, useTransform
-} from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion, useInView } from 'framer-motion';
+import { Cloud, Squiggle } from './ui/Ornaments';
 import {
   ChevronLeft, ChevronRight, Play, Pause, Maximize2, X,
   Star, Music, Palette, Smile, Heart, Sparkles, ImageOff
@@ -53,8 +51,6 @@ const FLOATING_ICONS = [
 ];
 
 const AUTOPLAY_MS = 2800;
-const WAVE_PATH =
-  "M0,192L48,197.3C96,203,192,213,288,213.3C384,213,480,203,576,176C672,149,768,107,864,101.3C960,96,1056,128,1152,149.3C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z";
 
 /* ------------------------------------------------------------------ */
 /* HELPER & HOOKS                                                      */
@@ -165,12 +161,6 @@ const ImageFallback = ({ className = '' }) => (
   </div>
 );
 
-const Wave = ({ fill, className = '' }) => (
-  <svg viewBox="0 0 1440 320" preserveAspectRatio="none" className={`block w-full ${className}`} aria-hidden="true">
-    <path fill={fill} d={WAVE_PATH} />
-  </svg>
-);
-
 const GalleryCard = ({
   item, index, total, isActive, transform, hasFailed,
   onFail, onClick, onExpand, reduceMotion,
@@ -197,24 +187,27 @@ const GalleryCard = ({
       // Kartu samping hanya untuk klik mouse/sentuh. Pengguna keyboard memakai tombol panah,
       // tombol sebelumnya/berikutnya, dan titik indikator, sehingga kartu ini tidak perlu jadi tab stop.
       onClick={() => interactive && onClick()}
-      className={`absolute w-[75vw] max-w-[340px] md:max-w-[420px] h-[380px] md:h-[480px] rounded-[2rem] overflow-hidden will-change-transform bg-slate-200
+      className={`absolute flex flex-col w-[75vw] max-w-[340px] md:max-w-[420px] h-[380px] md:h-[480px] rounded-[2rem] bg-white p-3 will-change-transform
         ${!interactive ? 'pointer-events-none' : ''}
         ${isActive
-          ? 'shadow-[0_25px_50px_rgba(0,0,0,0.2)] border border-white/60 cursor-zoom-in'
-          : 'shadow-lg border border-white/30 cursor-pointer hover:border-white/80'}`}
+          ? 'shadow-[0_8px_0_0_#E7ECF5,0_30px_50px_-20px_rgba(27,37,89,0.35)] cursor-zoom-in'
+          : 'shadow-[0_6px_0_0_#E7ECF5] cursor-pointer'}`}
     >
-      {hasFailed ? (
-        <ImageFallback className="absolute inset-0 w-full h-full pointer-events-none" />
-      ) : (
-        <img
-          src={item.img}
-          alt={item.title}
-          loading={index === 0 ? 'eager' : 'lazy'}
-          draggable={false}
-          onError={onFail}
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-        />
-      )}
+      {/* Foto (bingkai polaroid putih) */}
+      <div className="relative flex-1 overflow-hidden rounded-[1.5rem] bg-slate-200">
+        {hasFailed ? (
+          <ImageFallback className="absolute inset-0 w-full h-full pointer-events-none" />
+        ) : (
+          <img
+            src={item.img}
+            alt={item.title}
+            loading={index === 0 ? 'eager' : 'lazy'}
+            draggable={false}
+            onError={onFail}
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          />
+        )}
+      </div>
 
       {/* Tombol Expand: petunjuk + jalur keyboard; klik di mana saja pada kartu aktif juga membuka modal */}
       <AnimatePresence>
@@ -229,7 +222,7 @@ const GalleryCard = ({
               onExpand();
             }}
             aria-label={`Perbesar foto ${item.title}`}
-            className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3 py-1.5 bg-white/70 backdrop-blur-md border border-white/50 rounded-full text-slate-800 text-xs font-semibold hover:bg-white transition-colors shadow-sm cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="absolute top-6 right-6 z-20 flex items-center gap-1.5 px-3 py-1.5 bg-white/85 backdrop-blur-md border border-white/50 rounded-full text-night text-xs font-semibold hover:bg-white transition-colors shadow-sm cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <Maximize2 className="w-3.5 h-3.5" />
             Expand
@@ -237,15 +230,12 @@ const GalleryCard = ({
         )}
       </AnimatePresence>
 
-      {/* Panel kaca kecil agar foto tetap terlihat */}
-      <div
-        aria-hidden={!isActive}
-        className={`absolute bottom-3 inset-x-3 md:bottom-4 md:inset-x-4 rounded-2xl bg-white/10 backdrop-blur-xl backdrop-saturate-150 border border-white/30 ring-1 ring-inset ring-black/5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] px-4 py-3 md:px-5 md:py-3.5 transition-all duration-500 ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}`}
-      >
-        {/* Tint gelap sangat tipis di belakang teks agar tetap terbaca di foto terang */}
-        <div className="absolute inset-0 -z-10 rounded-2xl bg-gradient-to-t from-black/30 via-black/15 to-black/5" />
-        <h3 className="text-xl md:text-2xl font-bold text-white mb-0.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.35)]">{item.title}</h3>
-        <p className="text-white/90 text-sm leading-relaxed font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]">{item.desc}</p>
+      {/* Keterangan di bawah foto (seperti tulisan di polaroid) */}
+      <div className={`px-2 pt-3 pb-1 transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
+        <h3 className="text-xl md:text-2xl font-semibold text-night leading-tight">{item.title}</h3>
+        <p className={`mt-1 text-sm font-medium leading-snug text-night/65 transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
+          {item.desc}
+        </p>
       </div>
     </motion.div>
   );
@@ -326,9 +316,8 @@ const GalleryControls = ({
 /**
  * Props:
  * - items: [{ title, desc, img }] (default: data mockup)
- * - bottomWaveColor: warna ombak bawah; samakan dengan warna latar halaman (cream #FFF9EE).
  */
-const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#FFF9EE' }) => {
+const Galeri = ({ items = DEFAULT_ITEMS }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isHovering, setIsHovering] = useState(false);
@@ -365,25 +354,6 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#FFF9EE' }) => {
     if (reduceMotion) setIsPlaying(false);
   }, [reduceMotion]);
 
-  /* ---------- PARALLAX background (mouse + scroll) ---------- */
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const smoothX = useSpring(mouseX, { stiffness: 60, damping: 20 });
-  const smoothY = useSpring(mouseY, { stiffness: 60, damping: 20 });
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] });
-  const scrollShift = useTransform(scrollYProgress, [0, 1], [-24, 24]);
-  const bgY = useTransform([scrollShift, smoothY], ([s, m]) => s + m);
-
-  const handleMouseMove = (e) => {
-    if (reduceMotion) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    mouseX.set(((e.clientX - r.left) / r.width - 0.5) * -24);
-    mouseY.set(((e.clientY - r.top) / r.height - 0.5) * -16);
-  };
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
 
   /* ---------- EFFECTS ---------- */
   // Autoplay: setTimeout per-slide -> navigasi manual otomatis mereset timer
@@ -510,9 +480,7 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#FFF9EE' }) => {
     <section
       id="galeri"
       ref={sectionRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="relative w-full min-h-[100svh] flex flex-col items-center justify-between pt-32 pb-32 overflow-hidden bg-cream"
+      className="relative w-full flex flex-col items-center py-24 overflow-hidden"
       aria-roledescription="carousel"
       aria-label="Galeri Kegiatan Sekolah"
     >
@@ -521,35 +489,24 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#FFF9EE' }) => {
         {`${active.title}. ${active.desc}. Foto ${currentIndex + 1} dari ${total}.`}
       </p>
 
-      {/* 1. BACKGROUND LIGHT GLASS + PARALLAX */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <motion.div
-          className="absolute inset-0"
-          style={reduceMotion ? undefined : { x: smoothX, y: bgY }}
-        >
-          <AnimatePresence mode="popLayout">
-            {!failed[currentIndex] && (
-              <motion.img
-                key={currentIndex}
-                src={active.img}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.85 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1 }}
-                onError={() => markFailed(currentIndex)}
-                className="absolute inset-0 w-full h-full object-cover blur-[8px] scale-110"
-                alt=""
-                aria-hidden="true"
-              />
-            )}
-          </AnimatePresence>
-        </motion.div>
-        {failed[currentIndex] && (
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-pink-100 to-yellow-100" />
-        )}
-        {/* Tanpa backdrop-blur di sini: foto sudah di-blur, dan backdrop-blur seukuran section
-            memaksa browser menghitung ulang blur setiap frame saat parallax bergerak (berat di HP). */}
-        <div className="absolute inset-0 bg-white/10 z-10"></div>
+      {/* Latar bersih: tekstur titik + pendar lembut berwarna mengikuti foto aktif */}
+      <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+        <div className="dots absolute inset-0 opacity-60" />
+        <AnimatePresence>
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 1 }}
+            className="absolute inset-0"
+            style={{
+              background: `radial-gradient(42rem 28rem at 50% 58%, hsl(${activeHue ?? 205} 90% 82% / 0.55), transparent 70%)`,
+            }}
+          />
+        </AnimatePresence>
+        <Cloud className="absolute left-[3%] top-24 hidden w-32 md:block" opacity={0.95} />
+        <Cloud className="absolute right-[4%] bottom-28 hidden w-36 md:block" opacity={0.9} />
       </div>
 
       {/* FLOATING ELEMENTS: warna mengikuti foto aktif (fallback ke warna bawaan) */}
@@ -573,10 +530,6 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#FFF9EE' }) => {
         ))}
       </div>
 
-      {/* TRANSISI OMBAK ATAS (putih, menyatu dengan section di atasnya) */}
-      <div className="absolute -top-px left-0 w-full overflow-hidden leading-none rotate-180 pointer-events-none z-20">
-        <Wave fill="#FFF9EE" className="h-[60px] md:h-[100px]" />
-      </div>
 
       <div
         className="relative z-30 w-full max-w-7xl mx-auto px-4 flex flex-col items-center my-auto"
@@ -591,14 +544,17 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#FFF9EE' }) => {
       >
 
         {/* JUDUL */}
-        <div className="text-center mb-16 relative">
-          <div className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/50 backdrop-blur-xl border border-white/70 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)]">
-            <Sparkles className="w-6 h-6 text-blue-500 hidden md:block" aria-hidden="true" />
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
-              Galeri Kegiatan Sekolah
-            </h2>
-            <Sparkles className="w-6 h-6 text-pink-500 hidden md:block" aria-hidden="true" />
-          </div>
+        <div className="text-center mb-12 relative max-w-2xl">
+          <h2 className="text-4xl md:text-5xl font-semibold text-night tracking-tight text-balance">
+            Galeri Kegiatan{' '}
+            <span className="relative inline-block whitespace-nowrap">
+              Sekolah
+              <Squiggle className="text-sunny" />
+            </span>
+          </h2>
+          <p className="mt-5 text-lg font-medium text-night/70 text-pretty">
+            Momen seru ananda belajar, bermain, dan bertumbuh bersama teman-teman.
+          </p>
         </div>
 
         {/* 3D CAROUSEL (tanpa preserve-3d agar z-index & klik kartu samping berfungsi) */}
@@ -649,10 +605,6 @@ const Galeri = ({ items = DEFAULT_ITEMS, bottomWaveColor = '#FFF9EE' }) => {
         />
       </div>
 
-      {/* TRANSISI OMBAK BAWAH (warna via prop bottomWaveColor) */}
-      <div className="absolute -bottom-px left-0 w-full overflow-hidden leading-none pointer-events-none z-20">
-        <Wave fill={bottomWaveColor} className="h-[60px] md:h-[90px]" />
-      </div>
 
       {/* MODAL ZOOM */}
       <AnimatePresence>

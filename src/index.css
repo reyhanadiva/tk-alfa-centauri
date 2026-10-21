@@ -86,3 +86,46 @@
     animation: none;
   }
 }
+
+/* Deretan kartu yang berjalan terus (Profil Pendidik) */
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  animation: marquee-x 36s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    animation: none;
+  }
+}
+
+/* Bintang jatuh di footer: melintas sesekali */
+@keyframes shooting-star {
+  0%,
+  86% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(-18deg);
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(320px, 110px) rotate(-18deg);
+  }
+}
+.shooting-star {
+  opacity: 0;
+  animation: shooting-star 9s ease-in infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .shooting-star {
+    display: none;
+  }
+}

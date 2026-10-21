@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { ArrowRight, Baby, MapPin, Clock } from 'lucide-react';
+import { ArrowRight, Baby, Clock } from 'lucide-react';
 import { SCHOOL, SPMB_LABEL, SPMB_URL, wa } from '@/data/site';
 import Button from './ui/Button';
 import WhatsAppIcon from './ui/WhatsAppIcon';
@@ -18,7 +18,6 @@ const PHOTO_SMALL = 'https://images.unsplash.com/photo-1587691592099-24045742c18
 
 const FACTS = [
   { Icon: Baby, label: 'Usia 0–6 tahun' },
-  { Icon: MapPin, label: '2 kampus di Bandung' },
   { Icon: Clock, label: 'Reguler & Fullday' },
 ];
 
@@ -140,14 +139,6 @@ export default function Hero() {
           {/* maskot dua bintang */}
           <div className="absolute -top-10 left-[2%] sm:-top-12">
             <TwinStars className="w-28 sm:w-36" />
-          </div>
-
-          {/* stiker nilai */}
-          <div className="absolute -right-2 bottom-16 rotate-3 rounded-2xl border-2 border-white bg-sunny px-4 py-2.5 shadow-[0_5px_0_0_#E8B408] sm:-right-4">
-            <p className="flex items-center gap-1.5 font-display text-sm font-semibold text-night sm:text-base">
-              <Sparkle className="w-4" color="#1B2559" />
-              Taqwa · Cerdas · Kreatif
-            </p>
           </div>
         </motion.div>
       </div>

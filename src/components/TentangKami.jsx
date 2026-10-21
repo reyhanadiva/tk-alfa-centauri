@@ -98,10 +98,8 @@ const TentangKami = ({ overlapHero = true }) => {
   const item = reduceMotion ? staticVariants : itemVariants;
   const underline = reduceMotion ? staticUnderlineVariants : underlineVariants;
 
-  // overlapHero: kartu sedikit naik menimpa bukit di bawah hero
-  const sectionClass = overlapHero
-    ? 'relative z-10 -mt-10 md:-mt-16 lg:-mt-24 pb-8'
-    : 'py-16';
+  // Kartu dimulai setelah bukit hero selesai (tidak menimpa bukit), jaraknya rapat agar tetap menyambung
+  const sectionClass = overlapHero ? 'relative z-10 pt-2 pb-8' : 'py-16';
 
   return (
     <section

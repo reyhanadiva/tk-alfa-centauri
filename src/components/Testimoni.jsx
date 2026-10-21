@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Star } from 'lucide-react';
 
@@ -82,6 +82,8 @@ const CURVE_PX = -4;
 const TILT_DEG = 2;
 const MOBILE_CURVE_PX = -3;
 
+const AUTOPLAY_MS = 6500;
+
 const FOCUS_RING =
   'focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white';
 
@@ -103,12 +105,29 @@ const Stars = ({ className = 'w-5 h-5' }) => (
 
 const Testimoni = () => {
   const [activeIndex, setActiveIndex] = useState(2);
+  // Berganti otomatis tiap beberapa detik; berhenti saat disorot/difokus,
+  // dan berhenti seterusnya begitu pengunjung memilih testimoni sendiri.
+  const [auto, setAuto] = useState(true);
+  const [hovering, setHovering] = useState(false);
   const reduceMotion = useReducedMotion();
   const desktopTabs = useRef([]);
   const mobileTabs = useRef([]);
 
   const active = TESTIMONIALS[activeIndex];
   const last = TESTIMONIALS.length - 1;
+  const running = auto && !hovering && !reduceMotion;
+
+  useEffect(() => {
+    if (!running) return undefined;
+    const t = window.setTimeout(() => setActiveIndex((i) => (i === last ? 0 : i + 1)), AUTOPLAY_MS);
+    return () => window.clearTimeout(t);
+  }, [running, activeIndex, last]);
+
+  // pilihan manual: hentikan putar otomatis
+  const choose = (i) => {
+    setAuto(false);
+    setActiveIndex(i);
+  };
 
   // Desktop: busur mengikuti foto aktif (aktif = titik terendah).
   const desktopArc = (index) => {
@@ -131,7 +150,7 @@ const Testimoni = () => {
     else if (e.key === 'End') next = last;
     if (next === null) return;
     e.preventDefault();
-    setActiveIndex(next);
+    choose(next);
     refs.current[next]?.focus();
   };
 
@@ -146,6 +165,10 @@ const Testimoni = () => {
       id="testimoni"
       className="relative w-full pt-20 pb-24 px-4 overflow-hidden"
       aria-labelledby="testimoni-title"
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      onFocus={() => setHovering(true)}
+      onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setHovering(false)}
     >
       {/* Pola titik-titik pastel */}
       <div
@@ -200,7 +223,7 @@ const Testimoni = () => {
                   aria-label={`Testimoni ${item.name}, ${item.role}`}
                   title={item.name}
                   tabIndex={isActive ? 0 : -1}
-                  onClick={() => setActiveIndex(index)}
+                  onClick={() => choose(index)}
                   style={{ transform: desktopArc(index) }}
                   className={`group relative isolate block shrink-0 origin-bottom rounded-[2.5rem] transition-transform duration-500 ease-out motion-reduce:transition-none ${FOCUS_RING}`}
                 >
@@ -247,32 +270,43 @@ const Testimoni = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -15 }}
                 transition={{ duration: 0.4 }}
-                className={`relative isolate m-0 flex flex-col ${
-                  textOnRight ? 'items-start text-left' : 'items-end text-right'
-                }`}
+                className="relative m-0 rounded-[2rem] bg-white p-7 shadow-[0_6px_0_0_#E7ECF5,0_30px_50px_-30px_rgba(27,37,89,0.35)]"
               >
-                {/* Tanda kutip raksasa (dekoratif) */}
+                {/* ekor balon ucapan, menunjuk ke foto */}
                 <span
                   aria-hidden="true"
-                  className={`absolute -top-14 -left-6 -z-10 text-[180px] leading-none font-serif select-none ${active.theme.quote}`}
-                >
-                  “
-                </span>
+                  className={`absolute top-12 h-6 w-6 rotate-45 rounded-[4px] bg-white ${textOnRight ? '-left-2.5' : '-right-2.5'}`}
+                />
 
-                <Stars className="w-5 h-5" />
+                <div className="relative flex items-center justify-between">
+                  <span aria-hidden="true" className={`font-display text-7xl leading-[0.6] ${active.theme.role}`}>“</span>
+                  <Stars className="w-5 h-5" />
+                </div>
 
-                <blockquote className="mt-5 mb-6 m-0">
-                  <p className="text-[17px] text-night/70 italic font-medium leading-[1.8] tracking-wide">
-                    {`“${active.text}”`}
-                  </p>
+                <blockquote className="relative mt-4 mb-6 m-0">
+                  <p className="text-[17px] text-night/80 font-medium leading-[1.75]">{active.text}</p>
                 </blockquote>
 
-                <div className={`w-12 h-[3px] rounded-full mb-5 ${active.theme.bar}`} aria-hidden="true" />
-
-                <figcaption>
-                  <span className="block text-[17px] font-bold text-night mb-1">{active.name}</span>
-                  <span className={`block text-sm font-semibold ${active.theme.role}`}>{active.role}</span>
+                <figcaption className="relative flex items-center gap-3 border-t-2 border-dashed border-slate-100 pt-5">
+                  <span className={`h-10 w-1.5 rounded-full ${active.theme.bar}`} aria-hidden="true" />
+                  <span>
+                    <span className="block font-display text-lg font-semibold text-night">{active.name}</span>
+                    <span className={`block text-sm font-bold ${active.theme.role}`}>{active.role}</span>
+                  </span>
                 </figcaption>
+
+                {/* garis waktu putar otomatis */}
+                {running && (
+                  <span aria-hidden="true" className="absolute inset-x-7 bottom-3 h-1 overflow-hidden rounded-full bg-slate-100">
+                    <motion.span
+                      key={activeIndex}
+                      className={`block h-full rounded-full ${active.theme.bar}`}
+                      initial={{ width: '0%' }}
+                      animate={{ width: '100%' }}
+                      transition={{ duration: AUTOPLAY_MS / 1000, ease: 'linear' }}
+                    />
+                  </span>
+                )}
               </motion.figure>
             </AnimatePresence>
           </div>
@@ -318,7 +352,8 @@ const Testimoni = () => {
 
             {/* Teks: semua testimoni ditumpuk di satu sel grid, jadi tinggi mengikuti yang terpanjang.
                 Dengan begitu tidak ada teks terpotong (line-clamp) dan tidak ada loncatan layout. */}
-            <div className="mt-8 grid w-full px-2 text-center">
+            <div className="relative mt-8 grid w-full rounded-[2rem] bg-white p-6 text-center shadow-[0_6px_0_0_#E7ECF5] sm:p-8">
+              <span aria-hidden="true" className="absolute -top-2.5 left-1/2 h-6 w-6 -translate-x-1/2 rotate-45 rounded-[4px] bg-white" />
               {TESTIMONIALS.map((item, i) => (
                 <figure
                   key={item.id}
@@ -329,13 +364,13 @@ const Testimoni = () => {
                 >
                   <Stars className="w-4 h-4" />
                   <blockquote className="mt-3 mb-5 m-0">
-                    <p className="text-base text-night/70 italic font-medium leading-relaxed text-pretty">
+                    <p className="text-base text-night/80 font-medium leading-relaxed text-pretty">
                       {`“${item.text}”`}
                     </p>
                   </blockquote>
                   <div className={`w-10 h-[3px] rounded-full mb-4 ${item.theme.bar}`} aria-hidden="true" />
                   <figcaption>
-                    <span className="block text-base font-bold text-night mb-0.5">{item.name}</span>
+                    <span className="block font-display text-lg font-semibold text-night mb-0.5">{item.name}</span>
                     <span className={`block text-sm font-semibold ${item.theme.role}`}>{item.role}</span>
                   </figcaption>
                 </figure>
@@ -363,7 +398,7 @@ const Testimoni = () => {
                   aria-controls="m-panel"
                   aria-label={`Testimoni ${item.name}, ${item.role}`}
                   tabIndex={isActive ? 0 : -1}
-                  onClick={() => setActiveIndex(index)}
+                  onClick={() => choose(index)}
                   style={{ transform: mobileArc(index) }}
                   className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-white shadow-md transition-[opacity,filter,box-shadow] duration-300 motion-reduce:transition-none ${FOCUS_RING} ${
                     isActive

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { GraduationCap, Star, Sparkles } from 'lucide-react';
+import { GraduationCap, Star, Sparkles, Pause, Play } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
@@ -109,6 +109,83 @@ const Floaty = ({ className = '', duration = 5, y = -15, delay = 0, rotate = [0,
   );
 };
 
+/** Kartu satu pendidik. Kartu sedikit miring bergantian, lurus & terangkat saat disorot. */
+const PersonCard = ({ person, index, hidden = false }) => (
+  <li className="shrink-0 pr-4 md:pr-5" aria-hidden={hidden || undefined}>
+    <article
+      className={`group flex h-full flex-col w-[70vw] sm:w-[250px] md:w-[270px] p-3 bg-white rounded-[1.75rem] shadow-[0_6px_0_0_#EADFC2] transition-transform duration-300 hover:-translate-y-1.5 hover:rotate-0 motion-reduce:transition-none ${
+        index % 2 ? 'rotate-[1.5deg]' : '-rotate-[1.5deg]'
+      }`}
+    >
+      {/* Foto profil */}
+      <div className="relative aspect-square rounded-[1.25rem] overflow-hidden mb-4 bg-slate-100">
+        <img
+          src={person.image}
+          alt={hidden ? '' : person.name}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 motion-reduce:transition-none"
+        />
+        <div className="absolute top-3 left-3">
+          <span className={`px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide shadow-sm border ${person.roleColor}`}>
+            {person.role}
+          </span>
+        </div>
+      </div>
+
+      {/* Detail */}
+      <div className="px-1 pb-1 flex flex-col flex-grow">
+        <h3 className="text-lg font-semibold text-night mb-3 text-balance">{person.name}</h3>
+        <div className="mt-auto pt-3 border-t border-slate-100">
+          <div className="flex items-start gap-2.5">
+            <div className="mt-0.5 bg-slate-50 p-1.5 rounded-lg flex-shrink-0">
+              <GraduationCap className="w-4 h-4 text-night/60" aria-hidden="true" />
+            </div>
+            <p className="text-sm font-semibold text-night/80 leading-snug">{person.almamater}</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </li>
+);
+
+/**
+ * Deretan kartu yang berjalan terus. Daftar ditulis dua kali lalu digeser -50%, jadi putarannya tanpa putus.
+ * Berhenti saat disorot mouse, saat disentuh, atau saat ada fokus keyboard di dalamnya.
+ */
+const Marquee = ({ people, paused, reduce }) => {
+  const [touching, setTouching] = useState(false);
+
+  if (reduce) {
+    return (
+      <ul className="flex overflow-x-auto px-4 md:px-8 pt-4 pb-8 list-none m-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {people.map((p, i) => <PersonCard key={p.name} person={p} index={i} />)}
+      </ul>
+    );
+  }
+
+  // makin banyak orang, makin lama satu putaran (kecepatan tetap terasa sama)
+  const duration = `${people.length * 6}s`;
+  const stopped = paused || touching;
+
+  return (
+    <div
+      className="group/marquee overflow-hidden pt-4 pb-8 [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]"
+      onTouchStart={() => setTouching(true)}
+      onTouchEnd={() => setTouching(false)}
+    >
+      <ul
+        className="marquee flex w-max list-none p-0 m-0 group-hover/marquee:[animation-play-state:paused] focus-within:[animation-play-state:paused]"
+        style={{ animationDuration: duration, animationPlayState: stopped ? 'paused' : undefined }}
+      >
+        {people.map((p, i) => <PersonCard key={p.name} person={p} index={i} />)}
+        {people.map((p, i) => <PersonCard key={`${p.name}-copy`} person={p} index={i + people.length} hidden />)}
+      </ul>
+    </div>
+  );
+};
+
 /* ------------------------------------------------------------------ */
 /* KOMPONEN UTAMA                                                      */
 /* ------------------------------------------------------------------ */
@@ -116,16 +193,11 @@ const Floaty = ({ className = '', duration = 5, y = -15, delay = 0, rotate = [0,
 const ProfilPendidik = () => {
   const [activeTab, setActiveTab] = useState('pendidik');
   const reduceMotion = useReducedMotion();
-  const panelRef = useRef(null);
+  const [paused, setPaused] = useState(false);
   const tabRefs = useRef([]);
 
   const activeIndex = TABS.findIndex((t) => t.id === activeTab);
   const currentData = TABS[activeIndex].data;
-
-  // Saat tab berganti, kembalikan slider ke awal (tanpa animasi agar tidak "terbang" balik).
-  useEffect(() => {
-    panelRef.current?.scrollTo({ left: 0, behavior: 'auto' });
-  }, [activeTab]);
 
   // Navigasi keyboard antar tab (pola tablist: panah, Home, End)
   const handleKeyDown = (e) => {
@@ -221,67 +293,30 @@ const ProfilPendidik = () => {
         </div>
       </div>
 
-      {/* Slider: swipe, kartu berikutnya sengaja "mengintip" sebagai petunjuk */}
-      <div className="relative z-10 w-full pb-4">
-        <div
-          ref={panelRef}
-          role="tabpanel"
-          id="panel-profil"
-          aria-labelledby={`tab-${activeTab}`}
-          tabIndex={0}
-          className={`overflow-x-auto snap-x snap-proximity pb-8 pt-2 px-4 md:px-8 lg:px-[max(2rem,calc((100vw-80rem)/2))]
-            scroll-pl-4 md:scroll-pl-8 lg:scroll-pl-[max(2rem,calc((100vw-80rem)/2))]
-            [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${FOCUS_RING} focus-visible:ring-inset`}
-        >
-          {/* key=activeTab: daftar dibuat ulang saat tab berganti, sehingga kartu muncul berurutan tanpa AnimatePresence */}
-          <ul key={activeTab} className="flex gap-4 md:gap-5 w-max list-none p-0 m-0">
-            {currentData.map((person, index) => (
-              <motion.li
-                key={person.name}
-                initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: reduceMotion ? 0 : index * 0.06 }}
-                className="group flex flex-col shrink-0 snap-start w-[72vw] sm:w-[260px] md:w-[280px] p-3 bg-white rounded-[1.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-shadow duration-300 motion-reduce:transition-none"
-              >
-                {/* Foto profil */}
-                <div className="relative aspect-square rounded-[1rem] overflow-hidden mb-4 bg-slate-100">
-                  <img
-                    src={person.image}
-                    alt={person.name}
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    decoding="async"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 motion-reduce:transition-none"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide shadow-sm border ${person.roleColor}`}>
-                      {person.role}
-                    </span>
-                  </div>
-                </div>
+      {/* Kartu berjalan pelan tanpa henti (seperti English Now). Berhenti saat disorot / disentuh,
+          dan bisa dijeda lewat tombol. Pengguna "kurangi animasi" mendapat daftar biasa yang bisa digeser. */}
+      <div
+        role="tabpanel"
+        id="panel-profil"
+        aria-labelledby={`tab-${activeTab}`}
+        className="relative z-10 w-full"
+      >
+        <Marquee key={activeTab} people={currentData} paused={paused} reduce={reduceMotion} />
 
-                {/* Detail */}
-                <div className="px-1 pb-1 flex flex-col flex-grow">
-                  <h3 className="text-lg font-bold text-night mb-3 text-balance">
-                    {person.name}
-                  </h3>
-
-                  <div className="mt-auto pt-3 border-t border-slate-100">
-                    <div className="flex items-start gap-2.5">
-                      <div className="mt-0.5 bg-slate-50 p-1.5 rounded-lg flex-shrink-0">
-                        <GraduationCap className="w-4 h-4 text-night/60" aria-hidden="true" />
-                      </div>
-                      <p className="text-sm font-semibold text-night/80 leading-snug">
-                        {person.almamater}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </motion.li>
-            ))}
-          </ul>
-        </div>
+        {!reduceMotion && (
+          <div className="mt-2 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setPaused((p) => !p)}
+              aria-pressed={paused}
+              className={`inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-night shadow-[0_3px_0_0_#EADFC2] ${FOCUS_RING}`}
+            >
+              {paused ? <Play className="w-4 h-4 fill-current" aria-hidden="true" /> : <Pause className="w-4 h-4 fill-current" aria-hidden="true" />}
+              {paused ? 'Jalankan' : 'Jeda'}
+            </button>
+          </div>
+        )}
       </div>
-
     </section>
   );
 };

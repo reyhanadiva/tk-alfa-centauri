@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import { MapPin, Navigation, Clock, Mail } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { MapPin, Navigation, Clock, Mail, Copy, Check, Baby } from 'lucide-react';
 import { CAMPUSES, EMAIL, SCHEDULE, WA_DISPLAY, wa } from '@/data/site';
 import Button from './ui/Button';
 import WhatsAppIcon from './ui/WhatsAppIcon';
@@ -8,27 +8,51 @@ import { Cloud, Floaty, Sparkle, Squiggle } from './ui/Ornaments';
 
 /*
   Section Lokasi & Kontak (id="kontak").
-  Kiri: pilihan kampus (kartu yang bisa dipilih), jam belajar, kontak.
-  Kanan: peta Google Maps interaktif yang berganti mengikuti kampus terpilih.
-  Peta baru dimuat saat mendekati layar (loading="lazy").
+  Karena ada DUA kampus dengan jenjang berbeda, pengunjung dibantu memilih:
+  1. "Usia ananda berapa?" → langsung ditunjukkan jenjang & kampus yang tepat.
+  2. Kartu kampus: jenjang + usia, alamat, petunjuk arah, salin alamat, tanya jadwal kunjungan.
+  3. Peta Google Maps yang berganti mengikuti kampus terpilih (dimuat saat mendekati layar).
 */
 
 const CAMPUS_THEME = {
-  terate: { chip: 'bg-sky-100 text-sky-800', ring: 'ring-sky-400', dot: 'bg-sky-500' },
-  diponegoro: { chip: 'bg-amber-100 text-amber-800', ring: 'ring-amber-400', dot: 'bg-amber-500' },
+  terate: { chip: 'bg-sky-100 text-sky-800', ring: 'ring-sky-400', dot: 'bg-sky-500', soft: 'bg-sky-50' },
+  diponegoro: { chip: 'bg-amber-100 text-amber-800', ring: 'ring-amber-400', dot: 'bg-amber-500', soft: 'bg-amber-50' },
 };
+
+// Pilihan usia → jenjang & kampus (diambil dari data kampus, jadi selalu sinkron)
+const AGE_OPTIONS = CAMPUSES.flatMap((c) => c.programs.map((p) => ({ ...p, campusId: c.id, campusName: c.name }))).sort(
+  (a, b) => parseInt(a.age, 10) - parseInt(b.age, 10)
+);
 
 const mapSrc = (query) => `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=16&output=embed`;
 
 export default function Lokasi() {
   const reduce = useReducedMotion();
   const [activeId, setActiveId] = useState(CAMPUSES[0].id);
+  const [age, setAge] = useState(null); // pilihan usia (unit), null = belum memilih
+  const [copied, setCopied] = useState(null);
   const active = CAMPUSES.find((c) => c.id === activeId) ?? CAMPUSES[0];
+  const ageResult = AGE_OPTIONS.find((o) => o.unit === age);
+
+  const pickAge = (opt) => {
+    setAge(opt.unit);
+    setActiveId(opt.campusId);
+  };
+
+  const copyAddress = async (c) => {
+    try {
+      await navigator.clipboard.writeText(c.address);
+      setCopied(c.id);
+      window.setTimeout(() => setCopied(null), 2000);
+    } catch {
+      /* clipboard tidak tersedia: abaikan */
+    }
+  };
 
   const fadeUp = (delay = 0) => ({
     initial: reduce ? false : { opacity: 0, y: 24 },
     whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.2 },
+    viewport: { once: true, amount: 0.15 },
     transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay },
   });
 
@@ -50,11 +74,56 @@ export default function Lokasi() {
             </span>
           </h2>
           <p className="mt-5 text-lg font-medium text-night/70 text-pretty">
-            Dua kampus di tengah Kota Bandung. Datang langsung, atau tanya jadwal kunjungan lewat WhatsApp.
+            Kami punya dua kampus di Kota Bandung dengan jenjang yang berbeda. Pilih usia ananda untuk melihat kampus
+            yang tepat.
           </p>
         </motion.div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_1.15fr] lg:gap-8">
+        {/* ---------- Pemilih usia ---------- */}
+        <motion.div {...fadeUp(0.05)} className="mx-auto mt-10 max-w-3xl rounded-[2rem] bg-white p-5 shadow-[0_6px_0_0_#E7ECF5] md:p-6">
+          <p className="flex items-center justify-center gap-2 text-center font-display text-lg font-semibold text-night">
+            <Baby size={20} className="text-sky-600" aria-hidden="true" />
+            Usia ananda berapa?
+          </p>
+          <div role="radiogroup" aria-label="Pilih usia ananda" className="mt-4 grid grid-cols-3 gap-2 sm:gap-3">
+            {AGE_OPTIONS.map((o) => {
+              const on = age === o.unit;
+              return (
+                <button
+                  key={o.unit}
+                  type="button"
+                  role="radio"
+                  aria-checked={on}
+                  onClick={() => pickAge(o)}
+                  className={`rounded-2xl px-2 py-3 text-center transition-[background-color,box-shadow,transform] active:translate-y-[2px] focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-400 ${
+                    on ? 'bg-sunny shadow-[0_4px_0_0_#E8B408]' : 'bg-cream shadow-[0_4px_0_0_#EDE3CC] hover:bg-butter'
+                  }`}
+                >
+                  <span className="block font-display text-lg font-semibold text-night sm:text-xl">{o.age}</span>
+                  <span className="block text-xs font-bold text-night/60 sm:text-sm">{o.unit}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div aria-live="polite" className="min-h-[1.75rem]">
+            <AnimatePresence mode="wait">
+              {ageResult && (
+                <motion.p
+                  key={ageResult.unit}
+                  initial={reduce ? false : { opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="mt-4 text-center text-[15px] font-semibold text-night/80"
+                >
+                  Ananda masuk jenjang <strong className="text-night">{ageResult.unit}</strong> di{' '}
+                  <strong className="text-night">{ageResult.campusName}</strong>. Lokasinya sudah ditandai di peta.
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1.15fr] lg:gap-8">
           {/* ---------- Kiri: kampus, jam, kontak ---------- */}
           <motion.div className="flex flex-col gap-4" {...fadeUp(0.05)}>
             <div role="radiogroup" aria-label="Pilih kampus" className="flex flex-col gap-4">
@@ -85,16 +154,20 @@ export default function Lokasi() {
                         <MapPin size={20} aria-hidden="true" />
                       </span>
                       <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-xl font-semibold text-night">{c.name}</h3>
-                          <span className={`rounded-full px-3 py-0.5 text-xs font-extrabold ${theme.chip}`}>{c.units}</span>
-                        </div>
-                        <p className="mt-1.5 text-[15px] font-medium leading-snug text-night/70">{c.address}</p>
+                        <h3 className="text-xl font-semibold text-night">{c.name}</h3>
+                        <ul className="mt-2 flex flex-wrap gap-1.5">
+                          {c.programs.map((p) => (
+                            <li key={p.unit} className={`rounded-full px-3 py-0.5 text-xs font-extrabold ${theme.chip}`}>
+                              {p.unit} · {p.age}
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="mt-2.5 text-[15px] font-medium leading-snug text-night/70">{c.address}</p>
                       </div>
                     </div>
 
-                    {/* tombol arah di atas tombol pemilih */}
-                    <div className="relative mt-4 pl-[3.75rem]">
+                    {/* aksi (di atas tombol pemilih kartu) */}
+                    <div className="relative mt-4 flex flex-wrap gap-2 sm:pl-[3.75rem]">
                       <a
                         href={c.mapsLink}
                         target="_blank"
@@ -104,6 +177,24 @@ export default function Lokasi() {
                         <Navigation size={14} aria-hidden="true" />
                         Petunjuk arah
                         <span className="sr-only">(buka Google Maps di tab baru)</span>
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => copyAddress(c)}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-cream px-3.5 py-1.5 text-sm font-bold text-night ring-1 ring-night/10 transition-colors hover:bg-butter focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-400"
+                      >
+                        {copied === c.id ? <Check size={14} className="text-emerald-600" aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
+                        <span aria-live="polite">{copied === c.id ? 'Tersalin!' : 'Salin alamat'}</span>
+                      </button>
+                      <a
+                        href={wa(`Halo Admin, saya ingin menjadwalkan kunjungan ke ${c.name} (${c.units}) TK Alfa Centauri.`)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-sm font-bold text-emerald-800 ring-1 ring-emerald-200 transition-colors hover:bg-emerald-100 focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-400"
+                      >
+                        <WhatsAppIcon className="h-3.5 w-3.5" />
+                        Jadwalkan kunjungan
+                        <span className="sr-only">(buka WhatsApp di tab baru)</span>
                       </a>
                     </div>
                   </div>
@@ -130,7 +221,7 @@ export default function Lokasi() {
 
             {/* kontak */}
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Button href={wa('Halo Admin, saya ingin menanyakan jadwal kunjungan ke TK Alfa Centauri.')} variant="night" className="flex-1">
+              <Button href={wa()} variant="night" className="flex-1">
                 <WhatsAppIcon className="h-5 w-5 text-emerald-300" />
                 {WA_DISPLAY}
               </Button>
@@ -143,7 +234,7 @@ export default function Lokasi() {
 
           {/* ---------- Kanan: peta ---------- */}
           <motion.div {...fadeUp(0.1)} className="relative">
-            <div className="relative h-full min-h-[360px] overflow-hidden rounded-[2rem] border-4 border-white bg-cloud shadow-[0_30px_60px_-30px_rgba(27,37,89,0.45)]">
+            <div className="relative h-full min-h-[380px] overflow-hidden rounded-[2rem] border-4 border-white bg-cloud shadow-[0_30px_60px_-30px_rgba(27,37,89,0.45)]">
               <iframe
                 key={active.id}
                 title={`Peta ${active.name}`}
@@ -154,7 +245,7 @@ export default function Lokasi() {
               />
               <div className="pointer-events-none absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/95 px-3.5 py-2 text-sm font-extrabold text-night shadow-md">
                 <span className={`size-2.5 rounded-full ${CAMPUS_THEME[active.id].dot}`} aria-hidden="true" />
-                {active.name}
+                {active.name} · {active.units}
               </div>
             </div>
           </motion.div>

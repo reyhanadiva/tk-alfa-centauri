@@ -1,7 +1,10 @@
 import React, { useState, useId } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { ChevronDown, ArrowRight, Star, Heart, Sparkles, Smile } from 'lucide-react';
+import { ChevronDown, Star, Heart, Sparkles, Smile } from 'lucide-react';
 import { wa } from '@/data/site';
+import Button from './ui/Button';
+import WhatsAppIcon from './ui/WhatsAppIcon';
+import { Squiggle, TwinStars } from './ui/Ornaments';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
@@ -243,7 +246,7 @@ const FAQ = () => {
   return (
     <section
       id="faq"
-      className="relative w-full py-24 px-4 md:px-8 overflow-hidden"
+      className="relative w-full py-24 px-4 md:px-8 overflow-x-clip"
       aria-labelledby={`${baseId}-title`}
     >
       {/* Blob pastel */}
@@ -287,40 +290,50 @@ const FAQ = () => {
       </Floaty>
 
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-20">
-        {/* Kolom Kiri: Header & CTA */}
-        <motion.div
-          className="w-full lg:w-[40%] flex flex-col justify-center"
-          initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, ease: EASE_OUT }}
-        >
-          <h2
-            id={`${baseId}-title`}
-            className="text-4xl md:text-[52px] font-bold text-night tracking-tight leading-[1.1] mb-6"
+        {/* Kolom Kiri: menempel saat scroll (desktop), berisi judul + kartu "masih ada pertanyaan?" */}
+        <div className="w-full lg:w-[40%]">
+          <motion.div
+            className="lg:sticky lg:top-32"
+            initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.7, ease: EASE_OUT }}
           >
-            <span className="block">Ada pertanyaan?</span>
-            <span className="block">Kami bantu jawab.</span>
-          </h2>
+            <h2
+              id={`${baseId}-title`}
+              className="text-4xl md:text-[52px] font-semibold text-night tracking-tight leading-[1.1] mb-6"
+            >
+              <span className="block">Ada pertanyaan?</span>
+              <span className="block">
+                Kami bantu{' '}
+                <span className="relative inline-block whitespace-nowrap">
+                  jawab.
+                  <Squiggle className="text-sunny" />
+                </span>
+              </span>
+            </h2>
 
-          <p className="text-[17px] text-night/70 font-medium leading-relaxed mb-10 max-w-md text-pretty">
-            Jawaban ringkas seputar kurikulum, program belajar, fasilitas, dan layanan TK Alfa Centauri.
-          </p>
+            <p className="text-[17px] text-night/70 font-medium leading-relaxed max-w-md text-pretty">
+              Jawaban ringkas seputar kurikulum, program belajar, fasilitas, dan layanan TK Alfa Centauri.
+            </p>
 
-          <a
-            href={WA_HREF}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`group inline-flex items-center gap-2 w-fit rounded-full text-blue-700 font-bold text-[17px] hover:text-blue-900 transition-colors ${FOCUS_RING}`}
-          >
-            Hubungi kami melalui WhatsApp
-            <ArrowRight
-              className="w-5 h-5 group-hover:translate-x-1.5 transition-transform motion-reduce:transition-none"
-              aria-hidden="true"
-            />
-            <span className="sr-only">(buka di tab baru)</span>
-          </a>
-        </motion.div>
+            {/* Kartu: masih ada pertanyaan? */}
+            <div className="relative mt-8 max-w-md overflow-hidden rounded-[2rem] bg-night p-6 pr-28 text-white shadow-[0_6px_0_0_#111842] md:p-7 md:pr-32">
+              <div className="dots-light absolute inset-0 opacity-60" aria-hidden="true" />
+              <div className="absolute right-4 top-6" aria-hidden="true">
+                <TwinStars className="w-20 md:w-24" glow />
+              </div>
+              <p className="relative font-display text-2xl font-semibold leading-tight">Masih ada pertanyaan?</p>
+              <p className="relative mt-2 text-[15px] leading-relaxed text-white/75">
+                Admin kami siap menjawab langsung melalui WhatsApp, termasuk menjadwalkan kunjungan ke sekolah.
+              </p>
+              <Button href={WA_HREF} size="sm" className="relative mt-5">
+                <WhatsAppIcon className="h-4 w-4" />
+                Tanya Admin
+              </Button>
+            </div>
+          </motion.div>
+        </div>
 
         {/* Kolom Kanan: Accordion */}
         <div className="w-full lg:w-[60%] flex flex-col gap-4">
