@@ -82,9 +82,9 @@ const ProgramLayanan = () => {
       aria-labelledby="program-layanan-title"
     >
       {/* Blob warna lembut */}
-      <div className="absolute top-20 right-[-8%] w-[340px] h-[340px] bg-amber-200/40 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-1/2 left-[-8%] w-[340px] h-[340px] bg-sky-200/40 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute bottom-24 right-[15%] w-[300px] h-[300px] bg-emerald-100/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-20 right-[-8%] w-[340px] h-[340px] bg-amber-200/40 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute top-1/2 left-[-8%] w-[340px] h-[340px] bg-sky-200/40 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute bottom-24 right-[15%] w-[300px] h-[300px] bg-emerald-100/50 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
 
       {/* Elemen Melayang: yang besar hanya di layar lebar agar tidak menabrak judul */}
       <Floaty duration={6} y={-20} className="hidden md:block top-16 left-[12%] opacity-80">

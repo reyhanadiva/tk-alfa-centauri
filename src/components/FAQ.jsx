@@ -250,9 +250,9 @@ const FAQ = () => {
       aria-labelledby={`${baseId}-title`}
     >
       {/* Blob pastel */}
-      <div className="absolute top-20 left-[-5%] w-[400px] h-[400px] bg-blue-100/50 rounded-full blur-[100px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute bottom-10 right-[-5%] w-[400px] h-[400px] bg-amber-100/50 rounded-full blur-[100px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-1/2 left-[30%] w-[300px] h-[300px] bg-pink-100/40 rounded-full blur-[100px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-20 left-[-5%] w-[400px] h-[400px] bg-blue-100/50 rounded-full blur-[100px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute bottom-10 right-[-5%] w-[400px] h-[400px] bg-amber-100/50 rounded-full blur-[100px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute top-1/2 left-[30%] w-[300px] h-[300px] bg-pink-100/40 rounded-full blur-[100px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
 
       {/* Hiasan melayang: hanya layar lebar (lg ke atas) agar tidak mengganggu teks di layar kecil */}
       {/* Bintang */}

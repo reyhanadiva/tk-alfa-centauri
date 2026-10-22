@@ -94,9 +94,9 @@ const Fasilitas = () => {
       aria-labelledby="fasilitas-title"
     >
       {/* Blob warna lembut */}
-      <div className="absolute top-28 left-[-10%] w-[350px] h-[350px] bg-emerald-100/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-1/2 right-[-6%] w-[380px] h-[380px] bg-sky-100/60 rounded-full blur-[100px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute bottom-0 left-[25%] w-[320px] h-[320px] bg-amber-100/50 rounded-full blur-[100px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-28 left-[-10%] w-[350px] h-[350px] bg-emerald-100/50 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute top-1/2 right-[-6%] w-[380px] h-[380px] bg-sky-100/60 rounded-full blur-[100px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute bottom-0 left-[25%] w-[320px] h-[320px] bg-amber-100/50 rounded-full blur-[100px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
 
       {/* Hiasan melayang: hanya md ke atas agar tidak menabrak judul di HP */}
       <Floaty duration={6} y={-15} className="hidden md:block top-24 right-[10%] opacity-75">

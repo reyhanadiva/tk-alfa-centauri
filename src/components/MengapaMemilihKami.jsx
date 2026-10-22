@@ -166,10 +166,10 @@ const MengapaMemilihKami = () => {
       aria-labelledby="mengapa-memilih-kami-title"
     >
       {/* Blob warna-warni */}
-      <div className="absolute top-32 left-[-6%] w-[380px] h-[380px] bg-sky-200/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-1/3 right-[-8%] w-[340px] h-[340px] bg-pink-200/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute bottom-10 left-[20%] w-[320px] h-[320px] bg-emerald-100/60 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute bottom-0 right-[-5%] w-[360px] h-[360px] bg-amber-200/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-32 left-[-6%] w-[380px] h-[380px] bg-sky-200/50 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute top-1/3 right-[-8%] w-[340px] h-[340px] bg-pink-200/50 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute bottom-10 left-[20%] w-[320px] h-[320px] bg-emerald-100/60 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute bottom-0 right-[-5%] w-[360px] h-[360px] bg-amber-200/50 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
 
       {/* Hiasan melayang: besar hanya di layar lebar agar tidak menabrak teks */}
       <Floaty className="hidden lg:block top-32 left-[7%]">

@@ -5,6 +5,7 @@ import { SCHOOL, SPMB_LABEL, SPMB_URL, wa } from '@/data/site';
 import Button from './ui/Button';
 import WhatsAppIcon from './ui/WhatsAppIcon';
 import { Cloud, Sparkle, TwinStars } from './ui/Ornaments';
+import HillTrain, { CREST_D } from './ui/HillTrain';
 import { FOTO } from '@/data/photos';
 
 /*
@@ -190,6 +191,9 @@ function Hills() {
         <path d="M0 120 C 180 60 360 70 520 110 C 700 150 860 70 1060 62 C 1230 56 1340 90 1440 104 V230 H0 Z" fill="#C9EBAE" />
         {/* bukit tengah */}
         <path d="M0 160 C 220 112 420 120 640 152 C 860 184 1060 118 1260 126 C 1350 130 1400 140 1440 146 V230 H0 Z" fill="#9FD685" />
+        {/* rel di punggung bukit tengah: bantalan + besi (kereta berjalan di atasnya) */}
+        <path d={CREST_D} fill="none" stroke="#7A5A3A" strokeWidth="7" strokeDasharray="2 10" vectorEffect="non-scaling-stroke" opacity="0.75" />
+        <path d={CREST_D} fill="none" stroke="#6B7280" strokeWidth="2" vectorEffect="non-scaling-stroke" />
         {/* tanah depan = warna halaman */}
         <path d="M0 196 C 260 170 520 178 760 194 C 1000 210 1220 186 1440 190 V230 H0 Z" fill="#FFF9EE" />
       </svg>
@@ -216,6 +220,9 @@ function Hills() {
         <rect x="18" y="34" width="5" height="24" rx="2" fill="#B07A4A" />
         <circle cx="20" cy="24" r="16" fill="#5DB35B" />
       </svg>
+
+      {/* kereta ALFA CENTAURI menyusuri bukit */}
+      <HillTrain />
     </div>
   );
 }

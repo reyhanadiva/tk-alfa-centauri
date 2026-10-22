@@ -18,20 +18,34 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      // Di atas hero navbar menyatu dengan langit; kaca mengambang baru muncul setelah hero terlewati
+    let limit = 0;
+    let ticking = false;
+    const measure = () => {
       const hero = document.getElementById('beranda');
-      const limit = (hero ? hero.offsetHeight : window.innerHeight) - 96;
+      limit = (hero ? hero.offsetHeight : window.innerHeight) - 96;
+    };
+    const update = () => {
+      ticking = false;
       const past = window.scrollY > limit;
-      setScrolled(past);
+      setScrolled(past); // nilai sama = React tidak render ulang
       setPastHero(past);
     };
-    onScroll();
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+    const onResize = () => {
+      measure();
+      onScroll();
+    };
+    measure();
+    update();
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+    window.addEventListener('resize', onResize);
     return () => {
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 

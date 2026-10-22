@@ -254,3 +254,13 @@
     animation: none;
   }
 }
+
+/* Hero: kereta menyusuri bukit (offset-path diatur lewat gaya inline per gerbong) */
+@keyframes hill-train {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}

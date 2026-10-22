@@ -172,6 +172,7 @@ const Marquee = ({ people, reduce }) => {
   const x = useMotionValue(0);
   const half = useRef(0);
   const hover = useRef(false);
+  const visible = useRef(true); // marquee berhenti saat di luar layar
   const drag = useRef(null);
   const [dragging, setDragging] = useState(false);
 
@@ -185,6 +186,14 @@ const Marquee = ({ people, reduce }) => {
     return () => window.removeEventListener('resize', measure);
   }, [people]);
 
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([e]) => { visible.current = e.isIntersecting; });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   const wrap = (v) => {
     const h = half.current;
     if (!h) return v;
@@ -192,7 +201,7 @@ const Marquee = ({ people, reduce }) => {
   };
 
   useAnimationFrame((_, delta) => {
-    if (reduce || hover.current || drag.current) return;
+    if (reduce || !visible.current || hover.current || drag.current) return;
     x.set(wrap(x.get() - SPEED * Math.min(delta, 50)));
   });
 
@@ -273,9 +282,9 @@ const ProfilPendidik = () => {
     >
 
       {/* Blob warna lembut */}
-      <div className="absolute top-32 left-[-5%] w-[300px] h-[300px] bg-amber-200/50 rounded-full blur-[80px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute bottom-20 right-[-5%] w-[400px] h-[400px] bg-indigo-200/40 rounded-full blur-[80px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-1/2 left-[30%] w-[280px] h-[280px] bg-pink-200/30 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-32 left-[-5%] w-[300px] h-[300px] bg-amber-200/50 rounded-full blur-[80px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute bottom-20 right-[-5%] w-[400px] h-[400px] bg-indigo-200/40 rounded-full blur-[80px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute top-1/2 left-[30%] w-[280px] h-[280px] bg-pink-200/30 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
 
       {/* Hiasan melayang: hanya md ke atas agar tidak menabrak judul di HP */}
       <Floaty duration={5} y={-15} className="hidden md:block top-28 right-[10%] lg:right-[15%] opacity-80">

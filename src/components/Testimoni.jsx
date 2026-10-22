@@ -214,9 +214,9 @@ const Testimoni = () => {
       />
 
       {/* Blob halus */}
-      <div className="absolute top-12 left-[15%] w-[350px] h-[350px] bg-amber-100/40 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute bottom-10 right-[15%] w-[350px] h-[350px] bg-blue-100/40 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-1/2 left-[-6%] w-[300px] h-[300px] bg-pink-100/40 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-12 left-[15%] w-[350px] h-[350px] bg-amber-100/40 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute bottom-10 right-[15%] w-[350px] h-[350px] bg-blue-100/40 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute top-1/2 left-[-6%] w-[300px] h-[300px] bg-pink-100/40 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
 
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Header */}

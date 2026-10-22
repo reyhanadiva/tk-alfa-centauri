@@ -141,9 +141,9 @@ const BeritaArtikel = () => {
     >
 
       {/* Blob warna lembut */}
-      <div className="absolute top-20 right-[-5%] w-[350px] h-[350px] bg-blue-100/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-1/2 left-[-6%] w-[300px] h-[300px] bg-amber-100/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
-      <div className="absolute bottom-24 right-[18%] w-[300px] h-[300px] bg-pink-100/50 rounded-full blur-[90px] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-20 right-[-5%] w-[350px] h-[350px] bg-blue-100/50 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute top-1/2 left-[-6%] w-[300px] h-[300px] bg-amber-100/50 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
+      <div className="absolute bottom-24 right-[18%] w-[300px] h-[300px] bg-pink-100/50 rounded-full blur-[90px] pointer-events-none max-md:hidden [transform:translateZ(0)]" aria-hidden="true" />
 
       {/* Hiasan melayang */}
       <Floaty duration={6} y={-15} className="hidden md:block top-24 right-[12%] opacity-80">

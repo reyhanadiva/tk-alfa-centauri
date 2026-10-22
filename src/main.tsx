@@ -18,3 +18,19 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>
 );
+
+// Hemat CPU/baterai (terutama di HP): animasi CSS yang berjalan terus dijeda saat berada di luar layar
+const pauseOffscreen = () => {
+  if (typeof IntersectionObserver === 'undefined') return;
+  const io = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        (e.target as HTMLElement).style.animationPlayState = e.isIntersecting ? 'running' : 'paused';
+      }),
+    { rootMargin: '120px 0px' }
+  );
+  document
+    .querySelectorAll('.gallery-up, .gallery-down, .marquee, .marquee-chips, .spin-slow, .cloud-drift')
+    .forEach((el) => io.observe(el));
+};
+window.addEventListener('load', () => window.setTimeout(pauseOffscreen, 800), { once: true });
