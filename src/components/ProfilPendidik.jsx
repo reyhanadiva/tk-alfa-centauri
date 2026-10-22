@@ -58,10 +58,10 @@ const TIM_PENDIDIK = [
 ];
 
 const TIM_MANAJEMEN = [
-  { name: 'Nita Kusumayati, S.Psi', role: 'Kepala Sekolah', color: 'pimpinan', image: photo('nita') },
-  { name: 'Nurul Afrianti, M.Pd., M.Psi', role: 'Pengelola', color: 'pimpinan' },
-  { name: 'Weindiani, M.Pd.', role: 'Kurikulum', color: 'pimpinan', image: photo('weindi') },
-  { name: 'Devi Febriani, M.Psi., Psi', role: 'Psikolog', color: 'pimpinan' },
+  { name: 'Nita Kusumayati, S.Psi', role: 'Kepala Sekolah', color: 'pimpinan', almamater: 'S1 Psikologi, Universitas Padjadjaran', image: photo('nita') },
+  { name: 'Nurul Afrianti, M.Pd., M.Psi', role: 'Pengelola', color: 'pimpinan', almamater: 'S2 Psikologi, Universitas Padjadjaran' },
+  { name: 'Weindiani, M.Pd.', role: 'Kurikulum', color: 'pimpinan', almamater: 'S2 Manajemen Pendidikan, Universitas Pendidikan Indonesia', image: photo('weindi') },
+  { name: 'Devi Febriani, M.Psi., Psi', role: 'Psikolog', color: 'pimpinan', almamater: 'S2 Psikologi, Universitas Padjadjaran' },
   { name: 'Ade Riyanto', role: 'Satpam', color: 'staf', image: photo('ade') },
   { name: 'Muhammad Zaki Fadillah', role: 'Koki', color: 'staf', image: photo('zaki') },
   { name: 'Dicky Noer Alif', role: 'Caraka', color: 'staf' },

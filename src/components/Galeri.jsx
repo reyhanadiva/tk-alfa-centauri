@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, ImageOff, Maximize2 } from 'lucide-react';
 import { Cloud, Floaty, Sparkle, Squiggle } from './ui/Ornaments';
-import { pexels } from '@/data/site';
+import { FOTO } from '@/data/photos';
 
 /*
   Galeri: "dinding foto" ala English Now, versi ceria.
@@ -13,21 +13,25 @@ import { pexels } from '@/data/site';
   - "Kurangi animasi": dinding diam.
 */
 
-// Data default (mockup). Nanti bisa dikirim lewat prop `items` dari CMS/API.
-// TODO: ganti dengan foto kegiatan asli (taruh di folder public, mis. '/images/galeri/seni.jpg').
+// Foto kegiatan asli (alamatnya diatur di src/data/photos.js). Urutan sengaja diselang-seling antar kegiatan.
+// Nanti bisa dikirim lewat prop `items` dari CMS/API.
 const DEFAULT_ITEMS = [
-  { title: 'Kreativitas Seni', desc: 'Ananda bebas berekspresi mewarnai dunia mereka', img: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=800&q=70' },
-  { title: 'Eksplorasi Alam', desc: 'Belajar langsung dari lingkungan hijau sekitar', img: 'https://images.unsplash.com/photo-1472289065668-ce650ac443d2?auto=format&fit=crop&w=800&q=70' },
-  { title: 'Bermain Bersama', desc: 'Membangun empati, kepedulian, dan interaksi sosial', img: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=70' },
-  { title: 'Kunjungan Edukatif', desc: 'Pengalaman seru belajar di luar ruang kelas', img: pexels(12471794) },
-  { title: 'Belajar Bersama Guru', desc: 'Didampingi guru dengan sabar dan penuh perhatian', img: pexels(8382326) },
-  { title: 'Kelas Melukis', desc: 'Mengenal warna dan melatih motorik halus', img: pexels(8382373) },
-  { title: 'Berkebun', desc: 'Menanam benih dan merawatnya setiap hari', img: pexels(11286030) },
-  { title: 'Literasi Pagi', desc: 'Membaca buku cerita bersama teman', img: pexels(8500359) },
-  { title: 'Eksperimen Sains', desc: 'Mengamati warna dan zat cair dengan rasa ingin tahu', img: pexels(8926832) },
-  { title: 'Bermain Balok', desc: 'Menyusun, membangun, dan berimajinasi', img: pexels(8612970) },
-  { title: 'Main di Luar', desc: 'Bergerak aktif dan bermain bersama di udara terbuka', img: pexels(10498841) },
-  { title: 'Seru di Playground', desc: 'Berani mencoba dan bergiliran dengan teman', img: pexels(16420133) },
+  { title: 'School Fair', desc: 'Kostum apel yang menggemaskan', img: FOTO.fairKostumApel },
+  { title: 'Seru 17 Agustus', desc: 'Bermain bersama ibu guru di halaman sekolah', img: FOTO.agustusBermainBersamaGuru },
+  { title: 'Melukis Bersama', desc: 'Menuangkan imajinasi ke atas kanvas', img: FOTO.artMelukis1 },
+  { title: 'Tampil di Panggung', desc: 'Alfa Centauri di School Fair', img: FOTO.fairPanggung },
+  { title: 'Foto Bersama', desc: 'Keceriaan Alcentaurian di Hari Kemerdekaan', img: FOTO.agustusFotoBersama },
+  { title: 'Kelas Melukis', desc: 'Didampingi dengan penuh perhatian', img: FOTO.artMelukis2 },
+  { title: 'Belajar Angklung', desc: 'Mengenal alat musik tradisional', img: FOTO.fairAngklung1 },
+  { title: 'Permainan Seru', desc: 'Bergiliran dan bekerja sama dengan teman', img: FOTO.agustusPermainanGelas },
+  { title: 'Tampil Percaya Diri', desc: 'Penampilan ananda di Art Exhibition', img: FOTO.artPentas },
+  { title: 'Satu Kelas Kompak', desc: 'Foto bersama guru dan teman-teman', img: FOTO.agustusFotoKelas },
+  { title: 'Karya Ananda', desc: 'Warna-warni hasil kreasi sendiri', img: FOTO.artMelukis3 },
+  { title: 'Kompak Bermain Angklung', desc: 'Tampil bersama teman-teman', img: FOTO.fairAngklung2 },
+  { title: 'Bermain Air', desc: 'Belajar sambil bergerak di udara terbuka', img: FOTO.agustusBermainAir },
+  { title: 'Pameran Seni', desc: 'Orang tua dan ananda berbagi cerita', img: FOTO.artKeluarga2 },
+  { title: 'Membawa Karya', desc: 'Bangga memperlihatkan hasil gambar sendiri', img: FOTO.agustusMembawaKarya },
+  { title: 'Art Exhibition', desc: 'Kenangan manis bersama keluarga', img: FOTO.artKeluarga1 },
 ];
 
 // Warna stiker per foto (urutan aksen tetap: sky → emerald → violet → amber → rose)

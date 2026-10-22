@@ -2,14 +2,12 @@ import React, { useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { Heart, ArrowUpRight } from 'lucide-react';
 import { TwinStars } from './ui/Ornaments';
+import { FOTO } from '@/data/photos';
 
 /* ------------------------------------------------------------------ */
 /* DATA & KONFIGURASI                                                  */
 /* ------------------------------------------------------------------ */
 
-const BG_BASE = 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b';
-const BG_WIDTHS = [800, 1200, 2022];
-const bgUrl = (w) => `${BG_BASE}?q=75&w=${w}&auto=format&fit=crop`;
 
 const YAYASAN_URL = 'https://alfacentauri.sch.id/yayasan/';
 
@@ -123,9 +121,7 @@ const TentangKami = ({ overlapHero = true }) => {
               style={reduceMotion ? undefined : { y: bgY }}
             >
               <img
-                src={bgUrl(2022)}
-                srcSet={BG_WIDTHS.map((w) => `${bgUrl(w)} ${w}w`).join(', ')}
-                sizes="100vw"
+                src={FOTO.fairPanggung}
                 alt=""
                 loading="lazy"
                 decoding="async"

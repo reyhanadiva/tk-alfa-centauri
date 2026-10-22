@@ -5,6 +5,7 @@ import { SCHOOL, SPMB_LABEL, SPMB_URL, wa } from '@/data/site';
 import Button from './ui/Button';
 import WhatsAppIcon from './ui/WhatsAppIcon';
 import { Cloud, Sparkle, TwinStars } from './ui/Ornaments';
+import { FOTO } from '@/data/photos';
 
 /*
   Hero: dunia pagi yang cerah (langit, matahari, awan, bukit, sekolah kecil di atas bukit).
@@ -12,9 +13,8 @@ import { Cloud, Sparkle, TwinStars } from './ui/Ornaments';
   Bukit paling depan berwarna sama dengan latar halaman (cream), jadi menyambung mulus ke section berikutnya.
 */
 
-// TODO: ganti dengan foto asli kegiatan TK (taruh di folder public, mis. '/images/hero-1.jpg')
-const PHOTO_MAIN = 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=75&w=1100&auto=format&fit=crop';
-const PHOTO_SMALL = 'https://images.unsplash.com/photo-1587691592099-24045742c181?q=75&w=700&auto=format&fit=crop';
+const PHOTO_MAIN = FOTO.fairKostumApel;
+const PHOTO_SMALL = FOTO.agustusPermainanGelas;
 
 const FACTS = [
   { Icon: Baby, label: 'Usia 0–6 tahun' },

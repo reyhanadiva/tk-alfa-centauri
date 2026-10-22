@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Star, Sparkles, Heart, BookOpen, ImageOff, Plus } from 'lucide-react';
+import { FOTO } from '@/data/photos';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
@@ -16,7 +17,7 @@ const FEATURES = [
     iconFilled: true,
     desc: 'Menyiapkan kematangan fundamental ananda menuju sekolah dasar secara menyeluruh, bukan sekadar drill akademik.',
     pillsGroup: [['Sosial-Emosional', 'Fisik-Motorik', 'Bahasa & Kognitif', 'Moral & Agama']],
-    img: 'https://images.unsplash.com/photo-1587691592099-24045742c181?q=70&w=1400&auto=format&fit=crop',
+    img: FOTO.artMelukis1,
     theme: {
       tint: 'bg-sky-600/75',
       chip: 'bg-sky-100 text-sky-600',
@@ -34,7 +35,7 @@ const FEATURES = [
       ['Jujur', 'Bersih & Rapi', 'Mandiri', 'Disiplin'],
       ['Tangguh', 'Sopan & Santun', 'Bermanfaat'],
     ],
-    img: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=70&w=1400&auto=format&fit=crop',
+    img: FOTO.agustusFotoBersama,
     theme: {
       tint: 'bg-violet-600/75',
       chip: 'bg-violet-100 text-violet-600',
@@ -52,7 +53,7 @@ const FEATURES = [
       ['Shalat Dhuha', 'Shalat Dzuhur Berjamaah', 'Mengaji Metode Ummi'],
       ['Hafalan Surat Pendek', 'Asmaul Husna', 'Doa Harian', 'Adab Islami'],
     ],
-    img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=70&w=1400&auto=format&fit=crop',
+    img: FOTO.agustusFotoKelas,
     theme: {
       tint: 'bg-emerald-600/75',
       chip: 'bg-emerald-100 text-emerald-600',
@@ -67,7 +68,7 @@ const FEATURES = [
     iconFilled: true,
     desc: 'Setiap anak berhak tumbuh dan belajar dengan kesempatan yang sama. Kami mendampingi kebutuhan dan keunikan tiap ananda agar dapat belajar setara.',
     pillsGroup: [['LSU (Learning Support Unit)', 'Kelas Stimulasi']],
-    img: 'https://images.unsplash.com/photo-1540479859555-17af45c78602?q=70&w=1400&auto=format&fit=crop',
+    img: FOTO.artMelukis3,
     theme: {
       tint: 'bg-rose-600/75',
       chip: 'bg-rose-100 text-rose-600',
