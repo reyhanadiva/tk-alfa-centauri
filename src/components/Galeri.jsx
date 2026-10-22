@@ -50,7 +50,7 @@ const DEFAULT_ITEMS = [
   { title: 'Belajar dari Alam', desc: 'Bergerak aktif di luar kelas', img: FOTO.taniKotaFotoBersama },
   { title: 'Area Bermain', desc: 'Ayunan dan permainan di halaman sekolah', img: FOTO.sekolahAyunan },
   { title: 'Wahana Seru', desc: 'Riang gembira bersama teman', img: FOTO.tsbWahana2 },
-  { title: 'Lomba Bendera Kecil', desc: 'Semangat kemerdekaan sejak dini', img: FOTO.ramadhanBendera },
+  { title: 'Gaya Kecil di Panggung', desc: 'Penampilan ananda di Red Cherry', img: FOTO.ramadhanBendera },
   { title: 'Kostum Burung Kecil', desc: 'Tampil menggemaskan di panggung Parents Day', img: FOTO.parentsKostumBurung },
   { title: 'Wisata Kandang', desc: 'Ayam, kambing, dan banyak rasa ingin tahu', img: FOTO.taniKotaAyam },
 ];
@@ -69,11 +69,11 @@ const ASPECTS = ['aspect-[4/5]', 'aspect-square', 'aspect-[5/4]', 'aspect-[4/5]'
 
 // pengaturan tiap kolom: arah, kecepatan, kemiringan (kolom pinggir menghadap ke tengah)
 const COLUMNS = [
-  { dir: 'up', dur: 46, tilt: 14, scale: 1.06, show: '' },
-  { dir: 'down', dur: 54, tilt: 6, scale: 1, show: '' },
-  { dir: 'up', dur: 50, tilt: 0, scale: 0.96, show: 'hidden md:block' },
-  { dir: 'down', dur: 58, tilt: -6, scale: 1, show: 'hidden lg:block' },
-  { dir: 'up', dur: 48, tilt: -14, scale: 1.06, show: 'hidden lg:block' },
+  { dir: 'up', dur: 88, tilt: 14, scale: 1.06, show: '' },
+  { dir: 'down', dur: 100, tilt: 6, scale: 1, show: '' },
+  { dir: 'up', dur: 94, tilt: 0, scale: 0.96, show: 'hidden md:block' },
+  { dir: 'down', dur: 108, tilt: -6, scale: 1, show: 'hidden lg:block' },
+  { dir: 'up', dur: 92, tilt: -14, scale: 1.06, show: 'hidden lg:block' },
 ];
 
 /* ------------------------------------------------------------------ */

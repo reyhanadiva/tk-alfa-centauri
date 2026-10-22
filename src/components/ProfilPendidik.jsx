@@ -68,6 +68,11 @@ const TIM_MANAJEMEN = [
   { name: 'Dicky Noer Alif', role: 'Caraka', color: 'staf' },
 ];
 
+// Urutan kelompok warna pada tampilan grid (yang sewarna dikumpulkan; urutan di dalam kelompok tetap)
+const GROUP_ORDER = ['kelas', 'co', 'individual', 'daycare', 'stimulasi', 'pimpinan', 'staf'];
+const groupByColor = (people) =>
+  [...people].sort((a, b) => GROUP_ORDER.indexOf(a.color) - GROUP_ORDER.indexOf(b.color));
+
 const TABS = [
   { id: 'pendidik', label: 'Tim Pendidik', data: TIM_PENDIDIK },
   { id: 'manajemen', label: 'Tim Manajemen', data: TIM_MANAJEMEN },
@@ -390,7 +395,7 @@ const ProfilPendidik = () => {
             transition={{ duration: 0.4, ease: 'easeOut' }}
             className="mx-auto grid max-w-7xl list-none grid-cols-2 gap-3 px-4 pt-4 pb-8 md:grid-cols-3 md:gap-6 md:px-8 lg:grid-cols-4"
           >
-            {currentData.map((p, i) => <PersonCard key={p.name} person={p} index={i} grid />)}
+            {groupByColor(currentData).map((p, i) => <PersonCard key={p.name} person={p} index={i} grid />)}
           </motion.ul>
         )}
 

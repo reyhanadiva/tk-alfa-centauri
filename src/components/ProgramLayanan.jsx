@@ -16,7 +16,7 @@ const PROGRAMS = [
     age: '0 - 2 Tahun',
     location: 'Jl. Diponegoro No. 48, Bandung',
     mapLink: 'https://maps.app.goo.gl/HbHLZsX8tQ9kh7UG6',
-    image: FOTO.agustusBermainBersamaGuru,
+    image: FOTO.agustusBermainBersamaGuruEdit,
     theme: {
       pill: 'bg-amber-100 text-amber-800',
       chip: 'bg-amber-100 text-amber-600 group-hover/link:bg-amber-200',
@@ -28,7 +28,7 @@ const PROGRAMS = [
     age: '2 - 4 Tahun',
     location: 'Jl. Terate No. 12, Bandung',
     mapLink: 'https://maps.app.goo.gl/5Mfy6hzs89BeqywV7',
-    image: FOTO.taniKotaBersamaGuru,
+    image: FOTO.taniKotaBersamaGuruEdit,
     theme: {
       pill: 'bg-sky-100 text-sky-800',
       chip: 'bg-sky-100 text-sky-600 group-hover/link:bg-sky-200',
@@ -40,7 +40,7 @@ const PROGRAMS = [
     age: '4 - 6 Tahun',
     location: 'Jl. Terate No. 12, Bandung',
     mapLink: 'https://maps.app.goo.gl/5Mfy6hzs89BeqywV7',
-    image: FOTO.fairAngklung1,
+    image: FOTO.fairAngklung1Edit,
     theme: {
       pill: 'bg-emerald-100 text-emerald-800',
       chip: 'bg-emerald-100 text-emerald-600 group-hover/link:bg-emerald-200',

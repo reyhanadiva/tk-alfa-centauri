@@ -59,4 +59,12 @@ export const FOTO = {
   sekolahAyunan: f('sekolah-ayunan'),
   sekolahAreaBermain: f('sekolah-area-bermain'),
   sekolahGedung: f('sekolah-gedung'),
+  // Versi retouch (warna hangat, kontras & cahaya seragam) untuk section Mengapa Memilih Kami & Program
+  artMelukis1Edit: f('art-melukis-1-edit'),
+  agustusFotoBersamaEdit: f('agustus-foto-bersama-edit'),
+  ramadhanPanggungEdit: f('ramadhan-panggung-edit'),
+  artMelukis3Edit: f('art-melukis-3-edit'),
+  agustusBermainBersamaGuruEdit: f('agustus-bermain-bersama-guru-edit'),
+  taniKotaBersamaGuruEdit: f('tanikota-bersama-guru-edit'),
+  fairAngklung1Edit: f('fair-angklung-1-edit'),
 };

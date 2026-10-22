@@ -17,7 +17,7 @@ const FEATURES = [
     iconFilled: true,
     desc: 'Menyiapkan kematangan fundamental ananda menuju sekolah dasar secara menyeluruh, bukan sekadar drill akademik.',
     pillsGroup: [['Sosial-Emosional', 'Fisik-Motorik', 'Bahasa & Kognitif', 'Moral & Agama']],
-    img: FOTO.artMelukis1,
+    img: FOTO.artMelukis1Edit,
     theme: {
       tint: 'bg-sky-600/75',
       chip: 'bg-sky-100 text-sky-600',
@@ -35,7 +35,7 @@ const FEATURES = [
       ['Jujur', 'Bersih & Rapi', 'Mandiri', 'Disiplin'],
       ['Tangguh', 'Sopan & Santun', 'Bermanfaat'],
     ],
-    img: FOTO.agustusFotoBersama,
+    img: FOTO.agustusFotoBersamaEdit,
     theme: {
       tint: 'bg-violet-600/75',
       chip: 'bg-violet-100 text-violet-600',
@@ -53,7 +53,7 @@ const FEATURES = [
       ['Shalat Dhuha', 'Shalat Dzuhur Berjamaah', 'Mengaji Metode Ummi'],
       ['Hafalan Surat Pendek', 'Asmaul Husna', 'Doa Harian', 'Adab Islami'],
     ],
-    img: FOTO.ramadhanPanggung,
+    img: FOTO.ramadhanPanggungEdit,
     theme: {
       tint: 'bg-emerald-600/75',
       chip: 'bg-emerald-100 text-emerald-600',
@@ -68,7 +68,7 @@ const FEATURES = [
     iconFilled: true,
     desc: 'Setiap anak berhak tumbuh dan belajar dengan kesempatan yang sama. Kami mendampingi kebutuhan dan keunikan tiap ananda agar dapat belajar setara.',
     pillsGroup: [['LSU (Learning Support Unit)', 'Kelas Stimulasi']],
-    img: FOTO.artMelukis3,
+    img: FOTO.artMelukis3Edit,
     theme: {
       tint: 'bg-rose-600/75',
       chip: 'bg-rose-100 text-rose-600',
