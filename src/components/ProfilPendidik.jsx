@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useReducedMotion, useMotionValue, useAnimationFrame } from 'framer-motion';
-import { GraduationCap, Star, Sparkles } from 'lucide-react';
+import { GraduationCap, Star, Sparkles, GalleryHorizontal, LayoutGrid } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
@@ -18,7 +18,17 @@ const COLORS = {
 };
 
 const UNISBA = 'S1 PG-PAUD, Universitas Islam Bandung';
-const photo = (file) => `/images/guru/${file}.jpg`;
+// Foto sudah dihapus latar hijaunya (PNG transparan versi WebP); warna latar kartu mengikuti jabatan
+const photo = (file) => `/images/guru/${file}.webp`;
+const PHOTO_BG = {
+  kelas: 'bg-gradient-to-b from-sky-100 to-sky-200',
+  co: 'bg-gradient-to-b from-amber-50 to-amber-200',
+  individual: 'bg-gradient-to-b from-emerald-50 to-emerald-200',
+  daycare: 'bg-gradient-to-b from-rose-50 to-rose-200',
+  stimulasi: 'bg-gradient-to-b from-violet-50 to-violet-200',
+  pimpinan: 'bg-gradient-to-b from-purple-50 to-purple-200',
+  staf: 'bg-gradient-to-b from-slate-100 to-sky-200',
+};
 
 // Sumber: daftar nama dari pihak TK. `image` kosong = foto belum ada (tampil inisial).
 const TIM_PENDIDIK = [
@@ -26,7 +36,7 @@ const TIM_PENDIDIK = [
   { name: 'Najma Ayunda Fauziah, S.Pd.', role: 'Co-Teacher PG A', color: 'co', almamater: UNISBA },
   { name: 'Icha Agustina, S.Pd', role: 'Guru Kelas PG B', color: 'kelas', almamater: UNISBA, image: photo('icha') },
   { name: 'Syifa Pauziah, S.Pd', role: 'Co-Teacher PG B', color: 'co', almamater: UNISBA },
-  { name: 'Hasna Afifah Nuraini, S.Pd.', role: 'Guru Kelas TK A1', color: 'kelas', almamater: UNISBA, image: photo('hasna') },
+  { name: 'Hasna Afifah Nuraini, S.Pd.', role: 'Guru Kelas TK A1', color: 'kelas', almamater: UNISBA, image: photo('afi') },
   { name: 'Via Eka Lestari, S.Pd.', role: 'Co-Teacher TK A1', color: 'co', almamater: UNISBA, image: photo('via') },
   { name: 'Heni Rusniawati Hidayat, S.Mb', role: 'Guru Kelas TK A2', color: 'kelas', almamater: 'S1 Manajemen & Bisnis, Universitas Telkom', image: photo('heni') },
   { name: 'Hanna Rahmawati, S.Pd.', role: 'Co-Teacher TK A2', color: 'co', almamater: UNISBA, image: photo('hanna') },
@@ -35,7 +45,7 @@ const TIM_PENDIDIK = [
   { name: 'Siti Anisa, S.Pd.', role: 'Guru Kelas TK B2', color: 'kelas', almamater: UNISBA, image: photo('siti-anisa') },
   { name: 'Cynthia Pramitha Suhendar, S.Pd', role: 'Co-Teacher TK B2', color: 'co', almamater: UNISBA, image: photo('cynthia') },
   { name: 'Resti Sinta Belinda, S.Pd.', role: 'Guru Individual', color: 'individual', almamater: UNISBA, image: photo('resti') },
-  { name: 'Nurul Latifa, S.Psi.', role: 'Guru Individual', color: 'individual', almamater: 'S1 Psikologi, Universitas Jenderal Ahmad Yani' },
+  { name: 'Nurul Latifa, S.Psi.', role: 'Guru Individual', color: 'individual', almamater: 'S1 Psikologi, Universitas Jenderal Ahmad Yani', image: photo('anisa-nurul') },
   { name: 'Aghnia Dhafin Dwiningtyas, S.Pd', role: 'Guru Kelas PG A', color: 'kelas', almamater: UNISBA, image: photo('aghnia') },
   { name: 'Syamira Silvana Putri, S.Pd', role: 'Co-Teacher PG A', color: 'co', almamater: UNISBA, image: photo('mira') },
   { name: 'Nurfadilah Rohimah, S.Sos', role: 'Guru Individual', color: 'individual', almamater: 'S1 Bimbingan Konseling Islam, UIN Sunan Gunung Djati Bandung', image: photo('dhila') },
@@ -91,7 +101,7 @@ const TeacherPhoto = ({ person, hidden }) => {
   if (failed || !person.image) {
     const initials = person.name.split(/[ ,]/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('');
     return (
-      <div className="grid h-full w-full place-items-center bg-gradient-to-br from-sky-100 via-amber-50 to-rose-100" role={hidden ? undefined : 'img'} aria-label={hidden ? undefined : person.name}>
+      <div className="grid h-full w-full place-items-center" role={hidden ? undefined : 'img'} aria-label={hidden ? undefined : person.name}>
         <span className="font-display text-5xl font-semibold text-night/40">{initials}</span>
       </div>
     );
@@ -109,15 +119,15 @@ const TeacherPhoto = ({ person, hidden }) => {
   );
 };
 
-const PersonCard = ({ person, index, hidden = false }) => (
-  <li className="shrink-0 pr-4 md:pr-5" aria-hidden={hidden || undefined}>
+const PersonCard = ({ person, index, hidden = false, grid = false }) => (
+  <li className={grid ? 'h-full' : 'shrink-0 pr-4 md:pr-5'} aria-hidden={hidden || undefined}>
     <article
-      className={`group flex h-full flex-col w-[70vw] sm:w-[250px] md:w-[270px] p-3 bg-white rounded-[1.75rem] shadow-[0_6px_0_0_#EADFC2] transition-transform duration-300 hover:-translate-y-1.5 hover:rotate-0 motion-reduce:transition-none ${
-        index % 2 ? 'rotate-[1.5deg]' : '-rotate-[1.5deg]'
-      }`}
+      className={`group flex h-full flex-col p-3 bg-white rounded-[1.75rem] shadow-[0_6px_0_0_#EADFC2] transition-transform duration-300 hover:-translate-y-1.5 hover:rotate-0 motion-reduce:transition-none ${
+        grid ? 'w-full' : 'w-[70vw] sm:w-[250px] md:w-[270px]'
+      } ${grid ? '' : index % 2 ? 'rotate-[1.5deg]' : '-rotate-[1.5deg]'}`}
     >
       {/* Foto profil */}
-      <div className="relative aspect-square rounded-[1.25rem] overflow-hidden mb-4 bg-slate-100">
+      <div className={`relative aspect-square rounded-[1.25rem] overflow-hidden mb-4 ${PHOTO_BG[person.color] || 'bg-slate-100'}`}>
         <TeacherPhoto person={person} hidden={hidden} />
         <div className="absolute top-3 left-3">
           <span className={`px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide shadow-sm border ${COLORS[person.color]}`}>
@@ -128,7 +138,7 @@ const PersonCard = ({ person, index, hidden = false }) => (
 
       {/* Detail */}
       <div className="px-1 pb-1 flex flex-col flex-grow">
-        <h3 className="text-lg font-semibold text-night mb-3 text-balance">{person.name}</h3>
+        <h3 className="text-base md:text-lg font-semibold text-night mb-3 text-balance">{person.name}</h3>
         {person.almamater && (
           <div className="mt-auto pt-3 border-t border-slate-100">
             <div className="flex items-start gap-2.5">
@@ -227,6 +237,7 @@ const Marquee = ({ people, reduce }) => {
 /* ------------------------------------------------------------------ */
 
 const ProfilPendidik = () => {
+  const [view, setView] = useState('slider');
   const [activeTab, setActiveTab] = useState('pendidik');
   const reduceMotion = useReducedMotion();
   const tabRefs = useRef([]);
@@ -288,8 +299,8 @@ const ProfilPendidik = () => {
           </p>
         </motion.div>
 
-        {/* Tab Toggle */}
-        <div className="flex justify-center mb-10">
+        {/* Tab + pilihan tampilan */}
+        <div className="flex flex-col items-center justify-center gap-3 mb-10 sm:flex-row sm:gap-4">
           <div
             role="tablist"
             aria-label="Pilih tim"
@@ -325,6 +336,38 @@ const ProfilPendidik = () => {
               );
             })}
           </div>
+
+          {/* Pilihan tampilan: geser (berjalan) atau grid (semua sekaligus) */}
+          <div
+            role="group"
+            aria-label="Pilih tampilan"
+            className="relative grid grid-cols-2 p-1.5 bg-white rounded-full border border-slate-200 shadow-sm"
+          >
+            <div
+              aria-hidden="true"
+              className={`absolute top-1.5 bottom-1.5 left-1.5 w-[calc(50%-0.375rem)] bg-night rounded-full z-0 transition-transform duration-300 ease-out motion-reduce:transition-none ${
+                view === 'grid' ? 'translate-x-full' : 'translate-x-0'
+              }`}
+            />
+            {[
+              { id: 'slider', label: 'Tampilan geser', Icon: GalleryHorizontal },
+              { id: 'grid', label: 'Tampilkan semua', Icon: LayoutGrid },
+            ].map(({ id, label, Icon }) => (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={view === id}
+                onClick={() => setView(id)}
+                title={label}
+                className={`relative z-10 grid size-11 place-items-center rounded-full transition-colors duration-300 motion-reduce:transition-none ${FOCUS_RING} ${
+                  view === id ? 'text-white' : 'text-night/50 hover:text-night'
+                }`}
+              >
+                <Icon className="h-5 w-5" aria-hidden="true" />
+                <span className="sr-only">{label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -336,7 +379,19 @@ const ProfilPendidik = () => {
         aria-labelledby={`tab-${activeTab}`}
         className="relative z-10 w-full"
       >
-        <Marquee key={activeTab} people={currentData} reduce={reduceMotion} />
+        {view === 'slider' ? (
+          <Marquee key={activeTab} people={currentData} reduce={reduceMotion} />
+        ) : (
+          <motion.ul
+            key={`grid-${activeTab}`}
+            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+            className="mx-auto grid max-w-7xl list-none grid-cols-2 gap-3 px-4 pt-4 pb-8 md:grid-cols-3 md:gap-6 md:px-8 lg:grid-cols-4"
+          >
+            {currentData.map((p, i) => <PersonCard key={p.name} person={p} index={i} grid />)}
+          </motion.ul>
+        )}
 
       </div>
     </section>
