@@ -52,6 +52,7 @@ const DEFAULT_ITEMS = [
   { title: 'Wahana Seru', desc: 'Riang gembira bersama teman', img: FOTO.tsbWahana2 },
   { title: 'Gaya Kecil di Panggung', desc: 'Penampilan ananda di Red Cherry', img: FOTO.ramadhanBendera },
   { title: 'Kostum Burung Kecil', desc: 'Tampil menggemaskan di panggung Parents Day', img: FOTO.parentsKostumBurung },
+  { title: 'Perpustakaan Sekolah', desc: 'Pojok baca yang nyaman untuk menumbuhkan cinta buku', img: FOTO.sekolahPerpus2 },
   { title: 'Wisata Kandang', desc: 'Ayam, kambing, dan banyak rasa ingin tahu', img: FOTO.taniKotaAyam },
 ];
 

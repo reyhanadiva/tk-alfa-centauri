@@ -59,6 +59,8 @@ export const FOTO = {
   sekolahAyunan: f('sekolah-ayunan'),
   sekolahAreaBermain: f('sekolah-area-bermain'),
   sekolahGedung: f('sekolah-gedung'),
+  sekolahPerpus1: f('sekolah-perpus-1'),
+  sekolahPerpus2: f('sekolah-perpus-2'),
   // Versi retouch (warna hangat, kontras & cahaya seragam) untuk section Mengapa Memilih Kami & Program
   artMelukis1Edit: f('art-melukis-1-edit'),
   agustusFotoBersamaEdit: f('agustus-foto-bersama-edit'),

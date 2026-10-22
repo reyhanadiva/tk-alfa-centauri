@@ -35,7 +35,7 @@ const TIM_PENDIDIK = [
   { name: 'Yulis Triastuti, S.Pd.', role: 'Guru Kelas PG A', color: 'kelas', almamater: UNISBA, image: photo('yulis') },
   { name: 'Najma Ayunda Fauziah, S.Pd.', role: 'Co-Teacher PG A', color: 'co', almamater: UNISBA },
   { name: 'Icha Agustina, S.Pd', role: 'Guru Kelas PG B', color: 'kelas', almamater: UNISBA, image: photo('icha') },
-  { name: 'Syifa Pauziah, S.Pd', role: 'Co-Teacher PG B', color: 'co', almamater: UNISBA },
+  { name: 'Syifa Pauziah, S.Pd', role: 'Co-Teacher PG B', color: 'co', almamater: UNISBA, image: photo('syifa') },
   { name: 'Hasna Afifah Nuraini, S.Pd.', role: 'Guru Kelas TK A1', color: 'kelas', almamater: UNISBA, image: photo('afi') },
   { name: 'Via Eka Lestari, S.Pd.', role: 'Co-Teacher TK A1', color: 'co', almamater: UNISBA, image: photo('via') },
   { name: 'Heni Rusniawati Hidayat, S.Mb', role: 'Guru Kelas TK A2', color: 'kelas', almamater: 'S1 Manajemen & Bisnis, Universitas Telkom', image: photo('heni') },

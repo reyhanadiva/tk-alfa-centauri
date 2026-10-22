@@ -31,7 +31,7 @@ const FACILITIES = [
   {
     title: 'Perpustakaan',
     desc: 'Koleksi buku cerita dan buku pelajaran yang beragam.',
-    image: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1000&q=70',
+    image: FOTO.sekolahPerpus1,
     theme: { bar: 'bg-amber-400', glow: 'hover:shadow-amber-200/80', grad: 'from-amber-950/90 via-amber-900/40' },
   },
   {
