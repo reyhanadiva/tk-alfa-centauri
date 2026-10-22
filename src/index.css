@@ -264,3 +264,25 @@
     offset-distance: 100%;
   }
 }
+
+@keyframes hill-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-3px) rotate(-1.2deg);
+  }
+  60% {
+    transform: translateY(0.5px) rotate(0.8deg);
+  }
+}
+.hill-bob {
+  transform-origin: 50% 100%;
+  animation: hill-bob 0.55s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hill-bob {
+    animation: none;
+  }
+}

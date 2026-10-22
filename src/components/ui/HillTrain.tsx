@@ -127,7 +127,13 @@ export default function HillTrain() {
           };
           return (
             <div key={i} className="absolute left-0 top-0 will-change-[offset-distance]" style={style}>
-              {car.kind === 'loco' ? <Loco /> : <Wagon car={car} />}
+              {/* gronjal-gronjal: tiap gerbong memantul dengan jeda berbeda */}
+              <div
+                className={reduce ? '' : 'hill-bob'}
+                style={{ animationDelay: `${-(i * 0.13).toFixed(2)}s`, animationPlayState: running ? 'running' : 'paused' }}
+              >
+                {car.kind === 'loco' ? <Loco /> : <Wagon car={car} />}
+              </div>
             </div>
           );
         })}
