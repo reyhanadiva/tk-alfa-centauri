@@ -69,4 +69,6 @@ export const FOTO = {
   agustusBermainBersamaGuruEdit: f('agustus-bermain-bersama-guru-edit'),
   taniKotaBersamaGuruEdit: f('tanikota-bersama-guru-edit'),
   fairAngklung1Edit: f('fair-angklung-1-edit'),
+  fairKostumApelEdit: f('fair-kostum-apel-edit'),
+  agustusPermainanGelasEdit: f('agustus-permainan-gelas-edit'),
 };

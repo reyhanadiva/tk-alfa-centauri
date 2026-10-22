@@ -13,8 +13,8 @@ import { FOTO } from '@/data/photos';
   Bukit paling depan berwarna sama dengan latar halaman (cream), jadi menyambung mulus ke section berikutnya.
 */
 
-const PHOTO_MAIN = FOTO.fairKostumApel;
-const PHOTO_SMALL = FOTO.agustusPermainanGelas;
+const PHOTO_MAIN = FOTO.fairKostumApelEdit;
+const PHOTO_SMALL = FOTO.agustusPermainanGelasEdit;
 
 const FACTS = [
   { Icon: Baby, label: 'Usia 0–6 tahun' },
