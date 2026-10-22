@@ -1,86 +1,60 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useReducedMotion, useMotionValue, useAnimationFrame } from 'framer-motion';
 import { GraduationCap, Star, Sparkles } from 'lucide-react';
-import { pexels } from '@/data/site';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
 /* ------------------------------------------------------------------ */
 
+// Warna label jabatan (class ditulis lengkap agar aman dari purge Tailwind)
+const COLORS = {
+  kelas: 'bg-blue-100 text-blue-700 border-blue-200',
+  co: 'bg-amber-100 text-amber-700 border-amber-200',
+  individual: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+  daycare: 'bg-rose-100 text-rose-700 border-rose-200',
+  stimulasi: 'bg-violet-100 text-violet-700 border-violet-200',
+  pimpinan: 'bg-purple-100 text-purple-700 border-purple-200',
+  staf: 'bg-slate-200 text-night/80 border-slate-300',
+};
+
+const UNISBA = 'S1 PG-PAUD, Universitas Islam Bandung';
+const photo = (file) => `/images/guru/${file}.jpg`;
+
+// Sumber: daftar nama dari pihak TK. `image` kosong = foto belum ada (tampil inisial).
 const TIM_PENDIDIK = [
-  {
-    name: 'Putri Maharani, S.Pd.',
-    role: 'Guru Kelas Utama',
-    roleColor: 'bg-blue-100 text-blue-700 border-blue-200',
-    almamater: 'S1 PGPAUD, Universitas Pendidikan Indonesia (2023)',
-    image: 'https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=600&q=70',
-  },
-  {
-    name: 'Dinda Aulia, S.Psi.',
-    role: 'Co-Teacher',
-    roleColor: 'bg-amber-100 text-amber-700 border-amber-200',
-    almamater: 'S1 Psikologi, Universitas Padjadjaran (2024)',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=70',
-  },
-  {
-    name: 'Siti Nurbaya, A.Md.',
-    role: 'Guru Pendamping',
-    roleColor: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-    almamater: 'D3 Kesejahteraan Sosial, Poltekesos (2024)',
-    image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=70',
-  },
-  {
-    name: 'Risa Amelia, S.Pd.',
-    role: 'Guru Kelas Utama',
-    roleColor: 'bg-blue-100 text-blue-700 border-blue-200',
-    almamater: 'S1 Pendidikan Guru, Universitas Negeri Jakarta (2022)',
-    image: pexels(8155035, 600),
-  },
-  {
-    name: 'Sarah Widyawati, S.Psi.',
-    role: 'Co-Teacher',
-    roleColor: 'bg-amber-100 text-amber-700 border-amber-200',
-    almamater: 'S1 Psikologi, Universitas Indonesia (2023)',
-    image: pexels(8526806, 600),
-  },
-  {
-    name: 'Nabila Zahra, S.Sos.',
-    role: 'Guru Pendamping',
-    roleColor: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-    almamater: 'S1 Sosiologi, UIN Sunan Gunung Djati (2024)',
-    image: 'https://images.unsplash.com/photo-1590650153855-d9e808231d41?auto=format&fit=crop&w=600&q=70',
-  },
+  { name: 'Yulis Triastuti, S.Pd.', role: 'Guru Kelas PG A', color: 'kelas', almamater: UNISBA, image: photo('yulis') },
+  { name: 'Najma Ayunda Fauziah, S.Pd.', role: 'Co-Teacher PG A', color: 'co', almamater: UNISBA },
+  { name: 'Icha Agustina, S.Pd', role: 'Guru Kelas PG B', color: 'kelas', almamater: UNISBA, image: photo('icha') },
+  { name: 'Syifa Pauziah, S.Pd', role: 'Co-Teacher PG B', color: 'co', almamater: UNISBA },
+  { name: 'Hasna Afifah Nuraini, S.Pd.', role: 'Guru Kelas TK A1', color: 'kelas', almamater: UNISBA, image: photo('hasna') },
+  { name: 'Via Eka Lestari, S.Pd.', role: 'Co-Teacher TK A1', color: 'co', almamater: UNISBA, image: photo('via') },
+  { name: 'Heni Rusniawati Hidayat, S.Mb', role: 'Guru Kelas TK A2', color: 'kelas', almamater: 'S1 Manajemen & Bisnis, Universitas Telkom', image: photo('heni') },
+  { name: 'Hanna Rahmawati, S.Pd.', role: 'Co-Teacher TK A2', color: 'co', almamater: UNISBA, image: photo('hanna') },
+  { name: 'Farah Dhiya Zahra, S.Pd.', role: 'Guru Kelas TK B1', color: 'kelas', almamater: UNISBA, image: photo('farah') },
+  { name: 'Mila Nurazqia, S.Pd.', role: 'Co-Teacher TK B1', color: 'co', almamater: UNISBA, image: photo('mila') },
+  { name: 'Siti Anisa, S.Pd.', role: 'Guru Kelas TK B2', color: 'kelas', almamater: UNISBA, image: photo('siti-anisa') },
+  { name: 'Cynthia Pramitha Suhendar, S.Pd', role: 'Co-Teacher TK B2', color: 'co', almamater: UNISBA, image: photo('cynthia') },
+  { name: 'Resti Sinta Belinda, S.Pd.', role: 'Guru Individual', color: 'individual', almamater: UNISBA, image: photo('resti') },
+  { name: 'Nurul Latifa, S.Psi.', role: 'Guru Individual', color: 'individual', almamater: 'S1 Psikologi, Universitas Jenderal Ahmad Yani' },
+  { name: 'Aghnia Dhafin Dwiningtyas, S.Pd', role: 'Guru Kelas PG A', color: 'kelas', almamater: UNISBA, image: photo('aghnia') },
+  { name: 'Syamira Silvana Putri, S.Pd', role: 'Co-Teacher PG A', color: 'co', almamater: UNISBA, image: photo('mira') },
+  { name: 'Nurfadilah Rohimah, S.Sos', role: 'Guru Individual', color: 'individual', almamater: 'S1 Bimbingan Konseling Islam, UIN Sunan Gunung Djati Bandung', image: photo('dhila') },
+  { name: 'Siti Aisyah', role: 'Guru Daycare', color: 'daycare', almamater: 'SMA Labschool Bandung', image: photo('ais') },
+  { name: 'Purnami Sari Dewi', role: 'Guru Daycare', color: 'daycare', almamater: 'Homeschooling PKBM Minda Utama', image: photo('dewi') },
+  { name: 'Wardah Mawaddah, S.Pd.', role: 'Guru Daycare', color: 'daycare', almamater: UNISBA, image: photo('wardah') },
+  { name: 'Siti Mariam, S.Pd.', role: 'Guru Daycare', color: 'daycare', almamater: UNISBA, image: photo('mariam') },
+  { name: 'Ratu Iqlima, S.Pd.', role: 'Guru Daycare', color: 'daycare', almamater: UNISBA, image: photo('ratu') },
+  { name: 'Dhea Fitri Awalia', role: 'Guru Stimulasi', color: 'stimulasi', almamater: 'S1 Pendidikan Khusus, UPI', image: photo('dhea') },
 ];
 
 const TIM_MANAJEMEN = [
-  {
-    name: 'Nisa Fadilah, M.Pd.',
-    role: 'Kepala Sekolah',
-    roleColor: 'bg-purple-100 text-purple-700 border-purple-200',
-    almamater: 'S2 Manajemen Pendidikan, Universitas Negeri Jakarta (2018)',
-    image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=70',
-  },
-  {
-    name: 'Rizky Pratama, S.E.',
-    role: 'Keuangan',
-    roleColor: 'bg-slate-200 text-night/80 border-slate-300',
-    almamater: 'S1 Akuntansi, Universitas Katolik Parahyangan (2022)',
-    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=70',
-  },
-  {
-    name: 'Maya Sari, S.I.Kom.',
-    role: 'Administrasi',
-    roleColor: 'bg-pink-100 text-pink-700 border-pink-200',
-    almamater: 'S1 Ilmu Komunikasi, Telkom University (2023)',
-    image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=70',
-  },
-  {
-    name: 'Andi Saputra, S.T.',
-    role: 'Operasional',
-    roleColor: 'bg-orange-100 text-orange-700 border-orange-200',
-    almamater: 'S1 Teknik Industri, Institut Teknologi Bandung (2020)',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=70',
-  },
+  { name: 'Nita Kusumayati, S.Psi', role: 'Kepala Sekolah', color: 'pimpinan', image: photo('nita') },
+  { name: 'Nurul Afrianti, M.Pd., M.Psi', role: 'Pengelola', color: 'pimpinan' },
+  { name: 'Weindiani, M.Pd.', role: 'Kurikulum', color: 'pimpinan', image: photo('weindi') },
+  { name: 'Devi Febriani, M.Psi., Psi', role: 'Psikolog', color: 'pimpinan' },
+  { name: 'Ade Riyanto', role: 'Satpam', color: 'staf', image: photo('ade') },
+  { name: 'Muhammad Zaki Fadillah', role: 'Koki', color: 'staf', image: photo('zaki') },
+  { name: 'Dicky Noer Alif', role: 'Caraka', color: 'staf' },
 ];
 
 const TABS = [
@@ -114,7 +88,7 @@ const Floaty = ({ className = '', duration = 5, y = -15, delay = 0, rotate = [0,
 // Foto guru; bila gagal dimuat tampil inisial nama di atas warna lembut (bukan ikon gambar rusak)
 const TeacherPhoto = ({ person, hidden }) => {
   const [failed, setFailed] = useState(false);
-  if (failed) {
+  if (failed || !person.image) {
     const initials = person.name.split(/[ ,]/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('');
     return (
       <div className="grid h-full w-full place-items-center bg-gradient-to-br from-sky-100 via-amber-50 to-rose-100" role={hidden ? undefined : 'img'} aria-label={hidden ? undefined : person.name}>
@@ -130,7 +104,7 @@ const TeacherPhoto = ({ person, hidden }) => {
       decoding="async"
       draggable={false}
       onError={() => setFailed(true)}
-      className="pointer-events-none w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 motion-reduce:transition-none"
+      className="pointer-events-none w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 motion-reduce:transition-none"
     />
   );
 };
@@ -146,7 +120,7 @@ const PersonCard = ({ person, index, hidden = false }) => (
       <div className="relative aspect-square rounded-[1.25rem] overflow-hidden mb-4 bg-slate-100">
         <TeacherPhoto person={person} hidden={hidden} />
         <div className="absolute top-3 left-3">
-          <span className={`px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide shadow-sm border ${person.roleColor}`}>
+          <span className={`px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide shadow-sm border ${COLORS[person.color]}`}>
             {person.role}
           </span>
         </div>
@@ -155,14 +129,16 @@ const PersonCard = ({ person, index, hidden = false }) => (
       {/* Detail */}
       <div className="px-1 pb-1 flex flex-col flex-grow">
         <h3 className="text-lg font-semibold text-night mb-3 text-balance">{person.name}</h3>
-        <div className="mt-auto pt-3 border-t border-slate-100">
-          <div className="flex items-start gap-2.5">
-            <div className="mt-0.5 bg-slate-50 p-1.5 rounded-lg flex-shrink-0">
-              <GraduationCap className="w-4 h-4 text-night/60" aria-hidden="true" />
+        {person.almamater && (
+          <div className="mt-auto pt-3 border-t border-slate-100">
+            <div className="flex items-start gap-2.5">
+              <div className="mt-0.5 bg-slate-50 p-1.5 rounded-lg flex-shrink-0">
+                <GraduationCap className="w-4 h-4 text-night/60" aria-hidden="true" />
+              </div>
+              <p className="text-sm font-semibold text-night/80 leading-snug">{person.almamater}</p>
             </div>
-            <p className="text-sm font-semibold text-night/80 leading-snug">{person.almamater}</p>
           </div>
-        </div>
+        )}
       </div>
     </article>
   </li>
