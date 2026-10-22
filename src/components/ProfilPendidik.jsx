@@ -62,6 +62,7 @@ const TIM_MANAJEMEN = [
   { name: 'Nurul Afrianti, M.Pd., M.Psi', role: 'Pengelola', color: 'pimpinan', almamater: 'S2 Psikologi, Universitas Padjadjaran' },
   { name: 'Weindiani, M.Pd.', role: 'Kurikulum', color: 'pimpinan', almamater: 'S2 Manajemen Pendidikan, Universitas Pendidikan Indonesia', image: photo('weindi') },
   { name: 'Devi Febriani, M.Psi., Psi', role: 'Psikolog', color: 'pimpinan', almamater: 'S2 Psikologi, Universitas Padjadjaran' },
+  { name: 'Hasna Marwah, S.Pd.', role: 'Admin & Operator', color: 'staf', almamater: UNISBA, image: photo('hasna') },
   { name: 'Ade Riyanto', role: 'Satpam', color: 'staf', image: photo('ade') },
   { name: 'Muhammad Zaki Fadillah', role: 'Koki', color: 'staf', image: photo('zaki') },
   { name: 'Dicky Noer Alif', role: 'Caraka', color: 'staf' },

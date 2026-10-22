@@ -26,4 +26,37 @@ export const FOTO = {
   fairPanggung: f('fair-panggung'),
   fairAngklung1: f('fair-angklung-1'),
   fairAngklung2: f('fair-angklung-2'),
+  // Karnaval 17 Agustus
+  karnavalHut: f('karnaval-hut'),
+  karnavalKostum: f('karnaval-kostum'),
+  karnavalBersama: f('karnaval-bersama'),
+  // Outing
+  outingGokartBan: f('outing-gokart-ban'),
+  outingGokartMelambai: f('outing-gokart-melambai'),
+  tsbFotoBersama: f('tsb-foto-bersama'),
+  tsbAkuarium: f('tsb-akuarium'),
+  tsbWahana: f('tsb-wahana'),
+  tsbWahana2: f('tsb-wahana-2'),
+  taniKotaBersamaGuru: f('tanikota-bersama-guru'),
+  taniKotaFotoBersama: f('tanikota-foto-bersama'),
+  taniKotaSayur: f('tanikota-sayur'),
+  taniKotaAyam: f('tanikota-ayam'),
+  taniKotaHewan: f('tanikota-hewan'),
+  taniKotaSawah: f('tanikota-sawah'),
+  taniKotaLumpur: f('tanikota-lumpur'),
+  // Parents Day: Harmony in a Green World
+  parentsKostumBurung: f('parents-kostum-burung'),
+  parentsKostumBunga: f('parents-kostum-bunga'),
+  parentsPanggung: f('parents-panggung'),
+  // Ramadhan: Red Cherry
+  ramadhanPanggung: f('ramadhan-panggung'),
+  ramadhanFashion: f('ramadhan-fashion'),
+  ramadhanBendera: f('ramadhan-bendera'),
+  ramadhanHijab: f('ramadhan-hijab'),
+  // Foto sekolah (fasilitas)
+  sekolahPanjat: f('sekolah-panjat'),
+  sekolahPlayground: f('sekolah-playground'),
+  sekolahAyunan: f('sekolah-ayunan'),
+  sekolahAreaBermain: f('sekolah-area-bermain'),
+  sekolahGedung: f('sekolah-gedung'),
 };

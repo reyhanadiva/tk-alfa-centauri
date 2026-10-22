@@ -19,7 +19,7 @@ const FACILITIES = [
   {
     title: 'Playground & Outdoor',
     desc: 'Area bermain luas dan aman di udara terbuka.',
-    image: FOTO.agustusMembawaKarya,
+    image: FOTO.sekolahPlayground,
     theme: { bar: 'bg-emerald-400', glow: 'hover:shadow-emerald-200/80', grad: 'from-emerald-950/90 via-emerald-900/40' },
   },
   {
@@ -33,6 +33,12 @@ const FACILITIES = [
     desc: 'Koleksi buku cerita dan buku pelajaran yang beragam.',
     image: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1000&q=70',
     theme: { bar: 'bg-amber-400', glow: 'hover:shadow-amber-200/80', grad: 'from-amber-950/90 via-amber-900/40' },
+  },
+  {
+    title: 'Gedung Sekolah',
+    desc: 'Bangunan putih yang hangat dengan halaman asri untuk belajar dan bermain.',
+    image: FOTO.sekolahGedung,
+    theme: { bar: 'bg-sky-400', glow: 'hover:shadow-sky-200/80', grad: 'from-sky-950/90 via-sky-900/40' },
   },
   {
     title: 'Sistem Keamanan',

@@ -2,64 +2,52 @@ import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, ImageOff, Star, Sparkles } from 'lucide-react';
 import Button from './ui/Button';
+import { FOTO } from '@/data/photos';
 
 /* ------------------------------------------------------------------ */
 /* DATA                                                                */
 /* ------------------------------------------------------------------ */
 
-// Foto SEMENTARA (dummy) dari picsum.photos. Foto-nya acak tapi tetap sama untuk `seed` yang sama.
-// Saat foto asli sudah siap, ganti nilai `image` di bawah dengan alamat fotonya,
-// misalnya '/images/berita/field-trip.jpg' (taruh filenya di folder `public`).
-const dummyPhoto = (seed, w, h) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
-
-// `href` masih placeholder "#". Ganti dengan alamat halaman artikel yang sebenarnya.
-// `dateTime` = format mesin (YYYY-MM-DD) untuk elemen <time>; `date` = teks yang tampil.
+// Judul & foto mengacu ke kegiatan nyata. Teks ringkas dan tanggal masih SEMENTARA: isi `date` & `dateTime`
+// hanya bila tanggalnya pasti (kalau kosong, tanggal tidak ditampilkan). `href` masih placeholder "#".
 const MAIN_ARTICLE = {
   id: 1,
   category: 'Kegiatan',
-  date: '12 Oktober 2026',
-  dateTime: '2026-10-12',
-  title: 'Field Trip ke Kebun Binatang: Mengenal Satwa Sejak Dini',
+  title: 'Outing Tani Kota: Bermain Lumpur dan Berkebun Bersama',
   href: '#',
-  image: dummyPhoto('berita-field-trip', 1200, 750),
+  image: FOTO.taniKotaLumpur,
 };
 
 const SIDE_ARTICLES = [
   {
     id: 2,
-    category: 'Prestasi',
-    date: '5 Oktober 2026',
-    dateTime: '2026-10-05',
-    title: 'TK Alfa Centauri Raih Juara 1 Lomba Mewarnai Tingkat Kota',
+    category: 'Kegiatan',
+    title: 'Parents Day: Harmony in a Green World',
     href: '#',
-    image: dummyPhoto('berita-lomba-mewarnai', 400, 250),
+    image: FOTO.parentsPanggung,
   },
   {
     id: 3,
-    category: 'Parenting',
-    date: '28 September 2026',
-    dateTime: '2026-09-28',
-    title: 'Seminar Parenting: Menghadapi Tantrum pada Anak Usia Dini',
+    category: 'Kegiatan',
+    date: '9 Maret 2026',
+    dateTime: '2026-03-09',
+    title: 'Red Cherry: Ramadan yang Ceria di TK Alfa Centauri',
     href: '#',
-    image: dummyPhoto('berita-seminar-parenting', 400, 250),
+    image: FOTO.ramadhanPanggung,
   },
   {
     id: 4,
     category: 'Kegiatan',
-    date: '20 September 2026',
-    dateTime: '2026-09-20',
-    title: 'Kegiatan Literasi Jumat Pagi Bersama Guru dan Wali Murid',
+    title: 'Karnaval 17 Agustus: Alcentaurian Berbusana Daerah',
     href: '#',
-    image: dummyPhoto('berita-literasi-jumat', 400, 250),
+    image: FOTO.karnavalHut,
   },
   {
     id: 5,
-    category: 'Lingkungan',
-    date: '15 September 2026',
-    dateTime: '2026-09-15',
-    title: 'Merawat Lingkungan Sejak Dini dari Kebun Sekolah',
+    category: 'Kegiatan',
+    title: 'Outing Seru ke Trans Studio Bandung',
     href: '#',
-    image: dummyPhoto('berita-kebun-sekolah', 400, 250),
+    image: FOTO.tsbFotoBersama,
   },
 ];
 
@@ -192,9 +180,9 @@ const BeritaArtikel = () => {
 
             <div className="p-5 md:p-8 flex flex-col justify-center">
               <div className="flex flex-wrap items-center gap-3 mb-3">
-                <time dateTime={MAIN_ARTICLE.dateTime} className="text-sm font-medium text-night/60">
+                {MAIN_ARTICLE.date && <time dateTime={MAIN_ARTICLE.dateTime} className="text-sm font-medium text-night/60">
                   {MAIN_ARTICLE.date}
-                </time>
+                </time>}
                 <CategoryBadge category={MAIN_ARTICLE.category} />
               </div>
               <h3 className="text-xl md:text-2xl font-bold text-night group-hover:text-blue-700 transition-colors leading-snug text-balance">
@@ -221,9 +209,9 @@ const BeritaArtikel = () => {
               >
                 <article className="pr-4 md:pr-5 flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <time dateTime={item.dateTime} className="text-xs md:text-sm font-medium text-night/60">
+                    {item.date && <time dateTime={item.dateTime} className="text-xs md:text-sm font-medium text-night/60">
                       {item.date}
-                    </time>
+                    </time>}
                     <CategoryBadge category={item.category} />
                   </div>
                   <h4 className="text-base font-bold text-night group-hover:text-blue-700 transition-colors line-clamp-3 leading-snug">

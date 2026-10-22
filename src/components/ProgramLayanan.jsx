@@ -28,7 +28,7 @@ const PROGRAMS = [
     age: '2 - 4 Tahun',
     location: 'Jl. Terate No. 12, Bandung',
     mapLink: 'https://maps.app.goo.gl/5Mfy6hzs89BeqywV7',
-    image: FOTO.agustusBermainAir,
+    image: FOTO.taniKotaBersamaGuru,
     theme: {
       pill: 'bg-sky-100 text-sky-800',
       chip: 'bg-sky-100 text-sky-600 group-hover/link:bg-sky-200',

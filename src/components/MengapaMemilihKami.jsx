@@ -53,7 +53,7 @@ const FEATURES = [
       ['Shalat Dhuha', 'Shalat Dzuhur Berjamaah', 'Mengaji Metode Ummi'],
       ['Hafalan Surat Pendek', 'Asmaul Husna', 'Doa Harian', 'Adab Islami'],
     ],
-    img: FOTO.agustusFotoKelas,
+    img: FOTO.ramadhanPanggung,
     theme: {
       tint: 'bg-emerald-600/75',
       chip: 'bg-emerald-100 text-emerald-600',
