@@ -68,7 +68,7 @@ const FEATURES = [
     iconFilled: true,
     desc: 'Setiap anak berhak tumbuh dan belajar dengan kesempatan yang sama. Kami mendampingi kebutuhan dan keunikan tiap ananda agar dapat belajar setara.',
     pillsGroup: [['LSU (Learning Support Unit)', 'Kelas Stimulasi']],
-    img: FOTO.artMelukis3Edit,
+    img: FOTO.artMelukis2Edit,
     theme: {
       tint: 'bg-rose-600/75',
       chip: 'bg-rose-100 text-rose-600',
