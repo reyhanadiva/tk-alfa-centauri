@@ -65,7 +65,7 @@ export const FOTO = {
   artMelukis1Edit: f('art-melukis-1-edit'),
   agustusFotoBersamaEdit: f('agustus-foto-bersama-edit'),
   ramadhanPanggungEdit: f('ramadhan-panggung-edit'),
-  artMelukis2Edit: f('art-melukis-2-edit'),
+  taniKotaSayurEdit: f('tanikota-sayur-edit'),
   artMelukis3Edit: f('art-melukis-3-edit'),
   agustusBermainBersamaGuruEdit: f('agustus-bermain-bersama-guru-edit'),
   taniKotaBersamaGuruEdit: f('tanikota-bersama-guru-edit'),

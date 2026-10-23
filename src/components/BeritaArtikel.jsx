@@ -33,7 +33,7 @@ const SIDE_ARTICLES = [
     dateTime: '2026-03-09',
     title: 'Red Cherry: Ramadan yang Ceria di TK Alfa Centauri',
     href: '#',
-    image: FOTO.ramadhanPanggung,
+    image: FOTO.ramadhanHijab,
   },
   {
     id: 4,
